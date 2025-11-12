@@ -1,0 +1,87 @@
+FROM php:8.4-fpm AS php
+
+WORKDIR /var/www/app
+
+ARG gid
+ARG uid
+
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    libc6 \
+    zip \
+    unzip \
+    supervisor \
+    htop \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    default-mysql-client
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+
+RUN pecl install redis \
+    && docker-php-ext-enable redis
+
+COPY --from=composer:2.8.5 /usr/bin/composer /usr/bin/composer
+
+RUN groupadd -g ${gid} app-user && useradd -u ${uid} -g app-user -m -s /bin/bash app-user
+RUN mkdir -p /var/www/app && chown -R app-user:app-user /var/www/app
+
+FROM php AS dev
+
+ARG xdebug_idekey
+ARG xdebug_client_port
+
+COPY ./docker/php/config/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
+RUN pecl install xdebug-3.4.5 && \
+      docker-php-ext-enable xdebug && \
+      sed -i "s/^xdebug\.idekey=.*/xdebug.idekey=${xdebug_idekey}/" /usr/local/etc/php/conf.d/xdebug.ini && \
+      sed -i "s/^xdebug\.client_port=.*/xdebug.client_port=${xdebug_client_port}/" /usr/local/etc/php/conf.d/xdebug.ini
+
+COPY . .
+
+COPY ./docker/php/config/entrypoint.dev.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+RUN chmod -R 775 ./storage ./bootstrap/cache
+
+USER app-user
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["php-fpm"]
+
+FROM php AS build
+
+COPY composer.json composer.lock ./
+
+RUN composer install --no-dev --no-scripts --prefer-dist --no-progress --no-interaction
+
+COPY . .
+
+RUN composer dump-autoload --optimize && \
+    composer check-platform-reqs
+
+RUN chmod -R 775 ./storage ./bootstrap/cache
+
+FROM build AS prod
+COPY ./docker/php/config/entrypoint.prod.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN rm -rf /docker
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["php-fpm"]
+
+FROM build AS worker
+RUN rm -rf /docker
+CMD ["/bin/sh", "-c", "supervisord -c /etc/supervisor/supervisord.conf"]
+
+FROM build AS scheduler
+RUN rm -rf /docker
+CMD ["/bin/sh", "-c", "nice -n 10 sleep 60 && php /var/www/app/artisan schedule:run --verbose --no-interaction"]
