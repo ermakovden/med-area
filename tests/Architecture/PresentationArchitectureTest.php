@@ -6,23 +6,23 @@ namespace Tests\Architecture;
 
 class PresentationArchitectureTest extends BaseArchitectureTest
 {
-    public function test_presentation_not_by_domain(): void
+    public function test_presentation_depend_domain(): void
     {
-        $this->assertDoesNotDependOn($this->presentation, $this->domain);
+        $this->assertDependOn($this->presentation, $this->domain);
     }
 
-    public function test_presentation_not_by_application(): void
+    public function test_presentation_depend_application(): void
     {
-        $this->assertDoesNotDependOn($this->presentation, $this->application);
+        $this->assertDependOn($this->presentation, $this->application);
     }
 
-    public function test_presentation_not_by_infrastructure(): void
+    public function test_presentation_depend_infrastructure(): void
     {
-        $this->assertDoesNotDependOn($this->presentation, $this->infrastructure);
+        $this->assertDependOn($this->presentation, $this->infrastructure);
     }
 
-    public function test_presentation_not_by_shared(): void
+    public function test_presentation_depend_shared(): void
     {
-        $this->assertDoesNotDependOn($this->domain, $this->shared);
+        $this->assertDependOn($this->domain, $this->shared);
     }
 }

@@ -6,22 +6,22 @@ namespace Tests\Architecture;
 
 class DomainArchitectureTest extends BaseArchitectureTest
 {
-    public function test_domain_by_application(): void
+    public function test_domain_not_depend_application(): void
     {
-        $this->assertDependOn($this->domain, $this->application);
+        $this->assertDoesNotDependOn($this->domain, $this->application);
     }
 
-    public function test_domain_by_infrastructure(): void
+    public function test_domain_not_depend_infrastructure(): void
     {
-        $this->assertDependOn($this->domain, $this->infrastructure);
+        $this->assertDoesNotDependOn($this->domain, $this->infrastructure);
     }
 
-    public function test_domain_by_presentation(): void
+    public function test_domain_not_depend_presentation(): void
     {
-        $this->assertDependOn($this->domain, $this->presentation);
+        $this->assertDoesNotDependOn($this->domain, $this->presentation);
     }
 
-    public function test_domain_not_by_shared(): void
+    public function test_domain_not_depend_shared(): void
     {
         $this->assertDoesNotDependOn($this->domain, $this->shared);
     }
