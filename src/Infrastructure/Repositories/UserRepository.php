@@ -6,7 +6,7 @@ namespace Infrastructure\Repositories;
 
 use Application\User\DTO\UserDTO;
 use Infrastructure\Repositories\Contracts\UserRepositoryContract;
-use Domains\User\Models\User;
+use Domain\User\Models\User;
 
 class UserRepository implements UserRepositoryContract
 {
