@@ -6,18 +6,18 @@ namespace Tests\Architecture;
 
 class ApplicationArchitectureTest extends BaseArchitectureTest
 {
-    public function test_application_not_depend_infrastructure(): void
+    public function test_application_depend_infrastructure(): void
     {
-        $this->assertDoesNotDependOn($this->application, $this->infrastructure);
+        $this->assertDependOn($this->application, $this->infrastructure);
     }
 
-    public function test_application_not_depend_presentation(): void
+    public function test_application_depend_presentation(): void
     {
-        $this->assertDoesNotDependOn($this->application, $this->presentation);
+        $this->assertDependOn($this->application, $this->presentation);
     }
 
-    public function test_application_not_depend_domain(): void
+    public function test_application_depend_domain(): void
     {
-        $this->assertDoesNotDependOn($this->application, $this->domain);
+        $this->assertDependOn($this->application, $this->domain);
     }
 }
