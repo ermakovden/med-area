@@ -36,7 +36,7 @@ class UserControllerTest extends TestCase
         $response = $this->post(route('api.users.register'), $userData);
 
         // Check asserts
-        $response->assertStatus(422);
+        $response->assertUnprocessable();
         $response->assertInvalid(['nickname', 'email']);
     }
 
@@ -54,7 +54,7 @@ class UserControllerTest extends TestCase
         $response = $this->post(route('api.users.register'), $userData);
 
         // Check asserts
-        $response->assertStatus(422);
+        $response->assertUnprocessable();
         $response->assertInvalid(['password']);
     }
 
@@ -68,7 +68,7 @@ class UserControllerTest extends TestCase
         $response = $this->post(route('api.users.register'), $userData);
 
         // Check asserts
-        $response->assertStatus(422);
+        $response->assertUnprocessable();
         $response->assertInvalid(['password']);
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
 use Presentation\User\Requests\RegisterUserRequest;
+use Presentation\User\Resources\UserResource;
 
 class UserController extends BaseController
 {
@@ -22,6 +23,6 @@ class UserController extends BaseController
 
         $user = $this->registrationService->register($dto);
 
-        return Response::json($user);
+        return Response::json(new UserResource($user));
     }
 }

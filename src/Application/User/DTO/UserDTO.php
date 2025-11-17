@@ -22,4 +22,10 @@ class UserDTO extends BaseDTO
 
     #[WithCast(DateTimeInterfaceCast::class)]
     public Carbon|Optional|null $email_verified_at;
+
+    #[WithCast(DateTimeInterfaceCast::class)]
+    public Carbon|Optional|null $created_at;
+
+    #[WithCast(DateTimeInterfaceCast::class)]
+    public Carbon|Optional|null $updated_at;
 }
