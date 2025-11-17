@@ -1,15 +1,17 @@
 <?php
 
-namespace Modules\User\Models;
+declare(strict_types=1);
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+namespace Domain\User\Models;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * @property int $id
- * @property string $name
+ * @property string $id
+ * @property string $nickname
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
@@ -37,6 +39,7 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use Notifiable;
+    use HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -44,7 +47,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nickname',
         'email',
         'password',
     ];

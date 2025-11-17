@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: 'MedArea RESTful API'
+  version: '1.0'
+paths:
+  /api/register:
+    post:
+      tags:
+        - user
+        - auth
+        - api
+      description: 'Registration of new user.'
+      operationId: apiUsersRegister
+      requestBody:
+        $ref: '#/components/requestBodies/RegisterUserRequest'
+      responses:
+        '200':
+          description: 'User created.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResource'
+components:
+  schemas:
+    UserResource:
+      title: UserResource
+      properties:
+        id:
+          description: 'UUID of user'
+          type: string
+        nickname:
+          description: 'Nickname of user'
+          type: string
+        email:
+          description: 'Email of User'
+          type: string
+        created_at:
+          description: 'Datetime created at of user'
+          type: string
+          format: date-time
+        updated_at:
+          description: 'Datetime updated at of user'
+          type: string
+          format: date-time
+      type: object
+  requestBodies:
+    RegisterUserRequest:
+      description: 'Registration Request'
+      content:
+        application/json:
+          schema:
+            properties:
+              nickname:
+                description: 'Nickname of User'
+                required:
+                  - nickname
+                format: string
+              email:
+                description: 'Email of User'
+                format: email
+              password:
+                description: 'Password of User'
+                format: string
+              password_confirmation:
+                description: 'Repeat password to confirm'
+                format: string
+            type: object
+tags:
+  -
+    name: user
+    description: user
+  -
+    name: auth
+    description: auth
+  -
+    name: api
+    description: api
