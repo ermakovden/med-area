@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Tests\Feature\Presentation\User\Controllers;
 
 use Domain\User\Factories\UserFactory;
-use Presentation\User\Controllers\UserController;
 use Tests\TestCase;
 
-class UserControllerTest extends TestCase
+class RegistrationControllerTest extends TestCase
 {
-    protected UserController $userController;
-
     public function test_register_success(): void
     {
         // Data for Request

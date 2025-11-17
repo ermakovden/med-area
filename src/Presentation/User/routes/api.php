@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-use Presentation\User\Controllers\UserController;
+use Presentation\User\Controllers\RegistrationController;
 
-Route::post('/register', [UserController::class, 'register'])->name('api.users.register');
+Route::post('/register', [RegistrationController::class, 'register'])->name('api.users.register');

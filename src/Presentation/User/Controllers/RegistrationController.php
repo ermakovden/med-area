@@ -10,13 +10,29 @@ use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
 use Presentation\User\Requests\RegisterUserRequest;
 use Presentation\User\Resources\UserResource;
+use OpenApi\Attributes as OA;
 
-class UserController extends BaseController
+/**
+ * Controller responsible for registration users
+ */
+class RegistrationController extends BaseController
 {
     public function __construct(
         protected readonly RegistrationServiceContract $registrationService,
     ) {}
 
+    #[OA\Post(
+        path: '/api/register',
+        operationId: 'apiUsersRegister',
+        description: 'Registration of new user.',
+        tags: ['user', 'auth', 'api'],
+        requestBody: new OA\RequestBody(ref: RegisterUserRequest::class),
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'User created.',
+        content: new OA\JsonContent(ref: UserResource::class)
+    )]
     public function register(RegisterUserRequest $request): JsonResponse
     {
         $dto = $request->getDTO();

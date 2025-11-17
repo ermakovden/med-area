@@ -10,15 +10,17 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Shared\Requests\BaseRequest;
 
-#[OA\Schema(
-    title: 'RegisterUserRequest',
+#[OA\RequestBody(
+    request: 'RegisterUserRequest',
     description: 'Registration Request',
-    properties: [
-        new OA\Property(title: 'nickname', description: 'Nickname of User', format: 'string'),
-        new OA\Property(title: 'email', description: 'Email of User', format: 'email'),
-        new OA\Property(title: 'password', description: 'Password of User', format: 'string'),
-        new OA\Property(title: 'password_confirmation', description: 'Repeat password to confirm', format: 'string'),
-    ]
+    content: new OA\JsonContent(
+        properties: [
+            new OA\Property(property: 'nickname', description: 'Nickname of User', format: 'string'),
+            new OA\Property(property: 'email', description: 'Email of User', format: 'email'),
+            new OA\Property(property: 'password', description: 'Password of User', format: 'string'),
+            new OA\Property(property: 'password_confirmation', description: 'Repeat password to confirm', format: 'string'),
+        ]
+    )
 )]
 class RegisterUserRequest extends BaseRequest
 {
