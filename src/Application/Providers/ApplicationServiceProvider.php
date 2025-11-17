@@ -16,7 +16,7 @@ class ApplicationServiceProvider extends ServiceProvider
      * @var array
      */
     public array $bindings = [
-        RegistrationServiceContract::class => RegistrationService::class
+        RegistrationServiceContract::class => RegistrationService::class,
     ];
 
     public function register(): void
@@ -26,6 +26,5 @@ class ApplicationServiceProvider extends ServiceProvider
         }
     }
 
-    public function boot(): void
-    {}
+    public function boot(): void {}
 }
