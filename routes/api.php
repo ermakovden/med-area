@@ -1,3 +1,3 @@
 <?php
 
-require __DIR__ . '/../src/Presentation/User/routes/api.php';
+require __DIR__ . '/../src/Presentation/User/routes/api.user.registration.php';
