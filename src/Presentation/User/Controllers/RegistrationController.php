@@ -43,6 +43,24 @@ class RegistrationController extends BaseController
         return Response::json(new UserResource($user));
     }
 
+    #[OA\Get(
+        path: '/email/verify/{id}/{hash}',
+        operationId: 'apiUsersEmailVerify',
+        description: 'Verify email of user.',
+        tags: ['user', 'verification', 'auth', 'api'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', description: 'id verification', required: true),
+            new OA\Parameter(name: 'hash', in: 'path', description: 'hash verification', required: true),
+        ]
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Email verified.',
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Anauthorized.',
+    )]
     public function verify(EmailVerificationRequest $request): JsonResponse
     {
         $request->fulfill();

@@ -20,6 +20,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResource'
+  '/email/verify/{id}/{hash}':
+    get:
+      tags:
+        - user
+        - verification
+        - auth
+        - api
+      description: 'Verify email of user.'
+      operationId: apiUsersEmailVerify
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'id verification'
+          required: true
+        -
+          name: hash
+          in: path
+          description: 'hash verification'
+          required: true
+      responses:
+        '200':
+          description: 'Email verified.'
+        '401':
+          description: Anauthorized.
 components:
   schemas:
     UserResource:
@@ -52,8 +77,6 @@ components:
             properties:
               nickname:
                 description: 'Nickname of User'
-                required:
-                  - nickname
                 format: string
               email:
                 description: 'Email of User'
@@ -75,3 +98,6 @@ tags:
   -
     name: api
     description: api
+  -
+    name: verification
+    description: verification
