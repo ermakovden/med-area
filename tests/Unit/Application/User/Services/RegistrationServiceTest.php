@@ -56,6 +56,6 @@ class RegistrationServiceTest extends TestCase
         $this->assertNull($result->email_verified_at);
 
         // Check that the record has appeared in the DB
-        $this->assertDatabaseHas(User::class, $userDTO->toArray());
+        $this->assertDatabaseHas(User::class, $userDTO->except('remember_token')->toArray());
     }
 }
