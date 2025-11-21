@@ -6,8 +6,8 @@ namespace Application\User\Services;
 
 use Application\User\DTO\UserDTO;
 use Application\User\Services\Contracts\RegistrationServiceContract;
+use Domain\User\Events\UserRegistered;
 use Domain\User\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Infrastructure\Repositories\Contracts\UserRepositoryContract;
 
 class RegistrationService implements RegistrationServiceContract
@@ -31,7 +31,7 @@ class RegistrationService implements RegistrationServiceContract
         // Send email message for confirmation of registration
         $userModel = User::whereId($userDTO->id)->first();
 
-        event(new Registered($userModel));
+        event(new UserRegistered($userModel));
 
         return $userDTO;
     }
