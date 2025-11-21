@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Presentation\User\Controllers;
 
 use Application\User\Services\Contracts\RegistrationServiceContract;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
@@ -40,5 +41,12 @@ class RegistrationController extends BaseController
         $user = $this->registrationService->register($dto);
 
         return Response::json(new UserResource($user));
+    }
+
+    public function verify(EmailVerificationRequest $request): JsonResponse
+    {
+        $request->fulfill();
+
+        return Response::json(['message' => 'Email verified successfully.']);
     }
 }
