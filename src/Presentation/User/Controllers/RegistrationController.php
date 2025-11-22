@@ -12,6 +12,7 @@ use Presentation\BaseController;
 use Presentation\User\Requests\RegisterUserRequest;
 use Presentation\User\Resources\UserResource;
 use OpenApi\Attributes as OA;
+use Presentation\User\Requests\SendEmailVerificationRequest;
 
 /**
  * Controller responsible for registration users
@@ -66,5 +67,12 @@ class RegistrationController extends BaseController
         $request->fulfill();
 
         return Response::json(['message' => 'Email verified successfully.']);
+    }
+
+    public function sendEmailVerification(SendEmailVerificationRequest $request): JsonResponse
+    {
+        $this->registrationService->sendEmailVerificationNotification($request->user());
+
+        return Response::json(['message' => 'Check your email!.']);
     }
 }

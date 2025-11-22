@@ -209,7 +209,7 @@ class RegistrationControllerTest extends TestCase
         Notification::fake();
 
         // Send API Request
-        $response = $this->get(route('verification.send'));
+        $response = $this->get(route('verification.send'), ['accept' => 'application/json']);
 
         // Check assert unauth
         $response->assertUnauthorized();
