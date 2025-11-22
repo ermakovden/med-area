@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Presentation\User\Controllers;
 
 use Application\User\Services\Contracts\RegistrationServiceContract;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
 use Presentation\User\Requests\RegisterUserRequest;
 use Presentation\User\Resources\UserResource;
 use OpenApi\Attributes as OA;
+use Presentation\User\Requests\SendEmailVerificationRequest;
 
 /**
  * Controller responsible for registration users
@@ -40,5 +42,51 @@ class RegistrationController extends BaseController
         $user = $this->registrationService->register($dto);
 
         return Response::json(new UserResource($user));
+    }
+
+    #[OA\Get(
+        path: '/email/verify/{id}/{hash}',
+        operationId: 'apiUsersEmailVerify',
+        description: 'Verify email of user.',
+        tags: ['user', 'verification', 'auth', 'api'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', description: 'id verification', required: true),
+            new OA\Parameter(name: 'hash', in: 'path', description: 'hash verification', required: true),
+        ]
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Email verified.',
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Unauthorized.',
+    )]
+    public function verify(EmailVerificationRequest $request): JsonResponse
+    {
+        $request->fulfill();
+
+        return Response::json(['message' => 'Email verified successfully.']);
+    }
+
+    #[OA\Get(
+        path: '/email/verification-notification',
+        operationId: 'apiUsersEmailVerificationNotification',
+        description: 'Send email verification notification.',
+        tags: ['user', 'verification', 'auth', 'api'],
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Email notification sended.',
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Unauthorized.',
+    )]
+    public function sendEmailVerification(SendEmailVerificationRequest $request): JsonResponse
+    {
+        $this->registrationService->sendEmailVerificationNotification($request->user());
+
+        return Response::json(['message' => 'Check your email!.']);
     }
 }

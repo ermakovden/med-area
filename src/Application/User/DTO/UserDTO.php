@@ -20,6 +20,10 @@ class UserDTO extends BaseDTO
 
     public string|Optional $password;
 
+    public string|Optional $password_confirmation;
+
+    public string|Optional|null $remember_token;
+
     #[WithCast(DateTimeInterfaceCast::class)]
     public Carbon|Optional|null $email_verified_at;
 
