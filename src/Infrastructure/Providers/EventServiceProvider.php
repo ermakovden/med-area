@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Domain\Providers;
+namespace Infrastructure\Providers;
 
 use Domain\User\Events\UserRegistered;
 use Illuminate\Support\ServiceProvider;
