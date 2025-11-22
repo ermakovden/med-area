@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+namespace Tests\Unit\Application\User\Services;
+
 use Application\User\DTO\UserDTO;
 use Application\User\Services\RegistrationService;
 use Domain\User\Factories\UserFactory;
 use Domain\User\Models\User;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Notification;
+use Infrastructure\Notifications\User\EmailVerificationNotification;
 use Infrastructure\Repositories\Contracts\UserRepositoryContract;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -69,11 +71,14 @@ class RegistrationServiceTest extends TestCase
 
         $createdUser = User::create($userDTO->toArray());
 
+        // Fake notification service
+        Notification::fake();
+
         // Send email notification
         $this->service->sendEmailVerificationNotification($createdUser);
 
         // Check that the notification was sent
-        Notification::assertSentTo($createdUser, VerifyEmail::class);
+        Notification::assertSentTo($createdUser, EmailVerificationNotification::class);
     }
 
     public function test_send_email_verification_notification_already_verified(): void
@@ -81,12 +86,17 @@ class RegistrationServiceTest extends TestCase
         // Data for testing
         $userDTO = UserDTO::from((new UserFactory())->definition());
 
+        /** @var User $createdUser */
         $createdUser = User::create($userDTO->toArray());
+        $createdUser->markEmailAsVerified();
+
+        // Fake notification service
+        Notification::fake();
 
         // Send email notification
         $this->service->sendEmailVerificationNotification($createdUser);
 
-        // Check that the notification was not sent
-        Notification::assertNotSentTo($createdUser, VerifyEmail::class);
+        // Check that the notification not was sent
+        Notification::assertNotSentTo($createdUser, EmailVerificationNotification::class);
     }
 }

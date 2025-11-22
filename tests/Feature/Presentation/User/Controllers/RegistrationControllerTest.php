@@ -7,7 +7,6 @@ namespace Tests\Feature\Presentation\User\Controllers;
 use Application\User\DTO\UserDTO;
 use Domain\User\Factories\UserFactory;
 use Domain\User\Models\User;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Notification;
 use Infrastructure\Notifications\User\EmailVerificationNotification;
 use Tests\TestCase;
@@ -184,6 +183,9 @@ class RegistrationControllerTest extends TestCase
         /** @var User $userModel */
         $userModel = User::create($userData->toArray());
 
+        // Fake Notification service
+        Notification::fake();
+
         // Send API Request
         $response = $this->actingAs($userModel)->get(route('verification.send'));
 
@@ -191,7 +193,7 @@ class RegistrationControllerTest extends TestCase
         $response->assertOk();
 
         // Check that the notification was sent
-        Notification::assertSentTo($userModel, VerifyEmail::class);
+        Notification::assertSentTo($userModel, EmailVerificationNotification::class);
     }
 
     public function test_send_email_verification_unauth(): void
@@ -203,6 +205,9 @@ class RegistrationControllerTest extends TestCase
         /** @var User $userModel */
         $userModel = User::create($userData->toArray());
 
+        // Fake Notification service
+        Notification::fake();
+
         // Send API Request
         $response = $this->get(route('verification.send'));
 
@@ -210,7 +215,7 @@ class RegistrationControllerTest extends TestCase
         $response->assertUnauthorized();
 
         // Check that the notification was not sent
-        Notification::assertNotSentTo($userModel, VerifyEmail::class);
+        Notification::assertNotSentTo($userModel, EmailVerificationNotification::class);
     }
 
     public function test_send_email_verification_already_verified(): void
@@ -220,6 +225,10 @@ class RegistrationControllerTest extends TestCase
 
         /** @var User $userModel */
         $userModel = User::create($userData->toArray());
+        $userModel->markEmailAsVerified();
+
+        // Fake Notification service
+        Notification::fake();
 
         // Send API Request
         $response = $this->actingAs($userModel)->get(route('verification.send'));
@@ -228,6 +237,6 @@ class RegistrationControllerTest extends TestCase
         $response->assertOk();
 
         // Check that the notification was not sent
-        Notification::assertNotSentTo($userModel, VerifyEmail::class);
+        Notification::assertNotSentTo($userModel, EmailVerificationNotification::class);
     }
 }
