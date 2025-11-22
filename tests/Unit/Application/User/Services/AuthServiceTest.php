@@ -34,15 +34,15 @@ class AuthServiceTest extends TestCase
         // Data for testing
         $credentials = UserDTO::from([
             'nickname' => $user->nickname,
-            'password' => $user->password,
+            'password' => $this->userPassword,
         ]);
 
         // Result from method of service
         $result = $this->service->login($credentials);
 
         // Сheck that the result matches
-        $this->assertTrue($result->isNotOptional('access_token'));
-        $this->assertTrue($result->isNotOptional('refresh_token'));
+        $this->assertTrue($result->isNotEmptyValue('access_token'));
+        $this->assertTrue($result->isNotEmptyValue('refresh_token'));
         $this->assertSame(TokenType::BEARER, $result->token_type);
         $this->assertIsInt($result->expires_in);
 
@@ -58,14 +58,14 @@ class AuthServiceTest extends TestCase
         // Data for testing
         $credentials = UserDTO::from([
             'nickname' => 'testing',
-            'password' => $user->password,
+            'password' => $this->userPassword,
         ]);
-
-        // Result from method of service
-        $this->service->login($credentials);
 
         // Сheck that was exception
         $this->expectException(BadRequestHttpException::class);
+
+        // Result from method of service
+        $this->service->login($credentials);
     }
 
     public function test_login_bad_password(): void
@@ -79,10 +79,10 @@ class AuthServiceTest extends TestCase
             'password' => '12345',
         ]);
 
-        // Result from method of service
-        $this->service->login($credentials);
-
         // Сheck that was exception
         $this->expectException(BadRequestHttpException::class);
+
+        // Result from method of service
+        $this->service->login($credentials);
     }
 }

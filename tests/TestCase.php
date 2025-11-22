@@ -14,6 +14,8 @@ abstract class TestCase extends BaseTestCase
 {
     use RefreshDatabase;
 
+    protected string $userPassword = 'GbUTPsq894b!fM1';
+
     /**
      * Get User model with verified email
      *
@@ -22,6 +24,7 @@ abstract class TestCase extends BaseTestCase
     protected function getUser(): User
     {
         $userDTO = UserDTO::from((new UserFactory())->definition());
+        $userDTO->password = $this->userPassword;
 
         /** @var User $userModel */
         $userModel = User::create($userDTO->toArray());

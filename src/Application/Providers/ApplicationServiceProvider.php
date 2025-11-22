@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Application\Providers;
 
+use Application\User\Services\AuthService;
+use Application\User\Services\Contracts\AuthServiceContract;
 use Application\User\Services\Contracts\RegistrationServiceContract;
 use Application\User\Services\RegistrationService;
 use Illuminate\Support\ServiceProvider;
@@ -17,6 +19,7 @@ class ApplicationServiceProvider extends ServiceProvider
      */
     public array $bindings = [
         RegistrationServiceContract::class => RegistrationService::class,
+        AuthServiceContract::class => AuthService::class,
     ];
 
     public function register(): void
