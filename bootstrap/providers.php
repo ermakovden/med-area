@@ -7,4 +7,5 @@ return [
     Domain\Providers\DomainServiceProvider::class,
     Infrastructure\Providers\EventServiceProvider::class,
     Infrastructure\Providers\InfrastructureServiceProvider::class,
+    Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 ];
