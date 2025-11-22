@@ -7,6 +7,8 @@ namespace Tests\Feature\Presentation\User\Controllers;
 use Application\User\DTO\UserDTO;
 use Domain\User\Factories\UserFactory;
 use Domain\User\Models\User;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Support\Facades\Notification;
 use Infrastructure\Notifications\User\EmailVerificationNotification;
 use Tests\TestCase;
 
@@ -171,5 +173,61 @@ class RegistrationControllerTest extends TestCase
         // Check asserts that user is unverified
         $this->assertNull($userModel->email_verified_at);
         $this->assertNull($userModel2->email_verified_at);
+    }
+
+    public function test_send_email_verification_success(): void
+    {
+        // User Data
+        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData->email_verified_at = null;
+
+        /** @var User $userModel */
+        $userModel = User::create($userData->toArray());
+
+        // Send API Request
+        $response = $this->actingAs($userModel)->get(route('verification.send'));
+
+        // Check asserts that email notification sended
+        $response->assertOk();
+
+        // Check that the notification was sent
+        Notification::assertSentTo($userModel, VerifyEmail::class);
+    }
+
+    public function test_send_email_verification_unauth(): void
+    {
+        // User Data
+        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData->email_verified_at = null;
+
+        /** @var User $userModel */
+        $userModel = User::create($userData->toArray());
+
+        // Send API Request
+        $response = $this->get(route('verification.send'));
+
+        // Check assert unauth
+        $response->assertUnauthorized();
+
+        // Check that the notification was not sent
+        Notification::assertNotSentTo($userModel, VerifyEmail::class);
+    }
+
+    public function test_send_email_verification_already_verified(): void
+    {
+        // User Data
+        $userData = UserDTO::from((new UserFactory())->definition());
+
+        /** @var User $userModel */
+        $userModel = User::create($userData->toArray());
+
+        // Send API Request
+        $response = $this->actingAs($userModel)->get(route('verification.send'));
+
+        // Check assert 200
+        $response->assertOk();
+
+        // Check that the notification was not sent
+        Notification::assertNotSentTo($userModel, VerifyEmail::class);
     }
 }
