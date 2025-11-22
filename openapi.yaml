@@ -44,7 +44,21 @@ paths:
         '200':
           description: 'Email verified.'
         '401':
-          description: Anauthorized.
+          description: Unauthorized.
+  /email/verification-notification:
+    get:
+      tags:
+        - user
+        - verification
+        - auth
+        - api
+      description: 'Send email verification notification.'
+      operationId: apiUsersEmailVerificationNotification
+      responses:
+        '200':
+          description: 'Email notification sended.'
+        '401':
+          description: Unauthorized.
 components:
   schemas:
     UserResource:
@@ -88,6 +102,8 @@ components:
                 description: 'Repeat password to confirm'
                 format: string
             type: object
+    SendEmailVerificationRequest:
+      description: 'Send Email Verification Request'
 tags:
   -
     name: user

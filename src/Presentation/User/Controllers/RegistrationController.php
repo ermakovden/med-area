@@ -60,7 +60,7 @@ class RegistrationController extends BaseController
     )]
     #[OA\Response(
         response: 401,
-        description: 'Anauthorized.',
+        description: 'Unauthorized.',
     )]
     public function verify(EmailVerificationRequest $request): JsonResponse
     {
@@ -69,6 +69,20 @@ class RegistrationController extends BaseController
         return Response::json(['message' => 'Email verified successfully.']);
     }
 
+    #[OA\Get(
+        path: '/email/verification-notification',
+        operationId: 'apiUsersEmailVerificationNotification',
+        description: 'Send email verification notification.',
+        tags: ['user', 'verification', 'auth', 'api'],
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Email notification sended.',
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Unauthorized.',
+    )]
     public function sendEmailVerification(SendEmailVerificationRequest $request): JsonResponse
     {
         $this->registrationService->sendEmailVerificationNotification($request->user());
