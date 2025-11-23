@@ -26,6 +26,7 @@ class AuthService implements AuthServiceContract
         if (! $accessToken = auth()->attempt($credentials->toArray())) {
             throw new BadRequestHttpException('Nickname or password incorrect.');
         }
+        /** @var string $accessToken */
 
         return $this->tokenResponse($accessToken);
     }
