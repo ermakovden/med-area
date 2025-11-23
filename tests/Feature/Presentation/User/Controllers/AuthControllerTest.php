@@ -123,4 +123,28 @@ class AuthControllerTest extends TestCase
         // Check asserts
         $response->assertInternalServerError();
     }
+
+    public function test_logout_success(): void
+    {
+        // User for testing
+        $user = $this->getUser();
+
+        // Login user
+        auth()->login($user);
+
+        // Send API Request
+        $response = $this->actingAs($user)->post(route('api.auth.logout'));
+
+        // Check asserts
+        $response->assertNoContent();
+    }
+
+    public function test_logout_unauth(): void
+    {
+        // Send API Request
+        $response = $this->post(route('api.auth.logout'));
+
+        // Check asserts
+        $response->assertUnauthorized();
+    }
 }
