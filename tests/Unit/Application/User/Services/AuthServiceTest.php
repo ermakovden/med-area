@@ -85,4 +85,20 @@ class AuthServiceTest extends TestCase
         // Result from method of service
         $this->service->login($credentials);
     }
+
+    public function test_logout_success(): void
+    {
+        // User for testing
+        $user = $this->getUser();
+
+        // Login user
+        $this->actingAs($user);
+        auth()->login($user);
+
+        // Logout user with use service
+        $this->service->logout();
+
+        // Check assert that user is not authenticated, has been log out
+        $this->assertFalse($this->isAuthenticated());
+    }
 }
