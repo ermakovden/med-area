@@ -13,4 +13,8 @@ Route::prefix('auth')->group(function () {
     Route::post('/refresh', [AuthController::class, 'refresh'])
         ->middleware(['auth', 'throttle:2,1'])
         ->name('api.auth.refresh');
+
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->middleware(['auth'])
+        ->name('api.auth.logout');
 });

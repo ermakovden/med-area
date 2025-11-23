@@ -36,4 +36,11 @@ class AuthController extends BaseController
 
         return Response::json(new TokenResource($tokenResponse));
     }
+
+    public function logout(): JsonResponse
+    {
+        $this->authService->logout();
+
+        return Response::json(status: 204);
+    }
 }
