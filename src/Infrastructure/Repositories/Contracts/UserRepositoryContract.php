@@ -9,4 +9,6 @@ use Application\User\DTO\UserDTO;
 interface UserRepositoryContract
 {
     public function create(UserDTO $userDTO): UserDTO;
+
+    public function getById(string|int $id): ?UserDTO;
 }
