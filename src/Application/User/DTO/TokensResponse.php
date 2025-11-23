@@ -12,8 +12,6 @@ class TokensResponse extends BaseDTO
 {
     public string|Optional $access_token;
 
-    public string|Optional $refresh_token;
-
     public TokenType|Optional $token_type;
 
     public int|Optional $expires_in;

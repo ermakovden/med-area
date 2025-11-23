@@ -11,5 +11,7 @@ interface AuthServiceContract
 {
     public function login(UserDTO $userDTO): TokensResponse;
 
+    public function refreshToken(bool $forceForever = false, bool $resetClaims = false): TokensResponse;
+
     public function logout(): void;
 }
