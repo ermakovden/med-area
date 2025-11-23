@@ -79,4 +79,48 @@ class AuthControllerTest extends TestCase
         $response->assertClientError();
         $response->assertJson(['message' => 'Nickname or password incorrect.']);
     }
+
+    public function test_refresh_success(): void
+    {
+        // User for testing
+        $user = $this->getUser();
+
+        // Send API Request
+        $response = $this->actingAs($user)->post(route('api.auth.refresh'));
+
+        // Check asserts
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'access_token',
+            'token_type',
+            'expires_in',
+        ]);
+    }
+
+    public function test_refresh_unauth(): void
+    {
+        // User for testing
+        $user = $this->getUser();
+
+        // Send API Request
+        $response = $this->post(route('api.auth.refresh'));
+
+        // Check asserts
+        $response->assertUnauthorized();
+    }
+
+    public function test_refresh_someone_else_token(): void
+    {
+        // Users for testing
+        $user = $this->getUser();
+        $user2 = $this->getUser();
+
+        // Send API Request and login as $user (1)
+        $response = $this->actingAs($user)->post(route('api.auth.refresh'), headers: [
+            'Authentication' => auth()->tokenById($user2->getAuthIdentifier()), // Use token another user
+        ]);
+
+        // Check asserts
+        $response->assertInternalServerError();
+    }
 }
