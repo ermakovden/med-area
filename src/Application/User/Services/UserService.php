@@ -6,10 +6,16 @@ namespace Application\User\Services;
 
 use Application\User\DTO\UserDTO;
 use Domain\User\Models\User;
+use Infrastructure\Repositories\Contracts\UserRepositoryContract;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserService
 {
+    public function __construct(
+        protected readonly UserRepositoryContract $userRepository,
+    ) {}
+
     /**
      * Get UserDTO for current authenticated user.
      *
@@ -22,6 +28,23 @@ class UserService
         /** @var User $user */
         if (! $user = auth()->user()) {
             throw new AccessDeniedHttpException();
+        }
+
+        return UserDTO::from($user);
+    }
+
+    /**
+     * Get UserDTO by user id
+     *
+     * @param string|integer $id
+     * @return UserDTO
+     *
+     * @throws NotFoundHttpException
+     */
+    public function getById(string|int $id): UserDTO
+    {
+        if (! $user = $this->userRepository->getById($id)) {
+            throw new NotFoundHttpException();
         }
 
         return UserDTO::from($user);
