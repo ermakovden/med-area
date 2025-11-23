@@ -29,4 +29,11 @@ class AuthController extends BaseController
 
         return Response::json(new TokenResource($tokenResponse));
     }
+
+    public function refresh(): JsonResponse
+    {
+        $tokenResponse = $this->authService->refreshToken();
+
+        return Response::json(new TokenResource($tokenResponse));
+    }
 }
