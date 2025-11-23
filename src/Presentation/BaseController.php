@@ -7,7 +7,7 @@ namespace Presentation;
 use Illuminate\Routing\Controller;
 use OpenApi\Attributes as OA;
 
-#[OA\Info(title: 'MedArea RESTful API', version: '1.0')]
+#[OA\Info(title: 'MedArea RESTful API', version: '1.0.1')]
 abstract class BaseController extends Controller
 {
     //

@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace Presentation\User\Requests;
 
-use OpenApi\Attributes as OA;
 use Shared\Requests\BaseRequest;
 
-#[OA\RequestBody(
-    request: 'ShowUserRequest',
-    description: 'Get user data by id',
-)]
 class ShowUserRequest extends BaseRequest
 {
     /**

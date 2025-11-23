@@ -22,6 +22,21 @@ class UserController extends BaseController
         protected readonly UserServiceContract $userService,
     ) {}
 
+    #[OA\Get(
+        path: '/api/users/me',
+        operationId: 'apiUsersMe',
+        description: 'Get data of current user.',
+        tags: ['user', 'api'],
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'User data.',
+        content: new OA\JsonContent(ref: UserResource::class)
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Unauthorizied.',
+    )]
     public function me(Request $request): JsonResponse
     {
         $user = $this->userService->me();
@@ -29,6 +44,32 @@ class UserController extends BaseController
         return Response::json(new UserResource($user));
     }
 
+    #[OA\Get(
+        path: '/api/users/{id}',
+        operationId: 'apiUsersShow',
+        description: 'Get user data by id.',
+        tags: ['user', 'api'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', description: 'user id', required: true, schema: new OA\Schema(type: 'string')),
+        ]
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'User data.',
+        content: new OA\JsonContent(ref: UserResource::class)
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Unauthorizied.',
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'Forbidden.',
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'Not found.',
+    )]
     public function show(ShowUserRequest $request): JsonResponse
     {
         $user = $this->userService->getById($request->getUserId());
