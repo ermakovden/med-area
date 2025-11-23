@@ -32,6 +32,23 @@ class AuthControllerTest extends TestCase
         ]);
     }
 
+    public function test_login_validation(): void
+    {
+        // Data for testing
+        $userData = UserDTO::from((new UserFactory())->definition());
+
+        // User for testing
+        User::create($userData->toArray());
+
+        // Send API Request with empty data
+        $response = $this->post(route('api.auth.login'), []);
+
+        // Check asserts
+        $response->assertUnprocessable();
+        $response->assertClientError();
+        $response->assertInvalid(['nickname', 'password']);
+    }
+
     public function test_login_bad_nickname(): void
     {
         // Data for testing

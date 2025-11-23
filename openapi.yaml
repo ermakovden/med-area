@@ -3,6 +3,56 @@ info:
   title: 'MedArea RESTful API'
   version: '1.0'
 paths:
+  /api/auth/login:
+    post:
+      tags:
+        - auth
+        - api
+      description: 'Authorization of user.'
+      operationId: apiAuthLogin
+      requestBody:
+        $ref: '#/components/requestBodies/LoginRequest'
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResource'
+        '400':
+          description: 'Bad request. Nickname or password incorrect.'
+        '422':
+          description: 'Validation error.'
+  /api/auth/refresh:
+    post:
+      tags:
+        - auth
+        - api
+      description: 'Refresh token for authenticated user.'
+      operationId: apiAuthRefresh
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResource'
+        '401':
+          description: Unauthorizied.
+        '500':
+          description: 'Internal server error.'
+  /api/auth/logout:
+    post:
+      tags:
+        - auth
+        - api
+      description: 'Logout for authenticated user.'
+      operationId: apiAuthLogout
+      responses:
+        '204':
+          description: 'Success. No content.'
+        '401':
+          description: Unauthorizied.
   /api/register:
     post:
       tags:
@@ -61,6 +111,21 @@ paths:
           description: Unauthorized.
 components:
   schemas:
+    TokenResource:
+      title: TokenResource
+      properties:
+        access_token:
+          description: 'Access token'
+          type: string
+        token_type:
+          description: 'Type of token'
+          type: string
+          enum:
+            - bearer
+        expires_in:
+          description: 'Expires token in'
+          type: integer
+      type: object
     UserResource:
       title: UserResource
       properties:
@@ -83,6 +148,19 @@ components:
           format: date-time
       type: object
   requestBodies:
+    LoginRequest:
+      description: 'Authorizarion user request'
+      content:
+        application/json:
+          schema:
+            properties:
+              nickname:
+                description: 'Nickname of user'
+                format: string
+              password:
+                description: 'Password of user'
+                format: string
+            type: object
     RegisterUserRequest:
       description: 'Registration Request'
       content:
@@ -106,14 +184,14 @@ components:
       description: 'Send Email Verification Request'
 tags:
   -
-    name: user
-    description: user
-  -
     name: auth
     description: auth
   -
     name: api
     description: api
+  -
+    name: user
+    description: user
   -
     name: verification
     description: verification

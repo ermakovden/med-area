@@ -9,6 +9,16 @@ use OpenApi\Attributes as OA;
 use Illuminate\Validation\ValidationException;
 use Shared\Requests\BaseRequest;
 
+#[OA\RequestBody(
+    request: 'LoginRequest',
+    description: 'Authorizarion user request',
+    content: new OA\JsonContent(
+        properties: [
+            new OA\Property(property: 'nickname', description: 'Nickname of user', format: 'string'),
+            new OA\Property(property: 'password', description: 'Password of user', format: 'string'),
+        ]
+    )
+)]
 class LoginRequest extends BaseRequest
 {
     /**
