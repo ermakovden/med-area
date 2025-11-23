@@ -8,7 +8,7 @@ use Domain\User\Enums\TokenType;
 use Shared\DTO\BaseDTO;
 use Spatie\LaravelData\Optional;
 
-class TokensResponse extends BaseDTO
+class TokenResponse extends BaseDTO
 {
     public string|Optional $access_token;
 

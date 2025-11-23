@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Application\User\Services;
 
-use Application\User\DTO\TokensResponse;
+use Application\User\DTO\TokenResponse;
 use Application\User\DTO\UserDTO;
 use Application\User\Services\Contracts\AuthServiceContract;
 use Domain\User\Enums\TokenType;
@@ -17,17 +17,17 @@ class AuthService implements AuthServiceContract
      * Attemt to login user by credentials
      *
      * @param UserDTO $credentials
-     * @return TokensResponse
+     * @return TokenResponse
      *
-     * @throws BadRequestException
+     * @throws BadRequestHttpException
      */
-    public function login(UserDTO $credentials): TokensResponse
+    public function login(UserDTO $credentials): TokenResponse
     {
         if (! $accessToken = auth()->attempt($credentials->toArray())) {
             throw new BadRequestHttpException('Nickname or password incorrect.');
         }
 
-        return $this->tokensResponse($accessToken);
+        return $this->tokenResponse($accessToken);
     }
 
     /**
@@ -35,17 +35,17 @@ class AuthService implements AuthServiceContract
      *
      * @param boolean $forceForever
      * @param boolean $resetClaims
-     * @return TokensResponse
+     * @return TokenResponse
      *
      * @throws ServerErrorException
      */
-    public function refreshToken(bool $forceForever = false, bool $resetClaims = false): TokensResponse
+    public function refreshToken(bool $forceForever = false, bool $resetClaims = false): TokenResponse
     {
         if (! $accessToken = auth()->refresh($forceForever, $resetClaims)) {
             throw new ServerErrorException();
         }
 
-        return $this->tokensResponse($accessToken);
+        return $this->tokenResponse($accessToken);
     }
 
     /**
@@ -63,11 +63,11 @@ class AuthService implements AuthServiceContract
      * Construct response with tokens
      *
      * @param string $accessToken
-     * @return TokensResponse
+     * @return TokenResponse
      */
-    protected function tokensResponse(string $accessToken): TokensResponse
+    protected function tokenResponse(string $accessToken): TokenResponse
     {
-        return TokensResponse::from([
+        return TokenResponse::from([
             'access_token' => $accessToken,
             'token_type' => TokenType::BEARER,
             'expires_in' => auth()->factory()->getTTL() * 60,
