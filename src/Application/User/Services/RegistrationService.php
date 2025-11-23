@@ -8,6 +8,7 @@ use Application\User\DTO\UserDTO;
 use Application\User\Services\Contracts\RegistrationServiceContract;
 use Domain\User\Events\UserRegistered;
 use Domain\User\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Infrastructure\Notifications\User\EmailVerificationNotification;
 use Infrastructure\Repositories\Contracts\UserRepositoryContract;
 
@@ -23,16 +24,23 @@ class RegistrationService implements RegistrationServiceContract
      *
      * @param UserDTO $userDTO
      * @return UserDTO
+     *
+     * @throws ModelNotFoundException
      */
     public function register(UserDTO $userDTO): UserDTO
     {
         // Create new User model
         $userDTO = $this->userRepository->create($userDTO);
 
-        // Send email message for confirmation of registration
-        $userModel = User::whereId($userDTO->id)->first();
+        try {
+            // Send email message for confirmation of registration
+            $userModel = User::whereId($userDTO->id)->firstOrFail();
 
-        event(new UserRegistered($userModel));
+            event(new UserRegistered($userModel));
+        } catch (ModelNotFoundException $e) {
+            \Log::critical($e->getMessage() . '. Cant trigger event UserRegistered and cant send email verification notification.');
+            throw $e;
+        }
 
         return $userDTO;
     }
