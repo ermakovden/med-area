@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Domain\User\Models;
 
+use Domain\Analysis\Models\Analys;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -95,5 +98,13 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * @return BelongsToMany<Analys, $this, Pivot>
+     */
+    public function analysis(): BelongsToMany
+    {
+        return $this->belongsToMany(Analys::class, 'user_analys');
     }
 }

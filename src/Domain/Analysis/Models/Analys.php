@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Domain\Analysis\Models;
 
+use Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * @property string $id
@@ -49,5 +52,13 @@ class Analys extends Model
         return [
             'id' => 'int',
         ];
+    }
+
+    /**
+     * @return BelongsToMany<User, $this, Pivot>
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_analys');
     }
 }
