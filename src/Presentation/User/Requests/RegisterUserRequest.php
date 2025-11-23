@@ -9,6 +9,7 @@ use OpenApi\Attributes as OA;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Shared\Requests\BaseRequest;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 #[OA\RequestBody(
     request: 'RegisterUserRequest',
@@ -35,7 +36,7 @@ class RegisterUserRequest extends BaseRequest
     public function getDTO(): UserDTO
     {
         if (! $validated = $this->validated()) {
-            throw new ValidationException("Validation failed");
+            throw new UnprocessableEntityHttpException();
         }
 
         return UserDTO::from($validated);

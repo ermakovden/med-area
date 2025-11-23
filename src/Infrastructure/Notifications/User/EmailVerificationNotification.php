@@ -34,10 +34,10 @@ class EmailVerificationNotification extends Notification implements ShouldQueue
     /**
      * Method from Illuminate\Auth\Notifications\VerifyEmail::verificationUrl($notifiable)
      *
-     * @param [type] $notifiable
-     * @return void
+     * @param $notifiable
+     * @return string
      */
-    public function verificationUrl($notifiable)
+    public function verificationUrl($notifiable): string
     {
         return URL::temporarySignedRoute(
             'verification.verify',

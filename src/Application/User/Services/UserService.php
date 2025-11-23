@@ -26,10 +26,10 @@ class UserService implements UserServiceContract
      */
     public function me(): UserDTO
     {
-        /** @var User $user */
         if (! $user = auth()->user()) {
             throw new AccessDeniedHttpException();
         }
+        /** @var User $user */
 
         return UserDTO::from($user);
     }

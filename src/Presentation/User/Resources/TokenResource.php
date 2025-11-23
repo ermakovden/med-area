@@ -17,6 +17,9 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'expires_in', description: 'Expires token in', type: 'int'),
     ],
 )]
+/**
+ * @mixin \Application\User\DTO\TokenResponse
+ */
 class TokenResource extends JsonResource
 {
     /**
@@ -27,9 +30,9 @@ class TokenResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'access_token' => $this->access_token,
-            'token_type' => $this->token_type,
-            'expires_in' => $this->expires_in,
+            'access_token' => $this->resource->access_token,
+            'token_type' => $this->resource->token_type,
+            'expires_in' => $this->resource->expires_in,
         ];
     }
 }
