@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: 'MedArea RESTful API'
-  version: '1.0'
+  version: 1.0.1
 paths:
   /api/auth/login:
     post:
@@ -113,6 +113,50 @@ paths:
           description: 'Email notification sended.'
         '401':
           description: Unauthorized.
+  /api/users/me:
+    get:
+      tags:
+        - user
+        - api
+      description: 'Get data of current user.'
+      operationId: apiUsersMe
+      responses:
+        '200':
+          description: 'User data.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResource'
+        '401':
+          description: Unauthorizied.
+  '/api/users/{id}':
+    get:
+      tags:
+        - user
+        - api
+      description: 'Get user data by id.'
+      operationId: apiUsersShow
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'user id'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'User data.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResource'
+        '401':
+          description: Unauthorizied.
+        '403':
+          description: Forbidden.
+        '404':
+          description: 'Not found.'
 components:
   schemas:
     TokenResource:
