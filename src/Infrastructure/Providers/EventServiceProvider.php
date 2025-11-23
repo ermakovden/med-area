@@ -13,7 +13,7 @@ class EventServiceProvider extends ServiceProvider
     /**
      * List event listeners
      *
-     * @var array
+     * @var array<class-string, array<class-string>>
      */
     protected $listen = [
         UserRegistered::class => [EmailVerificationNotification::class],

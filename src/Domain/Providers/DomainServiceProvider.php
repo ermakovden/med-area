@@ -11,7 +11,7 @@ class DomainServiceProvider extends ServiceProvider
     /**
      * All of the container bindings that should be registered.
      *
-     * @var array
+     * @var array<class-string, class-string>
      */
     public array $bindings = [];
 
