@@ -85,6 +85,9 @@ class AuthControllerTest extends TestCase
         // User for testing
         $user = $this->getUser();
 
+        // Login user
+        auth()->login($user);
+
         // Send API Request
         $response = $this->actingAs($user)->post(route('api.auth.refresh'));
 
@@ -99,9 +102,6 @@ class AuthControllerTest extends TestCase
 
     public function test_refresh_unauth(): void
     {
-        // User for testing
-        $user = $this->getUser();
-
         // Send API Request
         $response = $this->post(route('api.auth.refresh'));
 

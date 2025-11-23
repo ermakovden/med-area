@@ -16,6 +16,13 @@ abstract class TestCase extends BaseTestCase
 
     protected string $userPassword = 'GbUTPsq894b!fM1';
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->withHeader('accept', 'application/json');
+    }
+
     /**
      * Get User model with verified email
      *
