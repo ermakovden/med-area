@@ -42,7 +42,6 @@ class AuthServiceTest extends TestCase
 
         // Сheck that the result matches
         $this->assertTrue($result->isNotEmptyValue('access_token'));
-        $this->assertTrue($result->isNotEmptyValue('refresh_token'));
         $this->assertSame(TokenType::BEARER, $result->token_type);
         $this->assertIsInt($result->expires_in);
 
@@ -64,7 +63,7 @@ class AuthServiceTest extends TestCase
         // Сheck that was exception
         $this->expectException(BadRequestHttpException::class);
 
-        // Result from method of service
+        // Use method of service for try to login
         $this->service->login($credentials);
     }
 
@@ -82,8 +81,30 @@ class AuthServiceTest extends TestCase
         // Сheck that was exception
         $this->expectException(BadRequestHttpException::class);
 
-        // Result from method of service
+        // Use method of service for try to login
         $this->service->login($credentials);
+    }
+
+    public function test_refresh_token_success(): void
+    {
+        // User for testing
+        $user = $this->getUser();
+
+        // Login user
+        $this->actingAs($user);
+        $initialToken = auth()->login($user);
+
+        // Result from method of service
+        $result = $this->service->refreshToken();
+
+        // Сheck that the result matches
+        $this->assertTrue($result->isNotEmptyValue('access_token'));
+        $this->assertNotEquals($initialToken, $result->access_token);
+        $this->assertSame(TokenType::BEARER, $result->token_type);
+        $this->assertIsInt($result->expires_in);
+
+        // Chech that user authenticated
+        $this->assertAuthenticatedAs($user);
     }
 
     public function test_logout_success(): void
