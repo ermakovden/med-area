@@ -24,6 +24,20 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * Get User and Authenticate
+     *
+     * @return User
+     */
+    public function authUser(): User
+    {
+        $user = $this->getUser();
+
+        auth()->login($user);
+
+        return $user;
+    }
+
+    /**
      * Get User model with verified email
      *
      * @return User
