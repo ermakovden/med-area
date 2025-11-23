@@ -29,7 +29,6 @@ class UserRepository implements UserRepositoryContract
         return UserDTO::from($user);
     }
 
-
     /**
      * Get UserDTO model by id
      *

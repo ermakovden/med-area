@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
 use OpenApi\Attributes as OA;
+use Presentation\User\Requests\ShowUserRequest;
 use Presentation\User\Resources\UserResource;
 
 /**
@@ -24,6 +25,13 @@ class UserController extends BaseController
     public function me(Request $request): JsonResponse
     {
         $user = $this->userService->me();
+
+        return Response::json(new UserResource($user));
+    }
+
+    public function show(ShowUserRequest $request): JsonResponse
+    {
+        $user = $this->userService->getById($request->getUserId());
 
         return Response::json(new UserResource($user));
     }

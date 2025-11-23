@@ -9,5 +9,8 @@ use Shared\DTO\BaseDTO;
 
 abstract class BaseRequest extends FormRequest
 {
-    abstract public function getDTO(): BaseDTO;
+    public function getDTO(): BaseDTO
+    {
+        return BaseDTO::from([]);
+    }
 }
