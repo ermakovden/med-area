@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Application\User\Services;
 
 use Application\User\DTO\UserDTO;
+use Application\User\Services\Contracts\UserServiceContract;
 use Domain\User\Models\User;
 use Infrastructure\Repositories\Contracts\UserRepositoryContract;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class UserService
+class UserService implements UserServiceContract
 {
     public function __construct(
         protected readonly UserRepositoryContract $userRepository,
