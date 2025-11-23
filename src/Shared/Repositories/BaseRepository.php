@@ -16,6 +16,6 @@ abstract class BaseRepository
 
     public function create(BaseDTO $userDTO): Model
     {
-        return $this->model::create($userDTO);
+        return $this->model::create($userDTO->toArray());
     }
 }

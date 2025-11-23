@@ -75,6 +75,9 @@
         "cs-fixer:fix": [
             "@php vendor/bin/php-cs-fixer fix"
         ],
+        "phpstan": [
+            "@php vendor/bin/phpstan analyse --memory-limit=2G"
+        ],
         "doc": [
             "@php vendor/bin/openapi src -o openapi.yaml"
         ]

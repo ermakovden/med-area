@@ -13,7 +13,7 @@ class ShowUserRequest extends BaseRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->id === $this->getUserId();
+        return auth()->user()?->id === $this->getUserId();
     }
 
     public function getUserId(): string

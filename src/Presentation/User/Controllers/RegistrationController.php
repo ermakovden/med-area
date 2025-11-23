@@ -86,7 +86,10 @@ class RegistrationController extends BaseController
     )]
     public function sendEmailVerification(Request $request): JsonResponse
     {
-        $this->registrationService->sendEmailVerificationNotification($request->user());
+        /** @var \Domain\User\Models\User $user */
+        $user = $request->user();
+
+        $this->registrationService->sendEmailVerificationNotification($user);
 
         return Response::json(['message' => 'Check your email!.']);
     }

@@ -22,7 +22,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @method static \Domain\User\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
@@ -38,7 +38,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<\Domain\User\Factories\UserFactory> */
     use HasFactory;
     use Notifiable;
     use HasUuids;
@@ -67,9 +67,9 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
-     * @return mixed
+     * @return string
      */
-    public function getJWTIdentifier()
+    public function getJWTIdentifier(): string
     {
         return $this->getKey();
     }
@@ -77,9 +77,9 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.
      *
-     * @return array
+     * @return array<string, string>
      */
-    public function getJWTCustomClaims()
+    public function getJWTCustomClaims(): array
     {
         return [];
     }

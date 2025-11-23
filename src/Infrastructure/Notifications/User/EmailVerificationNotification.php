@@ -17,12 +17,20 @@ class EmailVerificationNotification extends Notification implements ShouldQueue
 
     public function __construct(protected User $user) {}
 
-    public function via($notifiable)
+    /**
+     * @param User $notifiable
+     * @return array<string>
+     */
+    public function via(User $notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable)
+    /**
+     * @param User $notifiable
+     * @return MailMessage
+     */
+    public function toMail(User $notifiable): MailMessage
     {
         return (new MailMessage())
             ->subject('Welcome to MedArea!')
@@ -34,10 +42,10 @@ class EmailVerificationNotification extends Notification implements ShouldQueue
     /**
      * Method from Illuminate\Auth\Notifications\VerifyEmail::verificationUrl($notifiable)
      *
-     * @param [type] $notifiable
-     * @return void
+     * @param User $notifiable
+     * @return string
      */
-    public function verificationUrl($notifiable)
+    public function verificationUrl(User $notifiable): string
     {
         return URL::temporarySignedRoute(
             'verification.verify',

@@ -6,8 +6,8 @@ namespace Presentation\User\Requests;
 
 use Application\User\DTO\UserDTO;
 use OpenApi\Attributes as OA;
-use Illuminate\Validation\ValidationException;
 use Shared\Requests\BaseRequest;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 #[OA\RequestBody(
     request: 'LoginRequest',
@@ -32,7 +32,7 @@ class LoginRequest extends BaseRequest
     public function getDTO(): UserDTO
     {
         if (! $validated = $this->validated()) {
-            throw new ValidationException("Validation failed");
+            throw new UnprocessableEntityHttpException();
         }
 
         return UserDTO::from($validated);

@@ -18,6 +18,9 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'updated_at', description: 'Datetime updated at of user', type: 'datetime'),
     ],
 )]
+/**
+ * @mixin \Application\User\DTO\UserDTO
+ */
 class UserResource extends JsonResource
 {
     /**
@@ -28,11 +31,11 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'nickname' => $this->nickname,
-            'email' => $this->email,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'id' => $this->resource->id,
+            'nickname' => $this->resource->nickname,
+            'email' => $this->resource->email,
+            'created_at' => $this->resource->created_at,
+            'updated_at' => $this->resource->updated_at,
         ];
     }
 }
