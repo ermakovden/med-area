@@ -10,4 +10,6 @@ use Application\User\DTO\UserDTO;
 interface AuthServiceContract
 {
     public function login(UserDTO $userDTO): TokensResponse;
+
+    public function logout(): void;
 }

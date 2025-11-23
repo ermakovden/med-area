@@ -32,6 +32,17 @@ class AuthService implements AuthServiceContract
     }
 
     /**
+     * Log the user out (Invalidate the token)
+     *
+     * @return void
+     */
+    public function logout(): void
+    {
+        auth()->logout();
+    }
+
+
+    /**
      * Construct response with tokens
      *
      * @param string $accessToken
