@@ -7,6 +7,7 @@ namespace Presentation\User\Controllers;
 use Application\User\Services\Contracts\RegistrationServiceContract;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
 use Presentation\User\Requests\RegisterUserRequest;
@@ -50,8 +51,8 @@ class RegistrationController extends BaseController
         description: 'Verify email of user.',
         tags: ['user', 'verification', 'auth', 'api'],
         parameters: [
-            new OA\Parameter(name: 'id', in: 'path', description: 'id verification', required: true),
-            new OA\Parameter(name: 'hash', in: 'path', description: 'hash verification', required: true),
+            new OA\Parameter(name: 'id', in: 'path', description: 'id verification', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'hash', in: 'path', description: 'hash verification', required: true, schema: new OA\Schema(type: 'string')),
         ]
     )]
     #[OA\Response(
@@ -83,7 +84,7 @@ class RegistrationController extends BaseController
         response: 401,
         description: 'Unauthorized.',
     )]
-    public function sendEmailVerification(SendEmailVerificationRequest $request): JsonResponse
+    public function sendEmailVerification(Request $request): JsonResponse
     {
         $this->registrationService->sendEmailVerificationNotification($request->user());
 

@@ -85,11 +85,15 @@ paths:
           in: path
           description: 'id verification'
           required: true
+          schema:
+            type: string
         -
           name: hash
           in: path
           description: 'hash verification'
           required: true
+          schema:
+            type: string
       responses:
         '200':
           description: 'Email verified.'
@@ -180,8 +184,6 @@ components:
                 description: 'Repeat password to confirm'
                 format: string
             type: object
-    SendEmailVerificationRequest:
-      description: 'Send Email Verification Request'
 tags:
   -
     name: auth
