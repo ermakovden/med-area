@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Domain\Analysis\Models;
 
 use Domain\User\Models\User;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property string $id
@@ -18,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @method static \Domain\Analysis\Factories\UserAnalysFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAnalys newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAnalys newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAnalys query()
@@ -32,6 +35,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class UserAnalys extends Model
 {
+    /** @use HasFactory<\Domain\Analysis\Factories\UserAnalysFactory> */
+    use HasFactory;
+    use HasUuids;
+
     protected $table = 'user_analys';
 
     /**
@@ -60,18 +67,18 @@ class UserAnalys extends Model
     }
 
     /**
-     * @return HasOne<Analys, $this>
+     * @return BelongsTo<Analys, $this>
      */
-    public function analys(): HasOne
+    public function analys(): BelongsTo
     {
-        return $this->hasOne(Analys::class);
+        return $this->belongsTo(Analys::class);
     }
 
     /**
-     * @return HasOne<User, $this>
+     * @return BelongsTo<User, $this>
      */
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 }

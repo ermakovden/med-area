@@ -36,7 +36,6 @@
             "Infrastructure\\": "src/Infrastructure/",
             "Presentation\\": "src/Presentation/",
             "Shared\\": "src/Shared/",
-            "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
     },
