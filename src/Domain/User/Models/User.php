@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Domain\User\Models;
 
-use Domain\Analysis\Models\Analys;
+use Domain\Analys\Models\Analys;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

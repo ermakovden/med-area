@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Analysis\Dev;
 
-use Domain\Analysis\Models\UserAnalys;
+use Domain\Analys\Models\UserAnalys;
 use Domain\User\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -16,7 +16,7 @@ class UserAnalysSeeder extends Seeder
     public function run(): void
     {
         for ($i = 0; $i < random_int(5, 10); $i++) {
-            UserAnalys::factory(random_int(50, 100))
+            UserAnalys::factory(10)
                 ->for(User::factory())
                 ->createMany();
         }

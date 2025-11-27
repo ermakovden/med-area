@@ -9,7 +9,7 @@ use Domain\Analys\Models\UserAnalys;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Domain\Analysis\Models\UserAnalys>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Domain\Analys\Models\UserAnalys>
  */
 class UserAnalysFactory extends Factory
 {
