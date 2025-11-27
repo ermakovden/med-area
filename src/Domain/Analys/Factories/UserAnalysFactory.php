@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Domain\Analysis\Factories;
+namespace Domain\Analys\Factories;
 
-use Domain\Analysis\Enums\Analysis;
-use Domain\Analysis\Models\UserAnalys;
+use Domain\Analys\Enums\Analys;
+use Domain\Analys\Models\UserAnalys;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,7 +22,7 @@ class UserAnalysFactory extends Factory
      */
     public function definition(): array
     {
-        $analys = Analysis::from(random_int(1, count(Analysis::cases()) - 1));
+        $analys = Analys::from(random_int(1, count(Analys::cases()) - 1));
 
         return [
             'user_id' => fake()->uuid(),

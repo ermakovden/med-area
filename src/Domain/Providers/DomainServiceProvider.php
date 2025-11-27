@@ -32,6 +32,8 @@ class DomainServiceProvider extends ServiceProvider
                     return $factoryClass;
                 }
             }
+
+            return 'Database\\Factories\\' . class_basename($modelName) . 'Factory';
         });
     }
 

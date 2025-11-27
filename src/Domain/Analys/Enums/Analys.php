@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Domain\Analysis\Enums;
+namespace Domain\Analys\Enums;
 
-enum Analysis: int
+enum Analys: int
 {
     case D3 = 1;
 

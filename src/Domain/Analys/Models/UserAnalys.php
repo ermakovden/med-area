@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Domain\Analysis\Models;
+namespace Domain\Analys\Models;
 
+use Domain\Analys\Enums\Analys;
 use Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $id
  * @property string $user_id
  * @property integer $analys_id
- * @property string $analys_name
+ * @property Analys $analys_name
  * @property float $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -62,6 +63,7 @@ class UserAnalys extends Model
     {
         return [
             'analys_id' => 'int',
+            'analys_name' => Analys::class,
             'data' => 'float',
         ];
     }

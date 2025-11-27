@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Domain\Analysis\Models;
+namespace Domain\Analys\Models;
 
 use Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -59,6 +59,8 @@ class Analys extends Model
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'user_analys');
+        return $this->belongsToMany(User::class, 'user_analys')
+            ->withPivot(['data'])
+            ->withTimestamps();
     }
 }
