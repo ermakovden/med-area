@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Infrastructure\Repositories\Contracts;
 
 use Application\Analys\DTO\UserAnalysDTO;
+use Domain\Analys\Models\UserAnalys;
+use Shared\Exceptions\ServerErrorException;
 
 interface UserAnalysRepositoryContract
 {
@@ -12,9 +14,9 @@ interface UserAnalysRepositoryContract
      * Create many models UserAnalys
      *
      * @param array<UserAnalysDTO> $data
-     * @return bool
+     * @return array<UserAnalys>
      *
-     * @throws \Exception
+     * @throws ServerErrorException
      */
-    public function createMany(array $data): bool;
+    public function createMany(array $data): array;
 }

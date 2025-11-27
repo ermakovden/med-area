@@ -8,6 +8,7 @@ use Application\Analys\DTO\UserAnalysDTO;
 use Domain\Analys\Models\UserAnalys;
 use Illuminate\Support\Facades\DB;
 use Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract;
+use Shared\Exceptions\ServerErrorException;
 
 class UserAnalysRepository implements UserAnalysRepositoryContract
 {
@@ -20,18 +21,35 @@ class UserAnalysRepository implements UserAnalysRepositoryContract
      * Create many models UserAnalys
      *
      * @param array<UserAnalysDTO> $data
-     * @return bool
+     * @return array<UserAnalys>
      *
-     * @throws \Exception
+     * @throws ServerErrorException
      */
-    public function createMany(array $data): bool
+    public function createMany(array $data): array
     {
-        return DB::transaction(function () use ($data) {
+        DB::beginTransaction();
+
+        try {
+            $createdRecords = [];
+
             foreach ($data as $userAnalys) {
-                UserAnalys::create($userAnalys->toArray());
+                $createdRecords[] = UserAnalys::query()->create($userAnalys->toArray());
             }
 
-            return true;
-        }, 2);
+            DB::commit();
+
+            return $createdRecords;
+
+        } catch (\Throwable $e) {
+            DB::rollback();
+
+            \Log::critical('Failed to save to DB user analysis.', [
+                'class' => UserAnalysRepositoryContract::class,
+                'method' => 'createMany',
+                'message' => $e->getMessage(),
+            ]);
+
+            throw new ServerErrorException();
+        }
     }
 }
