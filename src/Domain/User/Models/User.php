@@ -105,6 +105,9 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      */
     public function analys(): BelongsToMany
     {
-        return $this->belongsToMany(Analys::class, 'user_analys');
+        return $this->belongsToMany(Analys::class, 'user_analys')
+            ->withPivot(['data'])
+            ->withTimestamps();
+        ;
     }
 }

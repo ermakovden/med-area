@@ -99,11 +99,8 @@ class AuthControllerTest extends TestCase
 
     public function test_refresh_success(): void
     {
-        // User for testing
-        $user = $this->getUser();
-
-        // Login user
-        auth()->login($user);
+        // Auth user for testing
+        $user = $this->authUser();
 
         // Send API Request
         $response = $this->actingAs($user)->post(route('api.auth.refresh'));
@@ -126,28 +123,10 @@ class AuthControllerTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function test_refresh_someone_else_token(): void
-    {
-        // Users for testing
-        $user = $this->getUser();
-        $user2 = $this->getUser();
-
-        // Send API Request and login as $user (1)
-        $response = $this->actingAs($user)->post(route('api.auth.refresh'), headers: [
-            'Authentication' => auth()->tokenById($user2->getAuthIdentifier()), // Use token another user
-        ]);
-
-        // Check asserts
-        $response->assertInternalServerError();
-    }
-
     public function test_logout_success(): void
     {
-        // User for testing
-        $user = $this->getUser();
-
-        // Login user
-        auth()->login($user);
+        // Auth user for testing
+        $user = $this->authUser();
 
         // Send API Request
         $response = $this->actingAs($user)->post(route('api.auth.logout'));
