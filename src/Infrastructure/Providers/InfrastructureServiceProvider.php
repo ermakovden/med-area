@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Infrastructure\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract;
 use Infrastructure\Repositories\Contracts\UserRepositoryContract;
+use Infrastructure\Repositories\UserAnalysRepository;
 use Infrastructure\Repositories\UserRepository;
 
 class InfrastructureServiceProvider extends ServiceProvider
@@ -17,6 +19,7 @@ class InfrastructureServiceProvider extends ServiceProvider
      */
     public array $bindings = [
         UserRepositoryContract::class => UserRepository::class,
+        UserAnalysRepositoryContract::class => UserAnalysRepository::class,
     ];
 
     public function register(): void

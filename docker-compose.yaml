@@ -6,7 +6,7 @@ services:
       target: dev
     container_name: ${COMPOSE_PROJECT_NAME}-nginx
     ports:
-      - "${APP_WEB_PORT}:8080"
+      - "${APP_WEB_PORT}:80"
     volumes:
       - ./:${APP_PATH}
       - ./docker/nginx/config/nginx.conf:/etc/nginx/nginx.conf
