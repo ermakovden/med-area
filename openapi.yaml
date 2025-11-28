@@ -159,6 +159,55 @@ paths:
           description: 'Not found.'
 components:
   schemas:
+    AnalysResource:
+      title: AnalysResource
+      properties:
+        id:
+          description: 'ID of analys'
+          type: integer
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+        name:
+          description: 'Name of analys'
+          type: string
+      type: object
+    UserAnalysResource:
+      title: UserAnalysResource
+      properties:
+        id:
+          description: 'ID User Analys'
+          type: string
+          format: uuid
+        user:
+          description: 'ID User'
+          type: string
+        analys_id:
+          description: 'ID Analys'
+          type: integer
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+        analys_name:
+          description: 'Name Analys'
+          type: string
+        data:
+          description: 'Data Analys'
+          type: number
+          format: float
+        created_at:
+          description: 'Datetime created at of analys for user'
+          type: string
+          format: date-time
+        updated_at:
+          description: 'Datetime updated at of analys for user'
+          type: string
+          format: date-time
+      type: object
     TokenResource:
       title: TokenResource
       properties:
@@ -180,6 +229,7 @@ components:
         id:
           description: 'UUID of user'
           type: string
+          format: uuid
         nickname:
           description: 'Nickname of user'
           type: string
@@ -196,6 +246,22 @@ components:
           format: date-time
       type: object
   requestBodies:
+    CreateUserAnalysisRequest:
+      description: 'Create many UserAnalys Request'
+      content:
+        application/json:
+          schema:
+            properties:
+              user_id:
+                description: 'User Id for analysis'
+                format: string
+              analysis:
+                properties:
+                  user_id: { description: 'User Id for analys', format: string }
+                  analys_id: { description: 'Analys ID', format: string, enum: [1, 2, 3, 4] }
+                  data: { description: 'Value of analys', format: float }
+                type: object
+            type: object
     LoginRequest:
       description: 'Authorizarion user request'
       content:

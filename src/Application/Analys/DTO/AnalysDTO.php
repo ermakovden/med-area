@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Application\Analys\DTO;
 
 use Carbon\Carbon;
+use Domain\Analys\Enums\Analys;
 use Shared\DTO\BaseDTO;
 use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Casts\DateTimeInterfaceCast;
@@ -12,7 +13,7 @@ use Spatie\LaravelData\Optional;
 
 class AnalysDTO extends BaseDTO
 {
-    public int|Optional $id;
+    public Analys|int|Optional $id;
 
     public string|Optional $name;
 

@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
 use Presentation\Analys\Requests\CreateUserAnalysisRequest;
+use Presentation\Analys\Resources\UserAnalysResource;
 
 class UserAnalysController extends BaseController
 {
@@ -22,6 +23,6 @@ class UserAnalysController extends BaseController
 
         $userAnalysis = $this->userAnalysService->createUserAnalysis($dto);
 
-        return Response::json($userAnalysis);
+        return Response::json(UserAnalysResource::collection($userAnalysis));
     }
 }
