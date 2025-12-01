@@ -8,10 +8,10 @@ use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Application\Analys\DTO\Requests\CreateUserAnalysisRequestDTO;
 use Application\Analys\DTO\UserAnalysDTO;
 use Application\Analys\Services\UserAnalysService;
+use Domain\Analys\Enums\Analys;
 use Domain\Analys\Factories\UserAnalysFactory;
 use Domain\Analys\Models\UserAnalys;
 use Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract;
-use Mockery\MockInterface;
 use Shared\Exceptions\ServerErrorException;
 use Tests\TestCase;
 
@@ -24,40 +24,28 @@ class UserAnalysServiceTest extends TestCase
      */
     protected UserAnalysService $service;
 
-    /**
-     * Mock: Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract
-     *
-     * @var MockInterface
-     */
-    protected MockInterface $userAnalysRepositoryMock;
-
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->userAnalysRepositoryMock = $this->mock(UserAnalysRepositoryContract::class);
-
-        $this->service = new UserAnalysService($this->userAnalysRepositoryMock);
+        $this->service = new UserAnalysService(
+            app(UserAnalysRepositoryContract::class),
+        );
     }
 
     public function test_create_user_analysis_success(): void
     {
+        // User for testing
+        $user = $this->getUser();
+
         // Data for testing
         $factory = new UserAnalysFactory();
         $dto = CreateUserAnalysisRequestDTO::from([
             'analysis' => [
-                UserAnalysDTO::from($factory->definition()),
-                UserAnalysDTO::from($factory->definition()),
+                UserAnalysDTO::from(array_merge($factory->definition(), ['user_id' => $user->id])),
+                UserAnalysDTO::from(array_merge($factory->definition(), ['user_id' => $user->id])),
             ],
         ]);
-
-        // Mocks
-        foreach ($dto->analysis as $analys) {
-            $this->userAnalysRepositoryMock->shouldReceive('create')
-                ->once()
-                ->with($analys)
-                ->andReturn(new UserAnalys($analys->toArray()));
-        }
 
         // Result from method of service
         $result = $this->service->createUserAnalysis($dto);
@@ -90,11 +78,6 @@ class UserAnalysServiceTest extends TestCase
         // Сheck that was exception
         $this->expectException(ServerErrorException::class);
 
-        // Mocks
-        $this->userAnalysRepositoryMock->shouldReceive('create')
-            ->with($dto->analysis[0])
-            ->andThrow(ServerErrorException::class);
-
         // Call method of service
         $this->service->createUserAnalysis($dto);
     }
@@ -104,28 +87,21 @@ class UserAnalysServiceTest extends TestCase
         // Auth user for testing
         $user = $this->authUser();
 
-        // Init models with another user_id for search
-
-        // Init model for search
+        // Init dto for models
         $factory = new UserAnalysFactory();
         $dto = UserAnalysDTO::from($factory->definition());
+
+        // Init model for searching
         $dto->user_id = $user->id;
-        $userAnalysModel = UserAnalys::query()->create($dto->toArray());
+        UserAnalys::query()->create($dto->toArray());
 
         // Filters
         $filters = FilterUserAnalysDTO::from(['user_ids' => [$user->id]]);
-
-        // Mocks
-        $this->userAnalysRepositoryMock->shouldReceive('getMany')
-            ->once()
-            ->with($filters)
-            ->andReturn([$userAnalysModel]);
 
         // Result from method of service
         $result = $this->service->getUserAnalysis($filters);
 
         // Check assert result
-        $this->assertIsArray($result);
         $this->assertCount(1, $result);
         $this->assertInstanceOf(UserAnalys::class, $result[0]);
         $this->assertSame($user->id, $result[0]->user_id);
@@ -133,69 +109,113 @@ class UserAnalysServiceTest extends TestCase
 
     public function test_get_user_analysis_filter_by_analys_ids(): void
     {
-        // Auth user for testing
-        $user = $this->authUser();
-
-        // Init models with another user_id for search
-
-        // Init model for search
-        $factory = new UserAnalysFactory();
-        $dto = UserAnalysDTO::from($factory->definition());
-        $dto->user_id = $user->id;
-        $userAnalysModel = UserAnalys::query()->create($dto->toArray());
-
         // Filters
-        $filters = FilterUserAnalysDTO::from(['analys_ids' => [$dto->analys_id]]);
+        $filters = FilterUserAnalysDTO::from(['analys_ids' => [Analys::B12, Analys::B6]]);
 
-        // Mocks
-        $this->userAnalysRepositoryMock->shouldReceive('getMany')
-            ->once()
-            ->with($filters)
-            ->andReturn([$userAnalysModel]);
+        // Get count elements after filtering
+        $count = UserAnalys::query()->whereAnalysId($filters->analys_ids)->get('id')->count();
 
         // Result from method of service
         $result = $this->service->getUserAnalysis($filters);
 
         // Check assert result
-        $this->assertIsArray($result);
-        $this->assertCount(1, $result);
+        $this->assertCount($count, $result);
         $this->assertInstanceOf(UserAnalys::class, $result[0]);
-        $this->assertSame($user->id, $result[0]->user_id);
     }
 
     public function test_get_user_analysis_filter_not_found(): void
     {
-        // Auth user for testing
-        $user = $this->authUser();
-
-        // Init models for search
-        $count = 5;
-        $factory = new UserAnalysFactory();
-
-        for ($i = 0; $i < $count; $i++) {
-            $dto = UserAnalysDTO::from($factory->definition());
-            $dto->user_id = $user->id;
-
-            UserAnalys::query()->create($dto->toArray());
-        }
-
         // Filters
         $filters = FilterUserAnalysDTO::from([
             'user_ids' => [fake()->uuid()],
             // ...
         ]);
 
-        // Mocks
-        $this->userAnalysRepositoryMock->shouldReceive('getMany')
-            ->once()
-            ->with($filters)
-            ->andReturn([]);
-
         // Result from method of service
         $result = $this->service->getUserAnalysis($filters);
 
         // Check assert result
-        $this->assertIsArray($result);
         $this->assertCount(0, $result);
+    }
+
+    public function test_delete_user_analysis_filter_user_ids(): void
+    {
+        // Auth user for testing
+        $user = $this->authUser();
+
+        // Init dto for models
+        $factory = new UserAnalysFactory();
+        $dto = UserAnalysDTO::from($factory->definition());
+
+        // Init model for deleting
+        $dto->user_id = $user->id;
+        $userAnalysModel = UserAnalys::query()->create($dto->toArray());
+
+        // Filters
+        $filters = FilterUserAnalysDTO::from(['user_ids' => [$user->id]]);
+
+        // Check assert is model exists
+        $this->assertModelExists($userAnalysModel);
+
+        // Call method of service
+        $this->service->deleteUserAnalysis($filters);
+
+        // Check assert is model deleted
+        $this->assertModelMissing($userAnalysModel);
+    }
+
+    public function test_delete_user_analysis_filter_analys_ids(): void
+    {
+        // Auth user for testing
+        $user = $this->authUser();
+
+        // Init dto for models
+        $factory = new UserAnalysFactory();
+        $dto = UserAnalysDTO::from($factory->definition());
+
+        // Init model for deleting
+        $dto->user_id = $user->id;
+        $userAnalysModel = UserAnalys::query()->create($dto->toArray());
+
+        // Filters
+        $filters = FilterUserAnalysDTO::from(['analys_ids' => [$dto->analys_id]]);
+
+        // Check assert is model exists
+        $this->assertModelExists($userAnalysModel);
+
+        // Call method of service
+        $this->service->deleteUserAnalysis($filters);
+
+        // Check assert is model deleted
+        $this->assertModelMissing($userAnalysModel);
+    }
+
+    public function test_delete_user_analysis_filters_empty(): void
+    {
+        // Auth user for testing
+        $user = $this->authUser();
+
+        // Init dto for models
+        $factory = new UserAnalysFactory();
+        $dto = UserAnalysDTO::from($factory->definition());
+
+        // Init model for deleting
+        $dto->user_id = $user->id;
+        $userAnalysModel = UserAnalys::query()->create($dto->toArray());
+
+        // Filters (empty)
+        $filters = new FilterUserAnalysDTO();
+
+        // Check expect exception
+        $this->expectException(ServerErrorException::class);
+
+        // Check assert is model exists
+        $this->assertModelExists($userAnalysModel);
+
+        // Call method of service
+        $this->service->deleteUserAnalysis($filters);
+
+        // Check assert is model deleted
+        $this->assertModelMissing($userAnalysModel);
     }
 }

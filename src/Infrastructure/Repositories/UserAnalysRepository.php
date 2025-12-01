@@ -7,7 +7,10 @@ namespace Infrastructure\Repositories;
 use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Application\Analys\DTO\UserAnalysDTO;
 use Domain\Analys\Models\UserAnalys;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract;
+use Shared\Exceptions\ServerErrorException;
 
 class UserAnalysRepository implements UserAnalysRepositoryContract
 {
@@ -31,18 +34,56 @@ class UserAnalysRepository implements UserAnalysRepositoryContract
      * Get many model UserAnalys use filters
      *
      * @param FilterUserAnalysDTO $filters
-     * @return array<UserAnalys>
+     * @return Collection<array-key, UserAnalys>
      */
-    public function getMany(FilterUserAnalysDTO $filters): array
+    public function getMany(FilterUserAnalysDTO $filters): Collection
+    {
+        return $this->baseFilters($filters)->get();
+    }
+
+    /**
+     * Delete UserAnalys Models use filters
+     *
+     * @param FilterUserAnalysDTO $filters
+     * @return void
+     *
+     * @throws ServerErrorException
+     */
+    public function deleteMany(FilterUserAnalysDTO $filters): void
+    {
+        if (
+            ($filters->emptyValue('user_ids') || empty($filters->user_ids))
+            && ($filters->emptyValue('analys_ids') || empty($filters->analys_ids))
+        ) {
+            throw new ServerErrorException('Empty filters user_ids, analys_ids for UserAnalysRepository@deleteMany');
+        }
+
+        $this->baseFilters($filters)->delete();
+
+        return;
+    }
+
+    /**
+     * Base filters for sql requests
+     * Description: containts user_ids, analys_ids
+     *
+     * @param FilterUserAnalysDTO $filters
+     * @return Builder<UserAnalys>
+     */
+    protected function baseFilters(FilterUserAnalysDTO $filters): Builder
     {
         $query = UserAnalys::query();
 
         // Attribute: user_id
-        $query->whereUserId($filters->user_ids);
+        if ($filters->isNotEmptyValue('user_ids')) {
+            $query->whereUserId($filters->user_ids);
+        }
 
         // Attribute: analys_id
-        $query->whereAnalysId($filters->analys_ids);
+        if ($filters->isNotEmptyValue('analys_ids')) {
+            $query->whereAnalysId($filters->analys_ids);
+        }
 
-        return $query->get()->toArray();
+        return $query;
     }
 }

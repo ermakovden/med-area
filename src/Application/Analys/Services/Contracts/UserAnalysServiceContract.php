@@ -8,6 +8,7 @@ use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Application\Analys\DTO\Requests\CreateUserAnalysisRequestDTO;
 use Application\Analys\DTO\UserAnalysDTO;
 use Domain\Analys\Models\UserAnalys;
+use Illuminate\Database\Eloquent\Collection;
 use Shared\Exceptions\ServerErrorException;
 
 interface UserAnalysServiceContract
@@ -26,7 +27,20 @@ interface UserAnalysServiceContract
      * Get UserAnalys Models by filters
      *
      * @param FilterUserAnalysDTO $filters
-     * @return array<UserAnalys>
+     * @return Collection<string, UserAnalys>
+     *
+     * @throws ServerErrorException
      */
-    public function getUserAnalysis(FilterUserAnalysDTO $filters): array;
+    public function getUserAnalysis(FilterUserAnalysDTO $filters): Collection;
+
+
+    /**
+     * Delete UserAnalys Models by filters
+     *
+     * @param FilterUserAnalysDTO $filters
+     * @return void
+     *
+     * @throws ServerErrorException
+     */
+    public function deleteUserAnalysis(FilterUserAnalysDTO $filters): void;
 }

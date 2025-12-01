@@ -13,7 +13,7 @@ use Spatie\LaravelData\Optional;
 
 class UserAnalysDTO extends BaseDTO
 {
-    public int|Optional $id;
+    public string|Optional $id;
 
     public string|Optional $user_id;
 
