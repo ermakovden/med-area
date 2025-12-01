@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Application\Analys\Services;
 
+use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Application\Analys\DTO\Requests\CreateUserAnalysisRequestDTO;
+use Application\Analys\DTO\UserAnalysDTO;
 use Application\Analys\Services\Contracts\UserAnalysServiceContract;
 use Domain\Analys\Models\UserAnalys;
+use Illuminate\Support\Facades\DB;
 use Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract;
 use Shared\Exceptions\ServerErrorException;
 
@@ -20,12 +23,59 @@ class UserAnalysService implements UserAnalysServiceContract
      * Add new analysis for users
      *
      * @param CreateUserAnalysisRequestDTO $dto
-     * @return array<UserAnalys>
+     * @return array<UserAnalysDTO>
      *
      * @throws ServerErrorException
      */
     public function createUserAnalysis(CreateUserAnalysisRequestDTO $dto): array
     {
-        return $this->userAnalysRepository->createMany($dto->analysis);
+
+        DB::beginTransaction();
+
+        try {
+            $createdRecords = [];
+
+            foreach ($dto->analysis as $userAnalys) {
+                $createdRecords[] = UserAnalysDTO::from(
+                    $this->userAnalysRepository->create($userAnalys)
+                );
+            }
+
+            DB::commit();
+
+            return $createdRecords;
+
+        } catch (\Throwable $e) {
+            DB::rollback();
+
+            \Log::critical('Failed to save to DB user analys.', [
+                'class' => UserAnalysRepositoryContract::class,
+                'method' => 'create',
+                'message' => $e->getMessage(),
+            ]);
+
+            throw new ServerErrorException();
+        }
+    }
+
+    /**
+     * Get UserAnalys Models by filters
+     *
+     * @param FilterUserAnalysDTO $filters
+     * @return array<UserAnalys>
+     */
+    public function getUserAnalysis(FilterUserAnalysDTO $filters): array
+    {
+        try {
+            return $this->userAnalysRepository->getMany($filters);
+        } catch (\Throwable $e) {
+            \Log::critical('Failed to get user analysis from Db.', [
+                'class' => UserAnalysRepositoryContract::class,
+                'method' => 'getMany',
+                'message' => $e->getMessage(),
+            ]);
+
+            throw new ServerErrorException();
+        }
     }
 }

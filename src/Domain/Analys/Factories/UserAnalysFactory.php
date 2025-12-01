@@ -22,7 +22,7 @@ class UserAnalysFactory extends Factory
      */
     public function definition(): array
     {
-        $analys = Analys::from(random_int(1, count(Analys::cases()) - 1));
+        $analys = Analys::from(random_int(1, count(Analys::cases())));
 
         return [
             'user_id' => fake()->uuid(),

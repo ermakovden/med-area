@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Infrastructure\Repositories;
 
+use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Application\Analys\DTO\UserAnalysDTO;
 use Domain\Analys\Models\UserAnalys;
-use Illuminate\Support\Facades\DB;
 use Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract;
-use Shared\Exceptions\ServerErrorException;
 
 class UserAnalysRepository implements UserAnalysRepositoryContract
 {
@@ -18,38 +17,32 @@ class UserAnalysRepository implements UserAnalysRepositoryContract
     protected $model = UserAnalys::class;
 
     /**
-     * Create many models UserAnalys
+     * Create UserAnalys Model
      *
-     * @param array<UserAnalysDTO> $data
-     * @return array<UserAnalys>
-     *
-     * @throws ServerErrorException
+     * @param UserAnalysDTO $dto
+     * @return UserAnalys
      */
-    public function createMany(array $data): array
+    public function create(UserAnalysDTO $dto): UserAnalys
     {
-        DB::beginTransaction();
+        return UserAnalys::query()->create($dto->toArray());
+    }
 
-        try {
-            $createdRecords = [];
+    /**
+     * Get many model UserAnalys use filters
+     *
+     * @param FilterUserAnalysDTO $filters
+     * @return array<UserAnalys>
+     */
+    public function getMany(FilterUserAnalysDTO $filters): array
+    {
+        $query = UserAnalys::query();
 
-            foreach ($data as $userAnalys) {
-                $createdRecords[] = UserAnalys::query()->create($userAnalys->toArray());
-            }
+        // Attribute: user_id
+        $query->whereUserId($filters->user_ids);
 
-            DB::commit();
+        // Attribute: analys_id
+        $query->whereAnalysId($filters->analys_ids);
 
-            return $createdRecords;
-
-        } catch (\Throwable $e) {
-            DB::rollback();
-
-            \Log::critical('Failed to save to DB user analysis.', [
-                'class' => UserAnalysRepositoryContract::class,
-                'method' => 'createMany',
-                'message' => $e->getMessage(),
-            ]);
-
-            throw new ServerErrorException();
-        }
+        return $query->get()->toArray();
     }
 }
