@@ -7,18 +7,22 @@ namespace Tests;
 use Application\User\DTO\UserDTO;
 use Domain\User\Factories\UserFactory;
 use Domain\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     protected string $userPassword = 'GbUTPsq894b!fM1';
 
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->artisan('config:clear');
+        $this->artisan('migrate:fresh');
+        $this->artisan('db:seed');
 
         $this->withHeader('accept', 'application/json');
     }
