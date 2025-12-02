@@ -23,6 +23,6 @@ class UserAnalysController extends BaseController
 
         $userAnalysis = $this->userAnalysService->createUserAnalysis($dto);
 
-        return Response::json(UserAnalysResource::collection($userAnalysis));
+        return Response::json(UserAnalysResource::collection($userAnalysis), 201);
     }
 }
