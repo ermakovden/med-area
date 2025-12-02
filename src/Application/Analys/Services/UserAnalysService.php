@@ -53,7 +53,6 @@ class UserAnalysService implements UserAnalysServiceContract
                 'class' => UserAnalysService::class,
                 'method' => 'createUserAnalysis',
                 'message' => $e->getMessage(),
-                'trace' => $e->getTrace(),
             ]);
 
             throw new ServerErrorException();
