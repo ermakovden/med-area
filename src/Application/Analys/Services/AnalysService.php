@@ -20,7 +20,7 @@ class AnalysService implements AnalysServiceContract
      * Get Analysis from DB
      *
      * @return Collection<array-key, Analys>
-     * 
+     *
      * @throws ServerErrorException
      */
     public function getAnalysis(): Collection

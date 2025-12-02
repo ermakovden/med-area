@@ -22,7 +22,7 @@ class InfrastructureServiceProvider extends ServiceProvider
     public array $bindings = [
         // User
         UserRepositoryContract::class => UserRepository::class,
-    
+
         // Analys
         AnalysRepositoryContract::class => AnalysRepository::class,
         UserAnalysRepositoryContract::class => UserAnalysRepository::class,
