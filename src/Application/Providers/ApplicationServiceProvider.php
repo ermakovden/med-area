@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Application\Providers;
 
+use Application\Analys\Services\AnalysService;
+use Application\Analys\Services\Contracts\AnalysServiceContract;
 use Application\Analys\Services\Contracts\UserAnalysServiceContract;
 use Application\Analys\Services\UserAnalysService;
 use Application\User\Services\AuthService;
@@ -28,6 +30,7 @@ class ApplicationServiceProvider extends ServiceProvider
         UserServiceContract::class => UserService::class,
 
         // Analys
+        AnalysServiceContract::class => AnalysService::class,
         UserAnalysServiceContract::class => UserAnalysService::class,
     ];
 
