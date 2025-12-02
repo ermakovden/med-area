@@ -250,4 +250,102 @@ class UserAnalysControllerTest extends TestCase
         $response->assertUnprocessable();
         $response->assertInvalid(['user_ids.1']);
     }
+
+    public function test_user_analysis_destroy_success(): void
+    {
+        // Auth user for testing
+        $user = $this->authUser();
+
+        // Data for testing
+        $count = 3;
+        $factory = new UserAnalysFactory();
+
+        // Data with another values for testing filters
+        UserAnalys::factory(10)
+            ->for($user)
+            ->createMany();
+
+        // Delete analys_id for testing filters
+        UserAnalys::query()->whereAnalysId(Analys::D3->value)->delete();
+        $countSaveAnalysis = UserAnalys::query()->get()->count();
+
+        // Data UserAnalys Models for searching with filters (user_id, analys_id)
+        $analysisForDeleting = [];
+        for ($i = 0; $i < $count; $i++) {
+            $analysisForDeleting[] = UserAnalys::query()->create(array_merge($factory->definition(), [
+                'user_id' => $user->id,
+                'analys_id' => Analys::D3->value,
+            ]));
+        }
+
+        // Filters for testing
+        $filters = FilterUserAnalysDTO::from([
+            'user_ids' => [$user->id],
+            'analys_ids' => [Analys::D3],
+        ]);
+
+        // Check assert that analysis saved
+        foreach ($analysisForDeleting as $analys) {
+            $this->assertDatabaseHas(UserAnalys::class, [
+                'user_id' => $analys->user_id,
+                'analys_id' => $analys->analys_id,
+            ]);
+        }
+
+        // Send API Request with filters
+        $response = $this->delete(route('api.users.analysis.destroy', array_merge([
+            'userId' => $user->id,
+        ], $filters->toArray())));
+
+        // Check assert success response. HTTP code 204
+        $response->assertNoContent();
+
+        // Check assert that analysis not deleting, because filtering
+        $this->assertDatabaseCount(UserAnalys::class, $countSaveAnalysis);
+
+        // Check assert that analysis deleted
+        foreach ($analysisForDeleting as $analys) {
+            $this->assertDatabaseMissing(UserAnalys::class, [
+                'user_id' => $analys->user_id,
+                'analys_id' => $analys->analys_id,
+            ]);
+        }
+    }
+
+    public function test_user_analysis_destroy_forbidden_unreal_user_id(): void
+    {
+        // Auth user for testing
+        $user = $this->authUser();
+        $user2 = $this->getUser();
+
+        // Filters for testing
+        $filters = FilterUserAnalysDTO::from(['user_ids' => [$user->id]]);
+
+        // Send API Request with filters and another user_id in url
+        $response = $this->delete(route('api.users.analysis.destroy', array_merge([
+            'userId' => $user2->id,
+        ], $filters->toArray())));
+
+        // Check assert forbidden, 403 http code
+        $response->assertForbidden();
+    }
+
+    public function test_user_analysis_destroy_validation_filter_user_ids(): void
+    {
+        // Auth user for testing
+        $user = $this->authUser();
+        $user2 = $this->getUser();
+
+        // Filters with another user_id for testing
+        $filters = FilterUserAnalysDTO::from(['user_ids' => [$user->id, $user2->id]]);
+
+        // Send API Request with bad filters
+        $response = $this->delete(route('api.users.analysis.destroy', array_merge([
+            'userId' => $user->id,
+        ], $filters->toArray())));
+
+        // Check asserts user_ids filter errors
+        $response->assertUnprocessable();
+        $response->assertInvalid(['user_ids.1']);
+    }
 }
