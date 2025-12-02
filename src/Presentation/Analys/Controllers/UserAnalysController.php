@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
 use Presentation\Analys\Requests\CreateUserAnalysisRequest;
+use Presentation\Analys\Requests\DeleteUserAnalysisRequest;
 use Presentation\Analys\Requests\IndexUserAnalysisRequest;
 use Presentation\Analys\Resources\UserAnalysResource;
 
@@ -34,5 +35,14 @@ class UserAnalysController extends BaseController
         $userAnalysis = $this->userAnalysService->getUserAnalysis($filters);
 
         return Response::json(UserAnalysResource::collection($userAnalysis));
+    }
+
+    public function destroy(DeleteUserAnalysisRequest $request): JsonResponse
+    {
+        $filters = $request->getDTO();
+
+        $this->userAnalysService->deleteUserAnalysis($filters);
+
+        return Response::json(status: 204);
     }
 }
