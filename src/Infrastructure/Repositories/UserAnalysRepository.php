@@ -6,6 +6,7 @@ namespace Infrastructure\Repositories;
 
 use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Application\Analys\DTO\UserAnalysDTO;
+use Domain\Analys\Enums\Analys;
 use Domain\Analys\Models\UserAnalys;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -27,6 +28,13 @@ class UserAnalysRepository implements UserAnalysRepositoryContract
      */
     public function create(UserAnalysDTO $dto): UserAnalys
     {
+        if ($dto->isNotEmptyValue('analys_id') && $dto->emptyValue('analys_name')) {
+            /** @var Analys $analysId */
+            $analysId = $dto->analys_id;
+
+            $dto->analys_name = $analysId->name;
+        }
+
         return UserAnalys::query()->create($dto->toArray());
     }
 

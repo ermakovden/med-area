@@ -9,6 +9,8 @@ use Domain\Analys\Enums\Analys;
 use Illuminate\Validation\Rule;
 use OpenApi\Attributes as OA;
 use Shared\Requests\BaseRequest;
+use Shared\Rules\UserIdMatchesAuth;
+use Shared\Rules\UserIdMatchesUrlUserId;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 #[OA\RequestBody(
@@ -32,7 +34,7 @@ class CreateUserAnalysisRequest extends BaseRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->getUserIdFromPath() === auth()->user()?->id;
     }
 
     public function getDTO(): CreateUserAnalysisRequestDTO
@@ -44,6 +46,11 @@ class CreateUserAnalysisRequest extends BaseRequest
         return CreateUserAnalysisRequestDTO::from($validated);
     }
 
+    public function getUserIdFromPath(): string
+    {
+        return $this->route('userId');
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -52,12 +59,11 @@ class CreateUserAnalysisRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['nullable', 'string'],
+            'user_id' => ['nullable', 'string', new UserIdMatchesAuth(), new UserIdMatchesUrlUserId()],
 
             'analysis' => ['required', 'array'],
-            'analysis.*.user_id' => ['required', 'string'],
+            'analysis.*.user_id' => ['required', 'string', new UserIdMatchesAuth(), new UserIdMatchesUrlUserId()],
             'analysis.*.analys_id' => ['required', 'int', Rule::enum(Analys::class)],
-            'analysis.*.analys_name' => ['required', 'string', Rule::enum(Analys::class)],
             'analysis.*.data' => ['required', 'numeric'],
         ];
     }
