@@ -232,7 +232,7 @@ class UserAnalysControllerTest extends TestCase
         $response->assertForbidden();
     }
 
-    public function test_user_analysis_index_forbidden_filter_user_ids(): void
+    public function test_user_analysis_index_validation_filter_user_ids(): void
     {
         // Auth user for testing
         $user = $this->authUser();
@@ -246,7 +246,8 @@ class UserAnalysControllerTest extends TestCase
             'userId' => $user->id,
         ], $filters->toArray())));
 
-        // Check assert forbidden, 403 http code
-        $response->assertForbidden();
+        // Check asserts user_ids filter errors
+        $response->assertUnprocessable();
+        $response->assertInvalid(['user_ids.1']);
     }
 }
