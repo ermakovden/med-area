@@ -7,7 +7,6 @@ namespace Presentation\User\Requests;
 use Application\User\DTO\UserDTO;
 use OpenApi\Attributes as OA;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Validation\ValidationException;
 use Shared\Requests\BaseRequest;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 

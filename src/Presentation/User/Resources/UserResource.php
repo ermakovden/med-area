@@ -11,7 +11,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'UserResource',
     properties: [
-        new OA\Property(property: 'id', description: 'UUID of user', type: 'string'),
+        new OA\Property(property: 'id', description: 'UUID of user', type: 'string', format: 'uuid'),
         new OA\Property(property: 'nickname', description: 'Nickname of user', type: 'string'),
         new OA\Property(property: 'email', description: 'Email of User', type: 'string'),
         new OA\Property(property: 'created_at', description: 'Datetime created at of user', type: 'datetime'),

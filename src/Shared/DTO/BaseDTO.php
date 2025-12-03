@@ -11,7 +11,7 @@ class BaseDTO extends Data
 {
     public function emptyValue(string $attribute): bool
     {
-        return $this->$attribute === Optional::class;
+        return $this->$attribute instanceof Optional;
     }
 
     public function isNotEmptyValue(string $attribute): bool

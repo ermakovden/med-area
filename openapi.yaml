@@ -1,8 +1,146 @@
 openapi: 3.0.0
 info:
   title: 'MedArea RESTful API'
-  version: 1.0.1
+  version: 1.0.5
 paths:
+  /api/analysis:
+    get:
+      tags:
+        - analys
+        - api
+      description: 'Get all analysis.'
+      operationId: apiAnalysisIndex
+      responses:
+        '200':
+          description: 'List analysis data.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysResourceCollection'
+  '/api/users/{userId}/analysis':
+    get:
+      tags:
+        - analys
+        - api
+      description: 'Get analysis by filters.'
+      operationId: apiUsersAnalysisIndex
+      parameters:
+        -
+          name: userId
+          in: path
+          description: 'user id'
+          required: true
+          schema:
+            type: string
+        -
+          name: 'user_ids[]'
+          in: query
+          description: 'Array of user IDs'
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+        -
+          name: 'analys_ids[]'
+          in: query
+          description: 'Array of analys IDs'
+          schema:
+            type: array
+            items:
+              type: integer
+              enum:
+                - 1
+                - 2
+                - 3
+                - 4
+      responses:
+        '200':
+          description: 'Analysis of users.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAnalysResourceCollection'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '422':
+          description: 'Validation error.'
+    post:
+      tags:
+        - analys
+        - api
+      description: 'Add analysis for userId.'
+      operationId: apiUsersAnalysisCreate
+      parameters:
+        -
+          name: userId
+          in: path
+          description: 'user id'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUserAnalysisRequest'
+      responses:
+        '201':
+          description: 'Analysis for user added.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAnalysResourceCollection'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '422':
+          description: 'Validation error.'
+    delete:
+      tags:
+        - analys
+        - api
+      description: 'Delete analysis by filters.'
+      operationId: apiUsersAnalysisDestroy
+      parameters:
+        -
+          name: userId
+          in: path
+          description: 'user id'
+          required: true
+          schema:
+            type: string
+        -
+          name: 'user_ids[]'
+          in: query
+          description: 'Array of user IDs'
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+        -
+          name: 'analys_ids[]'
+          in: query
+          description: 'Array of analys IDs'
+          schema:
+            type: array
+            items:
+              type: integer
+              enum:
+                - 1
+                - 2
+                - 3
+                - 4
+      responses:
+        '204':
+          description: 'Analysis deleted.'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '422':
+          description: 'Validation error.'
   /api/auth/login:
     post:
       tags:
@@ -70,6 +208,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResource'
+        '422':
+          description: 'Validation error.'
   '/email/verify/{id}/{hash}':
     get:
       tags:
@@ -159,6 +299,66 @@ paths:
           description: 'Not found.'
 components:
   schemas:
+    AnalysResource:
+      title: AnalysResource
+      properties:
+        id:
+          description: 'ID of analys'
+          type: integer
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+        name:
+          description: 'Name of analys'
+          type: string
+        description:
+          description: 'Description of analys'
+          type: string
+          nullable: true
+      type: object
+    AnalysResourceCollection:
+      title: AnalysResourceCollection
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalysResource'
+      type: object
+    UserAnalysResource:
+      title: UserAnalysResource
+      properties:
+        id:
+          description: 'ID User Analys'
+          type: string
+          format: uuid
+        user_id:
+          description: 'ID User'
+          type: string
+        '':
+          $ref: '#/components/schemas/AnalysResource'
+        data:
+          description: 'Data Analys'
+          type: number
+          format: float
+        created_at:
+          description: 'Datetime created at of analys for user'
+          type: string
+          format: date-time
+        updated_at:
+          description: 'Datetime updated at of analys for user'
+          type: string
+          format: date-time
+      type: object
+    UserAnalysResourceCollection:
+      title: UserAnalysResourceCollection
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserAnalysResource'
+      type: object
     TokenResource:
       title: TokenResource
       properties:
@@ -180,6 +380,7 @@ components:
         id:
           description: 'UUID of user'
           type: string
+          format: uuid
         nickname:
           description: 'Nickname of user'
           type: string
@@ -196,6 +397,22 @@ components:
           format: date-time
       type: object
   requestBodies:
+    CreateUserAnalysisRequest:
+      description: 'Create many UserAnalys Request'
+      content:
+        application/json:
+          schema:
+            properties:
+              user_id:
+                description: 'User Id for analysis'
+                format: string
+              analysis:
+                properties:
+                  user_id: { description: 'User Id for analys', format: string }
+                  analys_id: { description: 'Analys ID', format: string, enum: [1, 2, 3, 4] }
+                  data: { description: 'Value of analys', format: float }
+                type: object
+            type: object
     LoginRequest:
       description: 'Authorizarion user request'
       content:
@@ -230,11 +447,14 @@ components:
             type: object
 tags:
   -
-    name: auth
-    description: auth
+    name: analys
+    description: analys
   -
     name: api
     description: api
+  -
+    name: auth
+    description: auth
   -
     name: user
     description: user

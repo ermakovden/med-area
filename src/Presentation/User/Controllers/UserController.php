@@ -6,7 +6,6 @@ namespace Presentation\User\Controllers;
 
 use Application\User\Services\Contracts\UserServiceContract;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
 use OpenApi\Attributes as OA;
@@ -37,7 +36,7 @@ class UserController extends BaseController
         response: 401,
         description: 'Unauthorizied.',
     )]
-    public function me(Request $request): JsonResponse
+    public function me(): JsonResponse
     {
         $user = $this->userService->me();
 

@@ -36,6 +36,10 @@ class RegistrationController extends BaseController
         description: 'User created.',
         content: new OA\JsonContent(ref: UserResource::class)
     )]
+    #[OA\Response(
+        response: 422,
+        description: 'Validation error.',
+    )]
     public function register(RegisterUserRequest $request): JsonResponse
     {
         $dto = $request->getDTO();
@@ -84,10 +88,10 @@ class RegistrationController extends BaseController
         response: 401,
         description: 'Unauthorized.',
     )]
-    public function sendEmailVerification(Request $request): JsonResponse
+    public function sendEmailVerification(): JsonResponse
     {
         /** @var \Domain\User\Models\User $user */
-        $user = $request->user();
+        $user = request()->user();
 
         $this->registrationService->sendEmailVerificationNotification($user);
 

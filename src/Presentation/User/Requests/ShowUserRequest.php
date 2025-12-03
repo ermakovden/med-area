@@ -18,6 +18,6 @@ class ShowUserRequest extends BaseRequest
 
     public function getUserId(): string
     {
-        return $this->string('id')->toString();
+        return $this->route('id');
     }
 }
