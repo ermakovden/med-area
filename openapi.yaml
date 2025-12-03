@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: 'MedArea RESTful API'
-  version: 1.0.4
+  version: 1.0.5
 paths:
   /api/analysis:
     get:
@@ -22,7 +22,7 @@ paths:
       tags:
         - analys
         - api
-      description: 'Get analysis of user by ID.'
+      description: 'Get analysis by filters.'
       operationId: apiUsersAnalysisIndex
       parameters:
         -
@@ -56,7 +56,7 @@ paths:
                 - 4
       responses:
         '200':
-          description: 'Analysis of user.'
+          description: 'Analysis of users.'
           content:
             application/json:
               schema:
@@ -90,6 +90,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserAnalysResourceCollection'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '422':
+          description: 'Validation error.'
+    delete:
+      tags:
+        - analys
+        - api
+      description: 'Delete analysis by filters.'
+      operationId: apiUsersAnalysisDestroy
+      parameters:
+        -
+          name: userId
+          in: path
+          description: 'user id'
+          required: true
+          schema:
+            type: string
+        -
+          name: 'user_ids[]'
+          in: query
+          description: 'Array of user IDs'
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+        -
+          name: 'analys_ids[]'
+          in: query
+          description: 'Array of analys IDs'
+          schema:
+            type: array
+            items:
+              type: integer
+              enum:
+                - 1
+                - 2
+                - 3
+                - 4
+      responses:
+        '204':
+          description: 'Analysis deleted.'
         '401':
           description: Unauthorized.
         '403':

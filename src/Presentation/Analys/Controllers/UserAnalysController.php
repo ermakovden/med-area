@@ -60,7 +60,7 @@ class UserAnalysController extends BaseController
     #[OA\Get(
         path: '/api/users/{userId}/analysis',
         operationId: 'apiUsersAnalysisIndex',
-        description: 'Get analysis of user by ID.',
+        description: 'Get analysis by filters.',
         tags: ['analys', 'api'],
         parameters: [
             new OA\Parameter(name: 'userId', in: 'path', description: 'user id', required: true, schema: new OA\Schema(type: 'string')),
@@ -87,7 +87,7 @@ class UserAnalysController extends BaseController
     )]
     #[OA\Response(
         response: 200,
-        description: 'Analysis of user.',
+        description: 'Analysis of users.',
         content: new OA\JsonContent(ref: UserAnalysResourceCollection::class)
     )]
     #[OA\Response(
@@ -111,6 +111,50 @@ class UserAnalysController extends BaseController
         return Response::json(new UserAnalysResourceCollection($userAnalysis));
     }
 
+    #[OA\Delete(
+        path: '/api/users/{userId}/analysis',
+        operationId: 'apiUsersAnalysisDestroy',
+        description: 'Delete analysis by filters.',
+        tags: ['analys', 'api'],
+        parameters: [
+            new OA\Parameter(name: 'userId', in: 'path', description: 'user id', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(
+                name: 'user_ids[]',
+                in: 'query',
+                description: 'Array of user IDs',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'array',
+                    items: new OA\Items(type: 'string'),
+                ),
+            ),
+            new OA\Parameter(
+                name: 'analys_ids[]',
+                in: 'query',
+                description: 'Array of analys IDs',
+                schema: new OA\Schema(
+                    type: 'array',
+                    items: new OA\Items(type: 'integer', enum: Analys::class),
+                ),
+            ),
+        ]
+    )]
+    #[OA\Response(
+        response: 204,
+        description: 'Analysis deleted.',
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Unauthorized.',
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'Forbidden.',
+    )]
+    #[OA\Response(
+        response: 422,
+        description: 'Validation error.',
+    )]
     public function destroy(DeleteUserAnalysisRequest $request): JsonResponse
     {
         $filters = $request->getDTO();
