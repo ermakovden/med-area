@@ -211,7 +211,7 @@ class UserAnalysControllerTest extends TestCase
 
         // Check asserts
         $response->assertOk();
-        $response->assertJsonCount($count);
+        $response->assertJsonCount($count, 'data');
     }
 
     public function test_user_analysis_index_forbidden_unreal_user_id(): void

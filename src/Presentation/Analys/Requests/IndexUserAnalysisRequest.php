@@ -7,7 +7,6 @@ namespace Presentation\Analys\Requests;
 use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Domain\Analys\Enums\Analys;
 use Illuminate\Validation\Rule;
-use OpenApi\Attributes as OA;
 use Shared\Requests\BaseRequest;
 use Shared\Rules\UserIdMatchesAuth;
 use Shared\Rules\UserIdMatchesUrlUserId;

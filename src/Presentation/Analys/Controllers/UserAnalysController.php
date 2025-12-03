@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Presentation\Analys\Controllers;
 
 use Application\Analys\Services\Contracts\UserAnalysServiceContract;
+use Domain\Analys\Enums\Analys;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
 use Presentation\Analys\Requests\CreateUserAnalysisRequest;
 use Presentation\Analys\Requests\DeleteUserAnalysisRequest;
 use Presentation\Analys\Requests\IndexUserAnalysisRequest;
-use Presentation\Analys\Resources\UserAnalysResource;
 use OpenApi\Attributes as OA;
 use Presentation\Analys\Resources\UserAnalysResourceCollection;
 
@@ -57,13 +57,58 @@ class UserAnalysController extends BaseController
         return Response::json(new UserAnalysResourceCollection($userAnalysis), 201);
     }
 
+    #[OA\Get(
+        path: '/api/users/{userId}/analysis',
+        operationId: 'apiUsersAnalysisIndex',
+        description: 'Get analysis of user by ID.',
+        tags: ['analys', 'api'],
+        parameters: [
+            new OA\Parameter(name: 'userId', in: 'path', description: 'user id', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(
+                name: 'user_ids[]',
+                in: 'query',
+                description: 'Array of user IDs',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'array',
+                    items: new OA\Items(type: 'string'),
+                ),
+            ),
+            new OA\Parameter(
+                name: 'analys_ids[]',
+                in: 'query',
+                description: 'Array of analys IDs',
+                schema: new OA\Schema(
+                    type: 'array',
+                    items: new OA\Items(type: 'integer', enum: Analys::class),
+                ),
+            ),
+        ]
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Analysis of user.',
+        content: new OA\JsonContent(ref: UserAnalysResourceCollection::class)
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Unauthorized.',
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'Forbidden.',
+    )]
+    #[OA\Response(
+        response: 422,
+        description: 'Validation error.',
+    )]
     public function index(IndexUserAnalysisRequest $request): JsonResponse
     {
         $filters = $request->getDTO();
 
         $userAnalysis = $this->userAnalysService->getUserAnalysis($filters);
 
-        return Response::json(UserAnalysResource::collection($userAnalysis));
+        return Response::json(new UserAnalysResourceCollection($userAnalysis));
     }
 
     public function destroy(DeleteUserAnalysisRequest $request): JsonResponse

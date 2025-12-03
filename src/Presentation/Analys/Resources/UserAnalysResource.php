@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Presentation\Analys\Resources;
 
 use Application\Analys\DTO\AnalysDTO;
-use Domain\Analys\Enums\Analys;
+use Application\Analys\DTO\UserAnalysDTO;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
@@ -15,8 +15,7 @@ use OpenApi\Attributes as OA;
     properties: [
         new OA\Property(property: 'id', description: 'ID User Analys', type: 'string', format: 'uuid'),
         new OA\Property(property: 'user_id', description: 'ID User', type: 'string'),
-        new OA\Property(property: 'analys_id', description: 'ID Analys', type: 'int', enum: Analys::class),
-        new OA\Property(property: 'analys_name', description: 'Name Analys', type: 'string'),
+        new OA\Property(ref: AnalysResource::class),
         new OA\Property(property: 'data', description: 'Data Analys', type: 'float'),
         new OA\Property(property: 'created_at', description: 'Datetime created at of analys for user', type: 'datetime'),
         new OA\Property(property: 'updated_at', description: 'Datetime updated at of analys for user', type: 'datetime'),
@@ -34,6 +33,8 @@ class UserAnalysResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->resource = UserAnalysDTO::from($this->resource);
+
         return [
             'id' => $this->resource->id,
             'user_id' => $this->resource->user_id,
