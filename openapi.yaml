@@ -3,6 +3,20 @@ info:
   title: 'MedArea RESTful API'
   version: 1.0.1
 paths:
+  /api/analysis:
+    get:
+      tags:
+        - analys
+        - api
+      description: 'Get all analysis.'
+      operationId: apiAnalysisIndex
+      responses:
+        '200':
+          description: 'List analysis data.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysResourceCollection'
   /api/auth/login:
     post:
       tags:
@@ -173,6 +187,18 @@ components:
         name:
           description: 'Name of analys'
           type: string
+        description:
+          description: 'Description of analys'
+          type: string
+          nullable: true
+      type: object
+    AnalysResourceCollection:
+      title: AnalysResourceCollection
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalysResource'
       type: object
     UserAnalysResource:
       title: UserAnalysResource
@@ -296,11 +322,14 @@ components:
             type: object
 tags:
   -
-    name: auth
-    description: auth
+    name: analys
+    description: analys
   -
     name: api
     description: api
+  -
+    name: auth
+    description: auth
   -
     name: user
     description: user

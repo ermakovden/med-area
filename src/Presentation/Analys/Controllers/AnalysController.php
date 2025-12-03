@@ -7,8 +7,9 @@ namespace Presentation\Analys\Controllers;
 use Application\Analys\Services\Contracts\AnalysServiceContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
-use Presentation\Analys\Resources\AnalysResource;
 use Presentation\BaseController;
+use OpenApi\Attributes as OA;
+use Presentation\Analys\Resources\AnalysResourceCollection;
 
 class AnalysController extends BaseController
 {
@@ -16,10 +17,21 @@ class AnalysController extends BaseController
         protected readonly AnalysServiceContract $analysService,
     ) {}
 
+    #[OA\Get(
+        path: '/api/analysis',
+        operationId: 'apiAnalysisIndex',
+        description: 'Get all analysis.',
+        tags: ['analys', 'api'],
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'List analysis data.',
+        content: new OA\JsonContent(ref: AnalysResourceCollection::class)
+    )]
     public function index(): JsonResponse
     {
         $analysis = $this->analysService->getAnalysis();
 
-        return Response::json(AnalysResource::collection($analysis));
+        return Response::json(new AnalysResourceCollection($analysis));
     }
 }
