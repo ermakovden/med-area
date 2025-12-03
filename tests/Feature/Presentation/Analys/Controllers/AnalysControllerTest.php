@@ -16,9 +16,11 @@ class AnalysControllerTest extends TestCase
         // Check asserts
         $response->assertOk();
         $response->assertJsonStructure([
-            'id',
-            'name',
-            'description',
+            '*' => [
+                'id',
+                'name',
+                'description',
+            ],
         ]);
     }
 }

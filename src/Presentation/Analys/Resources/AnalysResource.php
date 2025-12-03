@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Presentation\Analys\Resources;
 
+use Application\Analys\DTO\AnalysDTO;
 use Domain\Analys\Enums\Analys;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -14,6 +15,7 @@ use OpenApi\Attributes as OA;
     properties: [
         new OA\Property(property: 'id', description: 'ID of analys', type: 'int', enum: Analys::class),
         new OA\Property(property: 'name', description: 'Name of analys', type: 'string'),
+        new OA\Property(property: 'description', description: 'Description of analys', type: 'string', nullable: true),
     ],
 )]
 /**
@@ -28,9 +30,12 @@ class AnalysResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->resource = AnalysDTO::from($this->resource);
+
         return [
-            'id' => $this->resource->id->value,
+            'id' => $this->resource->id,
             'name' => $this->resource->name,
+            'description' => $this->resource->isNotEmptyValue('description') ? $this->resource->description : null,
         ];
     }
 }
