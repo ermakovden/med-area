@@ -14,7 +14,7 @@ use OpenApi\Attributes as OA;
     title: 'UserAnalysResource',
     properties: [
         new OA\Property(property: 'id', description: 'ID User Analys', type: 'string', format: 'uuid'),
-        new OA\Property(property: 'user', description: 'ID User', type: 'string'),
+        new OA\Property(property: 'user_id', description: 'ID User', type: 'string'),
         new OA\Property(property: 'analys_id', description: 'ID Analys', type: 'int', enum: Analys::class),
         new OA\Property(property: 'analys_name', description: 'Name Analys', type: 'string'),
         new OA\Property(property: 'data', description: 'Data Analys', type: 'float'),
