@@ -9,7 +9,9 @@ use Application\S3\Services\YCloudS3Service;
 use Domain\File\Factories\FileFactory;
 use Domain\File\Models\File;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Infrastructure\Repositories\Contracts\FileRepositoryContract;
+use Shared\Enums\Storage as EnumsStorage;
 use Shared\Exceptions\ServerErrorException;
 use Tests\TestCase;
 
@@ -28,6 +30,7 @@ class YCloudS3ServiceTest extends TestCase
 
         $this->service = new YCloudS3Service(
             app(FileRepositoryContract::class),
+            Storage::disk(EnumsStorage::S3_TESTING),
         );
     }
 

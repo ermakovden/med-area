@@ -21,9 +21,10 @@ class YCloudS3Service implements S3ServiceContract
 
     public function __construct(
         FileRepositoryContract $fileRepository,
+        ?Filesystem $disk = null,
     ) {
         $this->fileRepository = $fileRepository;
-        $this->disk = Storage::disk(EnumsStorage::S3); // use s3 disk for ycloud service (see: filesystems.php -> disks -> s3)
+        $this->disk = $disk ?? Storage::disk(EnumsStorage::S3); // use s3 disk for ycloud service (see: filesystems.php -> disks -> s3)
     }
 
     public function upload(FileDTO $file): File
