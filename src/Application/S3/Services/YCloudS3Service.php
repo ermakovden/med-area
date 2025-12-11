@@ -15,7 +15,7 @@ use Shared\Exceptions\ServerErrorException;
 
 class YCloudS3Service implements S3ServiceContract
 {
-    protected Filesystem $disk;
+    public readonly Filesystem $disk;
 
     protected readonly FileRepositoryContract $fileRepository;
 
