@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Presentation\Files\Requests;
+namespace Presentation\File\Requests;
 
 use Application\S3\DTO\FileDTO;
 use Application\S3\DTO\Requests\CreateFilesRequestDTO;

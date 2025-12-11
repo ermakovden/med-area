@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Presentation\Files\Resources;
+namespace Presentation\File\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

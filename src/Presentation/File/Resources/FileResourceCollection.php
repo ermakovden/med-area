@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Presentation\Files\Resources;
+namespace Presentation\File\Resources;
 
 use Shared\Resources\BaseResourceCollection;
 use OpenApi\Attributes as OA;
-use Presentation\Files\Resources\FileResource;
+use Presentation\File\Resources\FileResource;
 
 #[OA\Schema(
     title: 'FileResourceCollection',
