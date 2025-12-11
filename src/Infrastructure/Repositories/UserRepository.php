@@ -13,7 +13,7 @@ class UserRepository implements UserRepositoryContract
     /**
      * @var class-string<User>
      */
-    protected $model = User::class;
+    protected string $model = User::class;
 
     /**
      * Create User

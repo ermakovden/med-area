@@ -18,7 +18,7 @@ class UserAnalysRepository implements UserAnalysRepositoryContract
     /**
      * @var class-string<UserAnalys>
      */
-    protected $model = UserAnalys::class;
+    protected string $model = UserAnalys::class;
 
     /**
      * Create UserAnalys Model
@@ -35,7 +35,7 @@ class UserAnalysRepository implements UserAnalysRepositoryContract
             $dto->analys_name = $analysId->name;
         }
 
-        return UserAnalys::query()->create($dto->toArray());
+        return $this->model::query()->create($dto->toArray());
     }
 
     /**
@@ -80,7 +80,7 @@ class UserAnalysRepository implements UserAnalysRepositoryContract
      */
     protected function baseFilters(FilterUserAnalysDTO $filters): Builder
     {
-        $query = UserAnalys::query();
+        $query = $this->model::query();
 
         // Attribute: user_id
         if ($filters->isNotEmptyValue('user_ids')) {
