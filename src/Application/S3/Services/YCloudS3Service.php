@@ -6,44 +6,76 @@ namespace Application\S3\Services;
 
 use Application\S3\DTO\FileDTO;
 use Application\S3\Services\Contracts\S3ServiceContract;
+use Domain\File\Models\File;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
+use Infrastructure\Repositories\Contracts\FileRepositoryContract;
+use Shared\Enums\Storage as EnumsStorage;
 use Shared\Exceptions\ServerErrorException;
 
 class YCloudS3Service implements S3ServiceContract
 {
-    /**
-     * Storage
-     *
-     * @var Filesystem
-     */
-    protected Filesystem $storage;
+    protected Filesystem $disk;
 
-    public function __construct(Storage $storage)
-    {
-        $this->storage = $storage->disk('s3'); // use s3 disk for ycloud service (see: filesistems.php -> disks -> s3)
+    protected readonly FileRepositoryContract $fileRepository;
+
+    public function __construct(
+        FileRepositoryContract $fileRepository,
+    ) {
+        $this->fileRepository = $fileRepository;
+        $this->disk = Storage::disk(EnumsStorage::S3); // use s3 disk for ycloud service (see: filesystems.php -> disks -> s3)
     }
 
-    public function upload(FileDTO $file): string
+    public function upload(FileDTO $file): File
     {
-        $path = $this->getFilePath($file);
+        try {
+            if ($file->emptyValue('content')) {
+                throw new ServerErrorException('File content not found.');
+            }
 
-        if (! $result = $this->storage->putFileAs($path, $file->content, $file->key)) {
-            \Log::critical();
+            $path = $this->getFilePath($file);
+
+            /** @phpstan-ignore-next-line */
+            if (! $result = $this->disk->putFile($path, $file->content)) {
+                throw new ServerErrorException('Cant upload file to ycloud s3. Path: ' . $path);
+            }
+        } catch (\Exception $e) {
+            \Log::critical([
+                'class' => YCloudS3Service::class,
+                'method' => 'upload',
+                'message' => $e->getMessage(),
+            ]);
             throw new ServerErrorException();
         }
-    
-        return $result;
+
+        $file->key = $result;
+
+        return $this->createFile($file);
+    }
+
+    public function createFile(FileDTO $file): File
+    {
+        try {
+            return $this->fileRepository->createFile($file);
+        } catch (\Throwable $e) {
+            \Log::critical('Failed to save to DB File data.', [
+                'class' => YCloudS3Service::class,
+                'method' => 'createFile',
+                'message' => $e->getMessage(),
+            ]);
+
+            throw new ServerErrorException();
+        }
     }
 
     /**
      * Get path for file
-     * Example: users/{userId}/fileName/fileName.extension
+     * Example: users/{userId}/fileName.extension
      *
      * @param FileDTO $file
      * @param string|null $userId
      * @return string
-     * 
+     *
      * @throws ServerErrorException
      */
     private function getFilePath(FileDTO $file, ?string $userId = null): string
@@ -52,7 +84,9 @@ class YCloudS3Service implements S3ServiceContract
             throw new ServerErrorException();
         }
 
-        return 'users/' . $userId ?? auth()->user()?->id . '/' . $file->key . '/' . $file->content->extension();
+        $userId ??= auth()->user()?->id;
 
+        /** @phpstan-ignore-next-line */
+        return 'users/' . $userId . '/' . $file->key . '.' . $file->content->extension();
     }
 }
