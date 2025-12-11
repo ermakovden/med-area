@@ -7,6 +7,7 @@ namespace Application\S3\DTO;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Shared\DTO\BaseDTO;
+use Shared\Enums\Storage;
 use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Casts\DateTimeInterfaceCast;
 use Spatie\LaravelData\Optional;
@@ -17,7 +18,7 @@ class FileDTO extends BaseDTO
 
     public string|Optional $user_id;
 
-    public string|Optional $storage;
+    public Storage|string|Optional $storage;
 
     public string|Optional $endpoint;
 
