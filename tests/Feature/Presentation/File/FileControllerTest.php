@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Presentation\File\Controllers;
 
+use Application\S3\DTO\Filters\FilterFileDTO;
+use Domain\File\Models\File as FileModel;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -123,5 +125,43 @@ class FileControllerTest extends TestCase
         // Check asserts that 422 and files is empty
         $response->assertUnprocessable();
         $response->assertInvalid(['user_id', 'files']);
+    }
+
+    public function test_index_success(): void
+    {
+        // Auth user for testing
+        $user = $this->authUser();
+
+        // Data for testing
+        $count = 3;
+        FileModel::factory($count)->for($user)->create();
+
+        // Filters for testing
+        $filters = FilterFileDTO::from(['user_ids' => [$user->id]]);
+
+        // Send API Request
+        $response = $this->get(route('api.files.index', $filters->toArray()));
+
+        // Check asserts that response success
+        $response->assertOk();
+        $response->assertJsonCount($count, 'data');
+        $this->assertDatabaseHas(FileModel::class, ['user_id' => $user->id]);
+    }
+
+    public function test_index_validation_filter_user_ids(): void
+    {
+        // Auth user for testing
+        $user = $this->authUser();
+        $user2 = $this->getUser();
+
+        // Filters for testing
+        $filters = FilterFileDTO::from(['user_ids' => [$user->id, $user2->id]]);
+
+        // Send API Request with filters and another user_id in url
+        $response = $this->get(route('api.files.index', $filters->toArray()));
+
+        // Check assert forbidden, 403 http code
+        $response->assertUnprocessable();
+        $response->assertInvalid(['user_ids.1']);
     }
 }
