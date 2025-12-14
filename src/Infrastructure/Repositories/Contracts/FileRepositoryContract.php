@@ -4,16 +4,22 @@ declare(strict_types=1);
 
 namespace Infrastructure\Repositories\Contracts;
 
-use Application\S3\DTO\FileDTO;
+use Application\S3\DTO\Filters\FilterFileDTO;
 use Domain\File\Models\File;
+use Illuminate\Database\Eloquent\Collection;
+use Shared\Repositories\Contracts\BaseRepositoryContract;
+use Application\S3\DTO\FileDTO;
 
-interface FileRepositoryContract
+/**
+ * @method File create(FileDTO $file)
+ */
+interface FileRepositoryContract extends BaseRepositoryContract
 {
     /**
-     * Create File Model
+     * Get many model File use filters
      *
-     * @param FileDTO $dto
-     * @return File
+     * @param FilterFileDTO $filters
+     * @return Collection<array-key, File>
      */
-    public function createFile(FileDTO $dto): File;
+    public function getMany(FilterFileDTO $filters): Collection;
 }

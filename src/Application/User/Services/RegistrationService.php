@@ -30,7 +30,7 @@ class RegistrationService implements RegistrationServiceContract
     public function register(UserDTO $userDTO): UserDTO
     {
         // Create new User model
-        $userDTO = $this->userRepository->create($userDTO);
+        $userDTO = UserDTO::from($this->userRepository->create($userDTO));
 
         try {
             // Send email message for confirmation of registration

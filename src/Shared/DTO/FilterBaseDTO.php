@@ -4,4 +4,11 @@ declare(strict_types=1);
 
 namespace Shared\DTO;
 
-abstract class FilterBaseDTO extends BaseDTO {}
+use Spatie\LaravelData\Optional;
+
+abstract class FilterBaseDTO extends BaseDTO
+{
+    public int|Optional $limit;
+
+    public int|Optional $offset;
+}

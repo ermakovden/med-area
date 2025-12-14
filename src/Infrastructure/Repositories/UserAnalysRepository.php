@@ -10,10 +10,14 @@ use Domain\Analys\Enums\Analys;
 use Domain\Analys\Models\UserAnalys;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract;
+use Shared\DTO\BaseDTO;
+use Shared\DTO\FilterBaseDTO;
 use Shared\Exceptions\ServerErrorException;
+use Shared\Repositories\BaseRepository;
 
-class UserAnalysRepository implements UserAnalysRepositoryContract
+class UserAnalysRepository extends BaseRepository implements UserAnalysRepositoryContract
 {
     /**
      * @var class-string<UserAnalys>
@@ -26,7 +30,7 @@ class UserAnalysRepository implements UserAnalysRepositoryContract
      * @param UserAnalysDTO $dto
      * @return UserAnalys
      */
-    public function create(UserAnalysDTO $dto): UserAnalys
+    public function create(BaseDTO $dto): Model
     {
         if ($dto->isNotEmptyValue('analys_id') && $dto->emptyValue('analys_name')) {
             /** @var Analys $analysId */
@@ -46,7 +50,9 @@ class UserAnalysRepository implements UserAnalysRepositoryContract
      */
     public function getMany(FilterUserAnalysDTO $filters): Collection
     {
-        return $this->baseFilters($filters)->get();
+        $query = $this->model::query();
+
+        return $this->baseFilters($query, $filters)->get();
     }
 
     /**
@@ -59,28 +65,31 @@ class UserAnalysRepository implements UserAnalysRepositoryContract
      */
     public function deleteMany(FilterUserAnalysDTO $filters): void
     {
+        $query = $this->model::query();
+
         if (
             ($filters->emptyValue('user_ids') || empty($filters->user_ids))
             && ($filters->emptyValue('analys_ids') || empty($filters->analys_ids))
         ) {
-            throw new ServerErrorException('Empty filters user_ids, analys_ids for UserAnalysRepository@deleteMany');
+            throw new ServerErrorException('Empty filters user_ids, analys_ids');
         }
 
-        $this->baseFilters($filters)->delete();
+        $this->baseFilters($query, $filters)->delete();
 
         return;
     }
 
     /**
      * Base filters for sql requests
-     * Description: containts user_ids, analys_ids
      *
+     * @param Builder<UserAnalys> $query
      * @param FilterUserAnalysDTO $filters
      * @return Builder<UserAnalys>
      */
-    protected function baseFilters(FilterUserAnalysDTO $filters): Builder
+    public function baseFilters(Builder $query, FilterBaseDTO $filters): Builder
     {
-        $query = $this->model::query();
+        /** @phpstan-ignore argument.type */
+        parent::baseFilters($query, $filters);
 
         // Attribute: user_id
         if ($filters->isNotEmptyValue('user_ids')) {

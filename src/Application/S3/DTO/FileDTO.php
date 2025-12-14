@@ -18,7 +18,7 @@ class FileDTO extends BaseDTO
 
     public string|Optional $user_id;
 
-    public Storage|string|Optional $storage;
+    public Storage|Optional $storage;
 
     public string|Optional $endpoint;
 

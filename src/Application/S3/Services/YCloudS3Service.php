@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Application\S3\Services;
 
 use Application\S3\DTO\FileDTO;
+use Application\S3\DTO\Filters\FilterFileDTO;
 use Application\S3\Services\Contracts\S3ServiceContract;
 use Domain\File\Models\File;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 use Infrastructure\Repositories\Contracts\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
@@ -57,7 +59,7 @@ class YCloudS3Service implements S3ServiceContract
     public function createFile(FileDTO $file): File
     {
         try {
-            return $this->fileRepository->createFile($file);
+            return $this->fileRepository->create($file);
         } catch (\Throwable $e) {
             \Log::critical('Failed to save to DB File data.', [
                 'class' => YCloudS3Service::class,
@@ -65,6 +67,26 @@ class YCloudS3Service implements S3ServiceContract
                 'message' => $e->getMessage(),
             ]);
 
+            throw new ServerErrorException();
+        }
+    }
+
+    /**
+     * Get Files Models Collection
+     *
+     * @param FilterFileDTO $filters
+     * @return Collection<array-key, File>
+     */
+    public function getFiles(FilterFileDTO $filters): Collection
+    {
+        try {
+            return $this->fileRepository->getMany($filters);
+        } catch (\Throwable $e) {
+            \Log::error([
+                'class' => YCloudS3Service::class,
+                'method' => 'upload',
+                'message' => $e->getMessage(),
+            ]);
             throw new ServerErrorException();
         }
     }
