@@ -8,6 +8,7 @@ use Application\S3\Services\Contracts\S3ServiceContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
+use Presentation\File\Requests\IndexFileRequest;
 use Presentation\File\Requests\UploadFilesRequest;
 use Presentation\File\Resources\FileResourceCollection;
 use Shared\Enums\Storage as EnumsStorage;
@@ -33,5 +34,14 @@ class FileController extends BaseController
         }
 
         return Response::json(FileResourceCollection::make($models), 201);
+    }
+
+    public function index(IndexFileRequest $request): JsonResponse
+    {
+        $filters = $request->getDTO();
+
+        $files = $this->s3Service->getFiles($filters);
+
+        return Response::json(new FileResourceCollection($files), 200);
     }
 }
