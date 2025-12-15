@@ -153,6 +153,178 @@ class YCloudS3ServiceTest extends TestCase
         $this->assertCount(0, $result);
     }
 
+    public function test_delete_files_success_use_filter_by_user_ids(): void
+    {
+        // User for testing
+        $user = $this->getUser();
+
+        // Create testing data for testing
+        File::factory(3)->for($user)->create();
+
+        // Filters for testing
+        $filters = FilterFileDTO::from(['user_ids' => [$user->id]]);
+
+        // Check asserts that not soft deleted
+        $this->assertNotSoftDeleted(File::class, ['user_id' => $user->id]);
+
+        // Call method of service
+        $this->service->delete($filters);
+
+        // Check asserts that soft deleted
+        $this->assertSoftDeleted(File::class, ['user_id' => $user->id]);
+    }
+
+    public function test_delete_files_success_use_filter_by_size(): void
+    {
+        // User for testing
+        $user = $this->getUser();
+
+        // Create Files with size for testing filter
+        $count = 2;
+        $size = 100;
+        $endpoint = 'test-1'; // for indenifier test into this method
+        File::factory(state: ['size' => $size, 'endpoint' => $endpoint])->for($user)->createMany($count);
+
+        // Filters for testing
+        $filters = FilterFileDTO::from([
+            'min_size' => $size - 1,
+            'max_size' => $size + 1,
+            'endpoint' => $endpoint,
+        ]);
+
+        // Check asserts that not soft deleted
+        $this->assertNotSoftDeleted(File::class, [
+            'user_id' => $user->id,
+            'size' => $size,
+            'endpoint' => $endpoint,
+        ]);
+
+        // Call method of service
+        $this->service->delete($filters);
+
+        // Check asserts that soft deleted
+        $this->assertSoftDeleted(File::class, [
+            'user_id' => $user->id,
+            'size' => $size,
+            'endpoint' => $endpoint,
+        ]);
+
+
+        // Create Files with size for testing filter
+        $endpoint = 'test-2';
+        File::factory(state: ['size' => $size, 'endpoint' => $endpoint])->for($user)->createMany($count);
+
+        // Filters for testing
+        $filters = FilterFileDTO::from([
+            'min_size' => $size + 1,
+            'endpoint' => $endpoint,
+        ]);
+
+        // Call method of service
+        $this->service->delete($filters);
+
+        // Check asserts that soft deleted
+        $this->assertNotSoftDeleted(File::class, [
+            'user_id' => $user->id,
+            'size' => $size,
+            'endpoint' => $endpoint,
+        ]);
+    }
+
+    public function test_force_delete_files_success_use_filter_by_user_ids(): void
+    {
+        // User for testing
+        $user = $this->getUser();
+
+        // Create testing data with status soft deleted for testing
+        File::factory(3, ['deleted_at' => now()])->for($user)->create();
+
+        // Filters for testing
+        $filters = FilterFileDTO::from(['user_ids' => [$user->id]]);
+
+        // Check asserts that soft deleted
+        $this->assertSoftDeleted(File::class, ['user_id' => $user->id]);
+
+        // Call method of service
+        $this->service->forceDelete($filters);
+
+        // Check asserts that force deleted
+        $this->assertDatabaseMissing(File::class, ['user_id' => $user->id]);
+    }
+
+    public function test_force_delete_files_success_use_filter_by_size(): void
+    {
+        // User for testing
+        $user = $this->getUser();
+
+        // Create Files with size for testing filter
+        $count = 2;
+        $size = 100;
+        $endpoint = 'test-1';  // for indenifier test into this method
+        File::factory(state: [
+            'deleted_at' => now(),
+            'size' => $size,
+            'endpoint' => $endpoint,
+        ])->for($user)->createMany($count);
+
+        // Filters for testing
+        $filters = FilterFileDTO::from([
+            'min_size' => $size - 1,
+            'max_size' => $size + 1,
+            'endpoint' => $endpoint,
+        ]);
+
+        // Check asserts that not soft deleted
+        $this->assertSoftDeleted(File::class, [
+            'user_id' => $user->id,
+            'size' => $size,
+            'endpoint' => $endpoint,
+        ]);
+
+        // Call method of service
+        $this->service->forceDelete($filters);
+
+        // Check asserts that soft deleted
+        $this->assertDatabaseMissing(File::class, [
+            'user_id' => $user->id,
+            'size' => 100,
+            'endpoint' => 'test-1',
+        ]);
+
+
+        // Create Files with size for testing filter
+        $endpoint = 'test-2';
+        File::factory(state: [
+            'deleted_at' => now(),
+            'size' => $size,
+            'endpoint' => $endpoint,
+        ])->for($user)->createMany($count);
+
+        // Filters for testing
+        $filters = FilterFileDTO::from([
+            'min_size' => $size + 1,
+            'endpoint' => $endpoint,
+        ]);
+
+        // Check asserts that soft deleted
+        $this->assertSoftDeleted(File::class, [
+            'user_id' => $user->id,
+            'size' => $size,
+            'endpoint' => $endpoint,
+        ]);
+
+        // Call method of service
+        $this->service->forceDelete($filters);
+
+        // Check asserts that not force deleted
+        $this->assertSoftDeleted(File::class, [
+            'user_id' => $user->id,
+            'size' => $size,
+            'endpoint' => $endpoint,
+        ]);
+    }
+
+
     protected function getFileDTO(): FileDTO
     {
         $factory = new FileFactory();

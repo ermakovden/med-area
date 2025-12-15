@@ -9,11 +9,13 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Shared\Enums\Storage;
 
 /**
  * @property string $id
  * @property string|null $user_id
- * @property string $storage
+ * @property Storage $storage
  * @property string $endpoint
  * @property string $bucket
  * @property string $key
@@ -43,6 +45,7 @@ class File extends Model
     /** @use HasFactory<\Domain\File\Factories\FileFactory> */
     use HasFactory;
     use HasUuids;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -66,6 +69,7 @@ class File extends Model
     protected function casts(): array
     {
         return [
+            'storage' => Storage::class,
             'size' => 'int',
         ];
     }
