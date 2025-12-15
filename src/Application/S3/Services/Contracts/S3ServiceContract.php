@@ -22,4 +22,8 @@ interface S3ServiceContract
      * @return Collection<array-key, File>
      */
     public function getFiles(FilterFileDTO $filters): Collection;
+
+    public function delete(FilterFileDTO $filters): void;
+
+    public function forceDelete(FilterFileDTO $filters): void;
 }

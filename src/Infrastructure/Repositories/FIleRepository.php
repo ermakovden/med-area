@@ -35,6 +35,32 @@ class FileRepository extends BaseRepository implements FileRepositoryContract
     }
 
     /**
+     * Soft delete from DB
+     *
+     * @param FilterFileDTO $filters
+     * @return void
+     */
+    public function delete(FilterFileDTO $filters): void
+    {
+        $query = $this->model::query();
+
+        $this->baseFilters($query, $filters)->delete();
+    }
+
+    /**
+     * Force delete from DB
+     *
+     * @param FilterFileDTO $filters
+     * @return void
+     */
+    public function forceDelete(FilterFileDTO $filters): void
+    {
+        $query = $this->model::query();
+
+        $this->baseFilters($query, $filters)->forceDelete();
+    }
+
+    /**
      * Base filters for sql requests
      *
      * @param Builder<File> $query

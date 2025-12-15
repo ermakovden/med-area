@@ -22,4 +22,20 @@ interface FileRepositoryContract extends BaseRepositoryContract
      * @return Collection<array-key, File>
      */
     public function getMany(FilterFileDTO $filters): Collection;
+
+    /**
+     * Soft delete from DB
+     *
+     * @param FilterFileDTO $filters
+     * @return void
+     */
+    public function delete(FilterFileDTO $filters): void;
+
+    /**
+     * Force delete from DB
+     *
+     * @param FilterFileDTO $filters
+     * @return void
+     */
+    public function forceDelete(FilterFileDTO $filters): void;
 }

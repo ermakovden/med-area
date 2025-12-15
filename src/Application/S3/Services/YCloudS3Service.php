@@ -91,6 +91,34 @@ class YCloudS3Service implements S3ServiceContract
         }
     }
 
+    public function delete(FilterFileDTO $filters): void
+    {
+        try {
+            $this->fileRepository->delete($filters);
+        } catch (\Throwable $e) {
+            \Log::error([
+                'class' => YCloudS3Service::class,
+                'method' => 'delete',
+                'message' => $e->getMessage(),
+            ]);
+            throw new ServerErrorException();
+        }
+    }
+
+    public function forceDelete(FilterFileDTO $filters): void
+    {
+        try {
+            $this->fileRepository->forceDelete($filters);
+        } catch (\Throwable $e) {
+            \Log::error([
+                'class' => YCloudS3Service::class,
+                'method' => 'delete',
+                'message' => $e->getMessage(),
+            ]);
+            throw new ServerErrorException();
+        }
+    }
+
     /**
      * Get path for file
      * Example: users/{userId}/fileName.extension
