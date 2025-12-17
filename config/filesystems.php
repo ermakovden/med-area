@@ -90,4 +90,13 @@ return [
         public_path('storage') => storage_path('app/public'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Environments
+    |--------------------------------------------------------------------------
+    */
+    'environments' => [
+        'force_delete_sub_days' => env('FILES_FORCE_DELETE_SUB_DAYS'),
+    ],
+
 ];

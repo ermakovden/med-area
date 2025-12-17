@@ -11,13 +11,14 @@ use Domain\File\Models\File;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
+use Infrastructure\Jobs\File\DeleteFileJob;
 use Infrastructure\Repositories\Contracts\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Shared\Exceptions\ServerErrorException;
 
 class YCloudS3Service implements S3ServiceContract
 {
-    public readonly Filesystem $disk;
+    public Filesystem $disk;
 
     protected readonly FileRepositoryContract $fileRepository;
 
@@ -108,7 +109,13 @@ class YCloudS3Service implements S3ServiceContract
     public function forceDelete(FilterFileDTO $filters): void
     {
         try {
+            $filesForDeleting = $this->fileRepository->getMany($filters);
+
             $this->fileRepository->forceDelete($filters);
+
+            foreach ($filesForDeleting as $file) {
+                DeleteFileJob::dispatch($file->key, $this->disk);
+            }
         } catch (\Throwable $e) {
             \Log::error([
                 'class' => YCloudS3Service::class,
