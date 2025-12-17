@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Application\S3;
+namespace Tests\Unit\Application\S3\Services;
 
 use Application\S3\DTO\FileDTO;
 use Application\S3\DTO\Filters\FilterFileDTO;

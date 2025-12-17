@@ -16,9 +16,9 @@ class PresentationArchitectureTest extends BaseArchitectureTest
         $this->assertDependOn($this->presentation, $this->application);
     }
 
-    public function test_presentation_depend_infrastructure(): void
+    public function test_presentation_not_depend_infrastructure(): void
     {
-        $this->assertDependOn($this->presentation, $this->infrastructure);
+        $this->assertDoesNotDependOn($this->presentation, $this->infrastructure);
     }
 
     public function test_presentation_depend_shared(): void

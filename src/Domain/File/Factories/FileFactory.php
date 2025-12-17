@@ -26,7 +26,7 @@ class FileFactory extends Factory
             'storage' => 's3-testing',
             'endpoint' => config('filesystems.disks.s3-testing.endpoint'),
             'bucket' => config('filesystems.disks.s3-testing.bucket'),
-            'key' => microtime(),
+            'key' => microtime() . random_int(1, 99999),
             'size' => fake()->randomDigit(),
         ];
     }
