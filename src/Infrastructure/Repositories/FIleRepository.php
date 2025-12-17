@@ -27,7 +27,9 @@ class FileRepository extends BaseRepository implements FileRepositoryContract
      */
     public function getMany(FilterFileDTO $filters): Collection
     {
-        $query = $this->model::query();
+        $query = $filters->emptyValue('min_deleted_at') && $filters->emptyValue('max_deleted_at')
+            ? $this->model::query()
+            : $this->model::withTrashed();
 
         $query = $this->baseFilters($query, $filters);
 
@@ -55,7 +57,7 @@ class FileRepository extends BaseRepository implements FileRepositoryContract
      */
     public function forceDelete(FilterFileDTO $filters): void
     {
-        $query = $this->model::query();
+        $query = $this->model::onlyTrashed();
 
         $this->baseFilters($query, $filters)->forceDelete();
     }
@@ -72,11 +74,20 @@ class FileRepository extends BaseRepository implements FileRepositoryContract
         /** @phpstan-ignore argument.type */
         parent::baseFilters($query, $filters);
 
+        // Attribute: deleted_at
+        $filters->min_deleted_at = $filters->emptyValue('min_deleted_at') ? null : $filters->min_deleted_at;
+        $filters->max_deleted_at = $filters->emptyValue('max_deleted_at') ? null : $filters->max_deleted_at;
+
+        /** @phpstan-ignore-next-line */
+        $query = $this->filterDateRange($query, 'deleted_at', $filters->min_deleted_at, $filters->max_deleted_at);
+        /** @var Builder<File> $query */
+
         // Attribute: user_id
         if ($filters->isNotEmptyValue('user_ids')) {
             $query->whereUserId($filters->user_ids);
         }
 
+        // Attribute: size
         if ($filters->isNotEmptyValue('min_size') && $filters->emptyValue('max_size')) {
             $query->where('size', '>', $filters->min_size);
         }
