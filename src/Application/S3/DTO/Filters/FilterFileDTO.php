@@ -10,6 +10,9 @@ use Spatie\LaravelData\Optional;
 
 class FilterFileDTO extends FilterBaseDTO
 {
+    /** @var array<string> $ids */
+    public array|Optional $ids;
+
     /** @var array<string> $user_ids */
     public array|Optional $user_ids;
 

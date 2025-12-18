@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Presentation\File\Controllers;
 
 use Application\S3\DTO\Filters\FilterFileDTO;
+use Domain\File\Factories\FileFactory;
 use Domain\File\Models\File as FileModel;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
@@ -161,6 +162,92 @@ class FileControllerTest extends TestCase
         $response = $this->get(route('api.files.index', $filters->toArray()));
 
         // Check assert forbidden, 403 http code
+        $response->assertUnprocessable();
+        $response->assertInvalid(['user_ids.1']);
+    }
+
+    public function test_destroy_success_filter_by_user_ids(): void
+    {
+        // Auth user for testing
+        $user = $this->authUser();
+
+        // Factory for testing
+        $factory = new FileFactory();
+
+        // Data for testing
+        $files = [];
+        $count = 3;
+        for ($i = 0; $i < $count; $i++) {
+            $files[] = $factory->for($user)->create([
+                'key' => $this->disk->putFile(
+                    'force-delete-command-test-handle-success',
+                    UploadedFile::fake()->image('force-delete-command-test-handle-success.jpg'),
+                ),
+            ]);
+        }
+
+        // Filters for testing
+        $filters = FilterFileDTO::from(['user_ids' => [$user->id]]);
+
+        // Send API Request
+        $response = $this->delete(route('api.files.destroy'), $filters->toArray());
+
+        // Check asserts that files deleted with status code 204
+        $response->assertNoContent();
+        foreach ($files as $file) {
+            $this->assertSoftDeleted($file);
+        }
+    }
+
+    public function test_destroy_success_filter_by_ids(): void
+    {
+        // Auth user for testing
+        $user = $this->authUser();
+
+        // Factory for testing
+        $factory = new FileFactory();
+
+        // Filters for testing
+        $filters = FilterFileDTO::from(['ids' => []]);
+
+        // Data for testing
+        $files = [];
+        $count = 3;
+        for ($i = 0; $i < $count; $i++) {
+            $file = $factory->for($user)->create([
+                'key' => $this->disk->putFile(
+                    'force-delete-command-test-handle-success',
+                    UploadedFile::fake()->image('force-delete-command-test-handle-success.jpg'),
+                ),
+            ]);
+
+            $filters->ids[] = $file->id;
+            $files[] = $file;
+        }
+
+        // Send API Request
+        $response = $this->delete(route('api.files.destroy'), $filters->toArray());
+
+        // Check asserts that files deleted with status code 204
+        $response->assertNoContent();
+        foreach ($files as $file) {
+            $this->assertSoftDeleted($file);
+        }
+    }
+
+    public function test_destroy_validation_filter_user_ids(): void
+    {
+        // Auth user for testing
+        $user = $this->authUser();
+        $user2 = $this->getUser();
+
+        // Filters for testing
+        $filters = FilterFileDTO::from(['user_ids' => [$user->id, $user2->id]]);
+
+        // Send API Request with bad filters
+        $response = $this->delete(route('api.files.destroy', $filters->toArray()));
+
+        // Check asserts user_ids filter errors
         $response->assertUnprocessable();
         $response->assertInvalid(['user_ids.1']);
     }
