@@ -12,12 +12,17 @@ use Shared\Repositories\BaseRepository;
 class AnalysRepository extends BaseRepository implements AnalysRepositoryContract
 {
     /**
+     * @var class-string<Analys>
+     */
+    protected string $model = Analys::class;
+
+    /**
      * Get many models Analys
      *
      * @return Collection<array-key, Analys>
      */
     public function getMany(): Collection
     {
-        return Analys::query()->get();
+        return $this->model::query()->get();
     }
 }

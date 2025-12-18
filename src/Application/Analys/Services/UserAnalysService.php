@@ -30,7 +30,6 @@ class UserAnalysService implements UserAnalysServiceContract
      */
     public function createUserAnalysis(CreateUserAnalysisRequestDTO $dto): array
     {
-
         DB::beginTransaction();
 
         try {

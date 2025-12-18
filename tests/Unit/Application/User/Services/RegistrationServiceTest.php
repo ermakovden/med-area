@@ -50,7 +50,7 @@ class RegistrationServiceTest extends TestCase
         $this->userRepositoryMock->shouldReceive('create')
             ->once()
             ->with($userDTO)
-            ->andReturn(UserDTO::from($createdUser));
+            ->andReturn($createdUser);
 
         // Result from method of service
         $result = $this->service->register($userDTO);

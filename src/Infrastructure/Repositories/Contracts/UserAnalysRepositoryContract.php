@@ -5,21 +5,13 @@ declare(strict_types=1);
 namespace Infrastructure\Repositories\Contracts;
 
 use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
-use Application\Analys\DTO\UserAnalysDTO;
 use Domain\Analys\Models\UserAnalys;
 use Illuminate\Database\Eloquent\Collection;
 use Shared\Exceptions\ServerErrorException;
+use Shared\Repositories\Contracts\BaseRepositoryContract;
 
-interface UserAnalysRepositoryContract
+interface UserAnalysRepositoryContract extends BaseRepositoryContract
 {
-    /**
-     * Create UserAnalys Model
-     *
-     * @param UserAnalysDTO $dto
-     * @return UserAnalys
-     */
-    public function create(UserAnalysDTO $dto): UserAnalys;
-
     /**
      * Get many model UserAnalys use filters
      *

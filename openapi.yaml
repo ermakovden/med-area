@@ -141,6 +141,98 @@ paths:
           description: Forbidden.
         '422':
           description: 'Validation error.'
+  /api/files:
+    get:
+      tags:
+        - file
+        - api
+      description: 'Get files by filters.'
+      operationId: apiFilesIndex
+      parameters:
+        -
+          name: 'user_ids[]'
+          in: query
+          description: 'Array of user IDs'
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+        -
+          name: 'ids[]'
+          in: query
+          description: 'Array of files IDs'
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: 'Files data.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileResourceCollection'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '422':
+          description: 'Validation error.'
+    post:
+      tags:
+        - file
+        - api
+      description: 'Add files for user.'
+      operationId: apiFilesUpload
+      requestBody:
+        $ref: '#/components/requestBodies/UploadFilesRequest'
+      responses:
+        '201':
+          description: 'Files for user added.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileResourceCollection'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '422':
+          description: 'Validation error.'
+    delete:
+      tags:
+        - file
+        - api
+      description: 'Delete files by filters.'
+      operationId: apiFilesDestroy
+      parameters:
+        -
+          name: 'user_ids[]'
+          in: query
+          description: 'Array of user IDs'
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+        -
+          name: 'ids[]'
+          in: query
+          description: 'Array of files IDs'
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '204':
+          description: 'Files deleted.'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '422':
+          description: 'Validation error.'
   /api/auth/login:
     post:
       tags:
@@ -359,6 +451,29 @@ components:
           items:
             $ref: '#/components/schemas/UserAnalysResource'
       type: object
+    FileResource:
+      title: FileResource
+      properties:
+        id:
+          description: 'id of File'
+          type: string
+          format: uuid
+        user_id:
+          description: 'user_id of File'
+          type: string
+          format: uuid
+        path:
+          description: 'path of File'
+          type: string
+      type: object
+    FileResourceCollection:
+      title: FileResourceCollection
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileResource'
+      type: object
     TokenResource:
       title: TokenResource
       properties:
@@ -413,6 +528,26 @@ components:
                   data: { description: 'Value of analys', format: float }
                 type: object
             type: object
+    UploadFilesRequest:
+      description: 'Upload files request.'
+      content:
+        multipart/form-data:
+          schema:
+            required:
+              - user_id
+              - files
+            properties:
+              user_id:
+                description: 'User ID'
+                type: integer
+                format: int64
+              files:
+                description: 'List of files.'
+                type: array
+                items:
+                  type: string
+                  format: binary
+            type: object
     LoginRequest:
       description: 'Authorizarion user request'
       content:
@@ -452,6 +587,9 @@ tags:
   -
     name: api
     description: api
+  -
+    name: file
+    description: file
   -
     name: auth
     description: auth

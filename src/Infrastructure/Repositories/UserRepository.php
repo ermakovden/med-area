@@ -7,27 +7,14 @@ namespace Infrastructure\Repositories;
 use Application\User\DTO\UserDTO;
 use Domain\User\Models\User;
 use Infrastructure\Repositories\Contracts\UserRepositoryContract;
+use Shared\Repositories\BaseRepository;
 
-class UserRepository implements UserRepositoryContract
+class UserRepository extends BaseRepository implements UserRepositoryContract
 {
     /**
      * @var class-string<User>
      */
-    protected $model = User::class;
-
-    /**
-     * Create User
-     *
-     * @param UserDTO $userDTO
-     * @return UserDTO
-     */
-    public function create(UserDTO $userDTO): UserDTO
-    {
-        /** @var User $user */
-        $user = $this->model::create($userDTO->toArray());
-
-        return UserDTO::from($user);
-    }
+    protected string $model = User::class;
 
     /**
      * Get UserDTO model by id

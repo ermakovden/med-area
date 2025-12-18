@@ -1,5 +1,8 @@
 <?php
 
+// Presentation/Files
+require __DIR__ . '/../src/Presentation/File/routes/api.files.php';
+
 // Presentation/User
 require __DIR__ . '/../src/Presentation/User/routes/api.users.registration.php';
 require __DIR__ . '/../src/Presentation/User/routes/api.users.auth.php';

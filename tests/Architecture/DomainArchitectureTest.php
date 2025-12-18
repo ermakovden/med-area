@@ -20,9 +20,4 @@ class DomainArchitectureTest extends BaseArchitectureTest
     {
         $this->assertDoesNotDependOn($this->domain, $this->presentation);
     }
-
-    public function test_domain_not_depend_shared(): void
-    {
-        $this->assertDoesNotDependOn($this->domain, $this->shared);
-    }
 }

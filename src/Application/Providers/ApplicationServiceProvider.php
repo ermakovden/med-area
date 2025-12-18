@@ -8,6 +8,8 @@ use Application\Analys\Services\AnalysService;
 use Application\Analys\Services\Contracts\AnalysServiceContract;
 use Application\Analys\Services\Contracts\UserAnalysServiceContract;
 use Application\Analys\Services\UserAnalysService;
+use Application\S3\Services\Contracts\S3ServiceContract;
+use Application\S3\Services\YCloudS3Service;
 use Application\User\Services\AuthService;
 use Application\User\Services\Contracts\AuthServiceContract;
 use Application\User\Services\Contracts\RegistrationServiceContract;
@@ -24,6 +26,10 @@ class ApplicationServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     public array $bindings = [
+
+        // Files
+        S3ServiceContract::class => YCloudS3Service::class,
+
         // User
         RegistrationServiceContract::class => RegistrationService::class,
         AuthServiceContract::class => AuthService::class,

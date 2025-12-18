@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use Database\Seeders\Analysis\AnalysisEnumSeeder;
 use Database\Seeders\Analysis\Dev\UserAnalysSeeder;
+use Database\Seeders\Files\Dev\FileSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
 
         if (! app()->isProduction()) {
             $this->call(UserAnalysSeeder::class);
+            $this->call(FileSeeder::class);
         }
     }
 }
