@@ -12,20 +12,32 @@ use Shared\Requests\BaseRequest;
 use Shared\Rules\UserIdMatchesAuth;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
-#[OA\Schema(
-    title: 'UploadFilesRequest',
+#[OA\RequestBody(
+    request: 'UploadFilesRequest',
     description: 'Upload files request.',
-    properties: [
-        new OA\Property(property: 'files', description: 'List of files.', format: 'array', items: new OA\Items(
-            new OA\MediaType(
-                schema: new OA\Schema(
-                    title: 'file',
-                    description: 'Content for upload. Max size: 5MB',
-                    format: 'file',
-                )
-            )
-        )),
-    ]
+    content: new OA\MediaType(
+        mediaType: 'multipart/form-data',
+        schema: new OA\Schema(
+            required: ['user_id', 'files'],
+            properties: [
+                new OA\Property(
+                    property: 'user_id',
+                    description: 'User ID',
+                    type: 'integer',
+                    format: 'int64',
+                ),
+                new OA\Property(
+                    property: 'files',
+                    description: 'List of files.',
+                    type: 'array',
+                    items: new OA\Items(
+                        type: 'string',
+                        format: 'binary',
+                    )
+                ),
+            ]
+        )
+    )
 )]
 class UploadFilesRequest extends BaseRequest
 {
