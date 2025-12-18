@@ -8,6 +8,7 @@ use Application\S3\Services\Contracts\S3ServiceContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Presentation\BaseController;
+use Presentation\File\Requests\DeleteFilesRequest;
 use Presentation\File\Requests\IndexFileRequest;
 use Presentation\File\Requests\UploadFilesRequest;
 use Presentation\File\Resources\FileResourceCollection;
@@ -43,5 +44,14 @@ class FileController extends BaseController
         $files = $this->s3Service->getFiles($filters);
 
         return Response::json(new FileResourceCollection($files), 200);
+    }
+
+    public function destroy(DeleteFilesRequest $request): JsonResponse
+    {
+        $filters = $request->getDTO();
+
+        $this->s3Service->delete($filters);
+
+        return Response::json(null, 204);
     }
 }
