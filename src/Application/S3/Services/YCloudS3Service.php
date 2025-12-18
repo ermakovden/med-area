@@ -16,6 +16,9 @@ use Infrastructure\Repositories\Contracts\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Shared\Exceptions\ServerErrorException;
 
+/**
+ * Docs see here: https://yandex.cloud/ru/docs/storage/
+ */
 class YCloudS3Service implements S3ServiceContract
 {
     public Filesystem $disk;
