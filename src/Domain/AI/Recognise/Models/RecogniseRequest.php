@@ -15,21 +15,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $user_id
  * @property string $file_id
  * @property string $operation_id
+ * @property array<string, string>|null $response
  * @property RecogniseStatus $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|File newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|File newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|File query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereFileId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereOperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|File whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereFileId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereOperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereResponse($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class RecogniseRequest extends Model
@@ -43,6 +45,7 @@ class RecogniseRequest extends Model
         'user_id',
         'file_id',
         'operation_id',
+        'response',
         'status',
     ];
 
@@ -55,6 +58,7 @@ class RecogniseRequest extends Model
     {
         return [
             'id' => 'int',
+            'response' => 'array',
             'status' => RecogniseStatus::class,
         ];
     }

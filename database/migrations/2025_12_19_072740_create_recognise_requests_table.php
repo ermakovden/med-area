@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('file_id')->constrained()->cascadeOnDelete();
             $table->string('operation_id');
+            $table->json('response')->nullable();
             $table->string('status');
             $table->timestamps();
         });

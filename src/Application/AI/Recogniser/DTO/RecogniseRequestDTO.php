@@ -21,6 +21,11 @@ class RecogniseRequestDTO extends BaseDTO
 
     public string|Optional $operation_id;
 
+    /**
+     * @var array<string, string>|Optional|null
+     */
+    public array|Optional|null $response;
+
     public RecogniseStatus|Optional $status;
 
     #[WithCast(DateTimeInterfaceCast::class)]
