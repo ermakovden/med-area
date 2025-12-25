@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('recognise_requests', function (Blueprint $table) {
-            $table->id()->primary();
+            $table->id();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('file_id')->constrained()->cascadeOnDelete();
             $table->string('operation_id');
