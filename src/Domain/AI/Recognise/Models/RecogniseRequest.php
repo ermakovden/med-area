@@ -57,7 +57,6 @@ class RecogniseRequest extends Model
     protected function casts(): array
     {
         return [
-            'id' => 'int',
             'response' => 'array',
             'status' => RecogniseStatus::class,
         ];
