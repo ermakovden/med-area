@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Application\AI\Recogniser\Services;
 
+use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
 use Application\AI\Recogniser\DTO\RecogniseURLParamsDTO;
 use Application\AI\Recogniser\DTO\Requests\RecogniseAsyncRequestDTO;
 use Application\AI\Recogniser\DTO\Responses\RecogniseAsyncResponse;
+use Application\AI\Recogniser\Services\Contracts\RecogniseRequestServiceContract;
 use Application\AI\Recogniser\Services\Contracts\RecogniserServiceContract;
+use Domain\AI\Recognise\Enums\RecogniseStatus;
 use Illuminate\Support\Facades\Http;
 use Shared\Enums\AuthTokenType;
 use Shared\Exceptions\ServerErrorException;
@@ -20,8 +23,9 @@ use Shared\Services\BaseExternalService;
  */
 class YVisionOCRService extends BaseExternalService implements RecogniserServiceContract
 {
-    public function __construct()
-    {
+    public function __construct(
+        protected readonly RecogniseRequestServiceContract $recogniseRequestService,
+    ) {
         parent::__construct();
 
         $authToken = config('yc.ocr.secret');
@@ -34,7 +38,7 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
         ]));
     }
 
-    public function recogniseAsync(RecogniseAsyncRequestDTO $request): RecogniseAsyncResponse
+    public function recogniseAsync(RecogniseAsyncRequestDTO $request, RecogniseRequestDTO $recogniseRequestDTO): RecogniseRequestDTO
     {
         $this->setURLResourceParam('recognizeTextAsync');
 
@@ -50,10 +54,20 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
                 $response->throw();
             }
 
-            \Log::info($response->json());
-            return RecogniseAsyncResponse::from($response->json());
+            $responseDTO = RecogniseAsyncResponse::from($response->json());
 
-        } catch (\Exception $e) {
+            if ($response->successful()) {
+                $recogniseRequestDTO->operation_id = $responseDTO->id;
+                $recogniseRequestDTO->status = RecogniseStatus::PROCESSED;
+
+                /** @var int $recogniseRequestId */
+                $recogniseRequestId = $recogniseRequestDTO->id;
+                $this->recogniseRequestService->updateById($recogniseRequestId, $recogniseRequestDTO);
+            }
+
+            return $recogniseRequestDTO;
+
+        } catch (\Throwable $e) {
             \Log::error('Error when try start recognise async', [
                 'class' => YVisionOCRService::class,
                 'method' => 'recogniseAsync',
