@@ -38,11 +38,32 @@ class YVisionOCRServicePDFTest extends TestCase
 
     public function test_recognise_async_success_pdf(): void
     {
+        $this->test_recognise_async_success('pdf');
+    }
+
+    public function test_recognise_async_success_jpeg(): void
+    {
+        $this->test_recognise_async_success('jpeg');
+    }
+
+    public function test_recognise_async_success_jpg(): void
+    {
+        $this->test_recognise_async_success('jpg');
+    }
+
+    public function test_recognise_async_success_png(): void
+    {
+        $this->test_recognise_async_success('png');
+    }
+
+
+    protected function test_recognise_async_success(string $extension): void
+    {
         // Auth user for testing
         $user = $this->authUser();
 
         // Testing pdf file for testing
-        $file = UploadedFile::fake()->image('testing.pdf');
+        $file = UploadedFile::fake()->image('testing.' . $extension);
 
         // Data for testing
         $fileFactory = new FileFactory();
