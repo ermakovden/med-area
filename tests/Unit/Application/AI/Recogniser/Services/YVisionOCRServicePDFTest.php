@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Application\AI\Recogniser\Services;
 
+use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
 use Application\AI\Recogniser\DTO\Requests\RecogniseAsyncRequestDTO;
-use Application\AI\Recogniser\DTO\Responses\RecogniseAsyncResponse;
+use Application\AI\Recogniser\Services\Contracts\RecogniseRequestServiceContract;
 use Application\AI\Recogniser\Services\YVisionOCRService;
+use Domain\AI\Recognise\Enums\RecogniseStatus;
 use Domain\AI\Recognise\Enums\YC\OCRModel;
+use Domain\AI\Recognise\Factories\RecogniseRequestFactory;
+use Domain\AI\Recognise\Models\RecogniseRequest;
+use Domain\File\Factories\FileFactory;
+use Domain\File\Models\File;
 use Illuminate\Http\UploadedFile;
 use Shared\Enums\LanguageCode;
 use Tests\TestCase;
@@ -25,15 +31,33 @@ class YVisionOCRServicePDFTest extends TestCase
     {
         parent::setUp();
 
-        $this->service = new YVisionOCRService();
+        $this->service = new YVisionOCRService(
+            app(RecogniseRequestServiceContract::class),
+        );
     }
 
     public function test_recognise_async_success_pdf(): void
     {
+        // Auth user for testing
+        $user = $this->authUser();
+
         // Testing pdf file for testing
         $file = UploadedFile::fake()->image('testing.pdf');
 
         // Data for testing
+        $fileFactory = new FileFactory();
+        $recogniseRequestFactory = new RecogniseRequestFactory();
+
+        $fileModel = File::create(array_merge($fileFactory->definition(), ['user_id' => $user->id]));
+
+        $recogniseRequetModel = RecogniseRequest::create(
+            array_merge($recogniseRequestFactory->definition(), [
+                'user_id' => $user->id,
+                'file_id' => $fileModel->id,
+            ])
+        );
+        $recogniseRequestDTO = RecogniseRequestDTO::from($recogniseRequetModel);
+
         $requestDTO = RecogniseAsyncRequestDTO::from([
             'content' => base64_encode($file->getContent()),
             'mimeType' => $file->extension(),
@@ -42,10 +66,11 @@ class YVisionOCRServicePDFTest extends TestCase
         ]);
 
         // Result from method of service
-        $result = $this->service->recogniseAsync($requestDTO);
+        $result = $this->service->recogniseAsync($requestDTO, $recogniseRequestDTO);
 
         // Check asserts that success
-        $this->assertInstanceOf(RecogniseAsyncResponse::class, $result);
-        $this->assertFalse($result->done);
+        $this->assertInstanceOf(RecogniseRequestDTO::class, $result);
+        $this->assertIsString($result->operation_id);
+        $this->assertSame(RecogniseStatus::PROCESSED, $result->status);
     }
 }
