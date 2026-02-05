@@ -24,7 +24,7 @@ class FileDTO extends BaseDTO
 
     public string|Optional $bucket;
 
-    public string|Optional $key;
+    public string $key;
 
     public int|Optional $size;
 

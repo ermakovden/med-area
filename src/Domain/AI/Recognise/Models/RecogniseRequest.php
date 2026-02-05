@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property string $user_id
  * @property string $file_id
- * @property string $operation_id
+ * @property string|null $operation_id
  * @property array<string, string>|null $response
  * @property RecogniseStatus $status
  * @property \Illuminate\Support\Carbon|null $created_at

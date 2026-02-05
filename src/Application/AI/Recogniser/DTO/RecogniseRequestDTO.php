@@ -19,10 +19,10 @@ class RecogniseRequestDTO extends BaseDTO
 
     public string|Optional $file_id;
 
-    public string|Optional $operation_id;
+    public string|Optional|null $operation_id;
 
     /**
-     * @var array<string, string>|Optional|null
+     * @var array<string, string>|null|Optional
      */
     public array|Optional|null $response;
 

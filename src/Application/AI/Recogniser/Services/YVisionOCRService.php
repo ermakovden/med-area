@@ -23,18 +23,20 @@ use Shared\Services\BaseExternalService;
  */
 class YVisionOCRService extends BaseExternalService implements RecogniserServiceContract
 {
+    protected string $module = 'ocr';
+
     public function __construct(
         protected readonly RecogniseRequestServiceContract $recogniseRequestService,
     ) {
         parent::__construct();
 
-        $authToken = config('yc.ocr.secret');
+        $authToken = config('yc.' . $this->module . '.secret');
         $this->setAuthorization($authToken, AuthTokenType::API_KEY);
 
         $this->setURLParams(RecogniseURLParamsDTO::from([
-            'endpoint' => config('yc.ocr.endpoint'),
-            'version' => config('yc.ocr.version'),
-            'module' => 'ocr',
+            'endpoint' => config('yc.' . $this->module . '.endpoint'),
+            'version' => config('yc.' . $this->module . '.version'),
+            'module' => $this->module,
         ]));
     }
 

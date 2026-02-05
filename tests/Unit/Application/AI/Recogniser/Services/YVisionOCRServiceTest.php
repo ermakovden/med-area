@@ -18,7 +18,7 @@ use Illuminate\Http\UploadedFile;
 use Shared\Enums\LanguageCode;
 use Tests\TestCase;
 
-class YVisionOCRServicePDFTest extends TestCase
+class YVisionOCRServiceTest extends TestCase
 {
     /**
      * Сontains the service being tested
