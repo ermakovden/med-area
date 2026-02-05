@@ -14,6 +14,13 @@ class RecogniseRequestService implements RecogniseRequestServiceContract
         protected readonly RecogniseRequestRepositoryContract $recogniseRequestRepository
     ) {}
 
+    public function create(RecogniseRequestDTO $data): RecogniseRequestDTO
+    {
+        $model = $this->recogniseRequestRepository->create($data);
+
+        return RecogniseRequestDTO::from($model);
+    }
+
     public function updateById(int $id, RecogniseRequestDTO $data): RecogniseRequestDTO
     {
         return $this->recogniseRequestRepository->updateById($id, $data);
