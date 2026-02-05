@@ -18,11 +18,11 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
     description: 'Create many UserAnalys Request',
     content: new OA\JsonContent(
         properties: [
-            new OA\Property(property: 'user_id', description: 'User Id for analysis', format: 'string'),
+            new OA\Property(property: 'user_id', description: 'User Id for analysis', type: 'string'),
             new OA\Property(property: 'analysis', properties: [
-                new OA\Property(property: 'user_id', description: 'User Id for analys', format: 'string'),
-                new OA\Property(property: 'analys_id', description: 'Analys ID', format: 'string', enum: Analys::class),
-                new OA\Property(property: 'data', description: 'Value of analys', format: 'float'),
+                new OA\Property(property: 'user_id', description: 'User Id for analys', type: 'string'),
+                new OA\Property(property: 'analys_id', description: 'Analys ID', type: 'string', enum: Analys::class),
+                new OA\Property(property: 'data', description: 'Value of analys', type: 'float'),
             ]),
         ]
     )

@@ -10,10 +10,12 @@ namespace Domain\AI\Recognise\Enums;
  * Statuses that define the user: canceled, saved
  * saved - only for success status
  *
- * Statuses that define the system: processed, failed, success
+ * Statuses that define the system: created, processed, failed, success
  */
 enum RecogniseStatus: string
 {
+    case CREATED = 'created';
+
     case CANCELED = 'canceled';
 
     case PROCESSED = 'processed';
