@@ -17,8 +17,8 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'user_id', description: 'ID of user', type: 'string', format: 'uuid'),
         new OA\Property(property: 'file_id', description: 'File ID in recogniser', type: 'string', format: 'uuid'),
         new OA\Property(
-            property: 'response', 
-            description: 'Response from external recogniser service', 
+            property: 'response',
+            description: 'Response from external recogniser service',
             type: 'array',
             items: new OA\Items(type: 'string'),
         ),
