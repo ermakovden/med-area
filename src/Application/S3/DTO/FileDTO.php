@@ -18,13 +18,13 @@ class FileDTO extends BaseDTO
 
     public string|Optional $user_id;
 
-    public Storage|Optional $storage;
+    public Storage $storage;
 
     public string|Optional $endpoint;
 
     public string|Optional $bucket;
 
-    public string|Optional $key;
+    public string $key;
 
     public int|Optional $size;
 

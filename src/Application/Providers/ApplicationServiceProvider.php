@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Application\Providers;
 
+use Application\AI\Recogniser\Services\Contracts\RecogniseRequestServiceContract;
+use Application\AI\Recogniser\Services\Contracts\RecogniserServiceContract;
+use Application\AI\Recogniser\Services\RecogniseRequestService;
+use Application\AI\Recogniser\Services\YVisionOCRService;
 use Application\Analys\Services\AnalysService;
 use Application\Analys\Services\Contracts\AnalysServiceContract;
 use Application\Analys\Services\Contracts\UserAnalysServiceContract;
@@ -26,6 +30,10 @@ class ApplicationServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     public array $bindings = [
+
+        // AI
+        RecogniserServiceContract::class => YVisionOCRService::class,
+        RecogniseRequestServiceContract::class => RecogniseRequestService::class,
 
         // Files
         S3ServiceContract::class => YCloudS3Service::class,

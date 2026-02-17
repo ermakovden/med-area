@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * @property string $id
+ * @property int $id
  * @property string $name
  * @property string $description
  * @property \Illuminate\Support\Carbon|null $created_at

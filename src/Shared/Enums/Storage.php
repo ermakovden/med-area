@@ -9,4 +9,6 @@ enum Storage: string
     case S3 = 's3';
 
     case S3_TESTING = 's3-testing';
+
+    case LOCAL = 'local';
 }
