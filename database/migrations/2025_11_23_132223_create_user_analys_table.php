@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->foreignId('analys_id')->constrained('analysis')->cascadeOnDelete();
             $table->string('analys_name')->nullable();
             $table->float('data');
+            $table->string('unit');
             $table->timestamps();
         });
     }
