@@ -29,8 +29,37 @@ class RecogniseAsyncResponse extends BaseDTO
 
     public bool $done;
 
-    /** @var array<string, string>|null */
+    /**
+     * @var array{
+     *     textAnnotation: array{
+     *         fullText: string,
+     *         blocks: list<array<string, mixed>>
+     *     }
+     * }|null
+     */
     public ?array $metadata;
 
     public RecogniseErrorResponse|Optional $status;
+
+    /**
+     * Get full text from textAnnotation
+     *
+     * @return string|null
+     */
+    public function getFullText(): ?string
+    {
+        /** @var string|null */
+        return $this->metadata['textAnnotation']['fullText'] ?? null;
+    }
+
+    /**
+     * Get blocks from textAnnotation
+     *
+     * @return list<array<string, mixed>>|null
+     */
+    public function getBlocks(): ?array
+    {
+        /** @var list<array<string, mixed>>|null */
+        return $this->metadata['textAnnotation']['blocks'] ?? null;
+    }
 }
