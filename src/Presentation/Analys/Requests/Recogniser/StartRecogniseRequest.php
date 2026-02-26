@@ -56,7 +56,7 @@ class StartRecogniseRequest extends BaseRequest
         $dto = RecogniseAsyncRequestDTO::from($this->validated());
 
         if (empty($dto->languageCodes) || $dto->emptyValue('languageCodes')) {
-            $dto->languageCodes = [LanguageCode::EU];
+            $dto->languageCodes = [LanguageCode::EN];
         }
 
         $file = $this->getFileDTO();

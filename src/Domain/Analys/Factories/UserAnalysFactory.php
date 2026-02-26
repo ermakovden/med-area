@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Domain\Analys\Factories;
 
 use Domain\Analys\Enums\Analys;
+use Domain\Analys\Enums\Unit;
 use Domain\Analys\Models\UserAnalys;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -29,6 +30,7 @@ class UserAnalysFactory extends Factory
             'analys_id' => $analys->value,
             'analys_name' => $analys->name,
             'data' => fake()->randomDigit(),
+            'unit' => fake()->randomElement(Unit::cases()),
         ];
     }
 }

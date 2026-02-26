@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Presentation\Analys\Controllers\AnalysController;
 use Presentation\Analys\Controllers\RecogniserController;
 
-Route::prefix('analysis')->group(function () {
+Route::prefix('analysis')->middleware(['auth'])->group(function () {
     Route::get('', [AnalysController::class, 'index'])->name('api.analysis.index');
 
     // Recogniser

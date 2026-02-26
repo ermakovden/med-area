@@ -8,5 +8,5 @@ enum LanguageCode: string
 {
     case RU = 'ru';
 
-    case EU = 'eu';
+    case EN = 'en';
 }

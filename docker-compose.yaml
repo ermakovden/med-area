@@ -32,6 +32,7 @@ services:
       - ./docker/php/config/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf
     extra_hosts:
       - "host.docker.internal:host-gateway"
+      - "medarea-redis:host-gateway"
     networks:
       - medarea-network
     depends_on:
@@ -69,6 +70,8 @@ services:
       - redis-data:/data
     ports:
       - "${REDIS_PORT}:6379"
+    networks:
+      - medarea-network
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 1s
