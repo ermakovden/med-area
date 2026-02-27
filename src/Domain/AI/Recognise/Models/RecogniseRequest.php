@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $operation_id
  * @property array<string, string>|null $response
  * @property RecogniseStatus $status
+ * @property string|null $failed_reason
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
@@ -30,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereOperationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereResponse($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereFailedReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecogniseRequest whereUpdatedAt($value)
  * @mixin \Eloquent
@@ -47,6 +49,7 @@ class RecogniseRequest extends Model
         'operation_id',
         'response',
         'status',
+        'failed_reason',
     ];
 
     /**
