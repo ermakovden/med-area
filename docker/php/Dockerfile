@@ -1,4 +1,4 @@
-FROM php:8.4-fpm AS php
+FROM php:8.5-fpm AS php
 
 WORKDIR /var/www/app
 
@@ -43,7 +43,7 @@ ARG xdebug_client_port
 
 COPY ./docker/php/config/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
-RUN pecl install xdebug-3.4.5 && \
+RUN pecl install xdebug-3.5.0 && \
       docker-php-ext-enable xdebug && \
       sed -i "s/^xdebug\.idekey=.*/xdebug.idekey=${xdebug_idekey}/" /usr/local/etc/php/conf.d/xdebug.ini && \
       sed -i "s/^xdebug\.client_port=.*/xdebug.client_port=${xdebug_client_port}/" /usr/local/etc/php/conf.d/xdebug.ini
