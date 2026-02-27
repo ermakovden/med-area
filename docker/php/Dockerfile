@@ -1,4 +1,4 @@
-FROM php:8.4-fpm AS php
+FROM php:8.5-fpm AS php
 
 WORKDIR /var/www/app
 
@@ -28,8 +28,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip pdo_pgsql
 
-RUN pecl install redis \
-    && docker-php-ext-enable redis
+RUN pecl install redis-beta && docker-php-ext-enable redis
 
 COPY --from=composer:2.8.5 /usr/bin/composer /usr/bin/composer
 
@@ -43,7 +42,7 @@ ARG xdebug_client_port
 
 COPY ./docker/php/config/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
-RUN pecl install xdebug-3.4.5 && \
+RUN pecl install xdebug-3.5.0 && \
       docker-php-ext-enable xdebug && \
       sed -i "s/^xdebug\.idekey=.*/xdebug.idekey=${xdebug_idekey}/" /usr/local/etc/php/conf.d/xdebug.ini && \
       sed -i "s/^xdebug\.client_port=.*/xdebug.client_port=${xdebug_client_port}/" /usr/local/etc/php/conf.d/xdebug.ini
