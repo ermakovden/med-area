@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Application\Providers;
 
+use Application\AI\Recogniser\Services\Contracts\RecogniseRequestServiceContract;
+use Application\AI\Recogniser\Services\Contracts\RecogniserServiceContract;
+use Application\AI\Recogniser\Services\RecogniseRequestService;
+use Application\AI\Recogniser\Services\RecogniseResponseParser;
+use Application\AI\Recogniser\Services\YVisionOCRService;
 use Application\Analys\Services\AnalysService;
 use Application\Analys\Services\Contracts\AnalysServiceContract;
 use Application\Analys\Services\Contracts\UserAnalysServiceContract;
@@ -27,6 +32,10 @@ class ApplicationServiceProvider extends ServiceProvider
      */
     public array $bindings = [
 
+        // AI
+        RecogniserServiceContract::class => YVisionOCRService::class,
+        RecogniseRequestServiceContract::class => RecogniseRequestService::class,
+
         // Files
         S3ServiceContract::class => YCloudS3Service::class,
 
@@ -45,6 +54,8 @@ class ApplicationServiceProvider extends ServiceProvider
         foreach ($this->bindings as $interface => $class) {
             $this->app->bind($interface, $class);
         }
+
+        $this->app->singleton(RecogniseResponseParser::class);
     }
 
     public function boot(): void {}

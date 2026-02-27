@@ -15,7 +15,11 @@ use Infrastructure\Jobs\File\DeleteFileJob;
 use Infrastructure\Repositories\Contracts\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Shared\Exceptions\ServerErrorException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Docs see here: https://yandex.cloud/ru/docs/storage/
+ */
 class YCloudS3Service implements S3ServiceContract
 {
     public Filesystem $disk;
@@ -90,6 +94,26 @@ class YCloudS3Service implements S3ServiceContract
             ]);
             throw new ServerErrorException();
         }
+    }
+
+    /**
+     * Get file content from s3 storage
+     *
+     * @param string $key
+     * @param EnumsStorage $disk = EnumsStorage::S3
+     *
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function getFileFromStorage(string $key, EnumsStorage $disk = EnumsStorage::S3): string
+    {
+        $disk = Storage::disk($disk);
+
+        if (! $content = $disk->get($key)) {
+            throw new NotFoundHttpException();
+        }
+
+        return $content;
     }
 
     public function delete(FilterFileDTO $filters): void

@@ -17,6 +17,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AnalysResourceCollection'
+  /api/analysis/recogniser:
+    post:
+      tags:
+        - recognise
+        - api
+      description: 'Start recognise of file.'
+      operationId: apiAnalysisRecogniser
+      requestBody:
+        $ref: '#/components/requestBodies/StartRecogniseRequest'
+      responses:
+        '200':
+          description: 'Proccess of recognise file started.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecogniseRequestResource'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+        '422':
+          description: 'Validation error.'
   '/api/users/{userId}/analysis':
     get:
       tags:
@@ -418,6 +440,45 @@ components:
           items:
             $ref: '#/components/schemas/AnalysResource'
       type: object
+    RecogniseRequestResource:
+      title: RecogniseRequestResource
+      properties:
+        id:
+          description: ID
+          type: string
+          format: uuid
+        user_id:
+          description: 'ID of user'
+          type: string
+          format: uuid
+        file_id:
+          description: 'File ID in recogniser'
+          type: string
+          format: uuid
+        response:
+          description: 'Response from external recogniser service'
+          type: array
+          items:
+            type: string
+        status:
+          description: 'Status of recognise request'
+          type: string
+          enum:
+            - created
+            - canceled
+            - processed
+            - failed
+            - success
+            - saved
+        created_at:
+          description: 'Datetime created at'
+          type: string
+          format: date-time
+        updated_at:
+          description: 'Datetime updated at'
+          type: string
+          format: date-time
+      type: object
     UserAnalysResource:
       title: UserAnalysResource
       properties:
@@ -520,13 +581,46 @@ components:
             properties:
               user_id:
                 description: 'User Id for analysis'
-                format: string
+                type: string
               analysis:
                 properties:
-                  user_id: { description: 'User Id for analys', format: string }
-                  analys_id: { description: 'Analys ID', format: string, enum: [1, 2, 3, 4] }
-                  data: { description: 'Value of analys', format: float }
+                  user_id: { description: 'User Id for analys', type: string }
+                  analys_id: { description: 'Analys ID', type: string, enum: [1, 2, 3, 4] }
+                  data: { description: 'Value of analys', type: number, format: float }
                 type: object
+            type: object
+    StartRecogniseRequest:
+      description: 'Start recognise of file'
+      content:
+        application/json:
+          schema:
+            required:
+              - file_id
+              - model
+            properties:
+              file_id:
+                description: 'File id for recognise'
+                type: string
+                format: uuid
+              language_codes:
+                description: 'List of language codes.'
+                type: array
+                items:
+                  type: string
+                  enum: [ru, eu]
+              model:
+                description: 'Model of recogniser'
+                type: string
+                enum:
+                  - page
+                  - table
+                  - handwritten
+                  - passport
+                  - driver-license-front
+                  - driver-license-back
+                  - vehicle-registration-front
+                  - vehicle-registration-back
+                  - license-plates
             type: object
     UploadFilesRequest:
       description: 'Upload files request.'
@@ -587,6 +681,9 @@ tags:
   -
     name: api
     description: api
+  -
+    name: recognise
+    description: recognise
   -
     name: file
     description: file
