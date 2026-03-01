@@ -24,13 +24,15 @@ class UserAnalysFactory extends Factory
     public function definition(): array
     {
         $analys = Analys::from(random_int(1, count(Analys::cases())));
+        $unit = fake()->randomElement(Unit::cases());
+        /** @var Unit $unit */
 
         return [
             'user_id' => fake()->uuid(),
             'analys_id' => $analys->value,
             'analys_name' => $analys->name,
             'data' => fake()->randomDigit(),
-            'unit' => fake()->randomElement(Unit::cases()),
+            'unit' => $unit->value,
         ];
     }
 }
