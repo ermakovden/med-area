@@ -11,9 +11,9 @@ class ApplicationArchitectureTest extends BaseArchitectureTest
         $this->assertDependOn($this->application, $this->infrastructure);
     }
 
-    public function test_application_depend_presentation(): void
+    public function test_application_does_not_depend_presentation(): void
     {
-        $this->assertDependOn($this->application, $this->presentation);
+        $this->assertDoesNotDependOn($this->application, $this->presentation);
     }
 
     public function test_application_depend_domain(): void

@@ -10,6 +10,9 @@ class AnalysControllerTest extends TestCase
 {
     public function test_index_sucess(): void
     {
+        // Auth user for testing
+        $this->authUser();
+
         // Send API Request
         $response = $this->get(route('api.analysis.index'));
 

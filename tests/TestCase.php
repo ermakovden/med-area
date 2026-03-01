@@ -48,7 +48,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getUser(): User
     {
-        $userDTO = UserDTO::from((new UserFactory())->definition());
+        $userDTO = UserDTO::from(new UserFactory()->definition());
         $userDTO->password = $this->userPassword;
 
         /** @var User $userModel */

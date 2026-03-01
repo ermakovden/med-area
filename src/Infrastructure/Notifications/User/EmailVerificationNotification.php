@@ -32,7 +32,7 @@ class EmailVerificationNotification extends Notification implements ShouldQueue
      */
     public function toMail(User $notifiable): MailMessage
     {
-        return (new MailMessage())
+        return new MailMessage()
             ->subject('Welcome to MedArea!')
             ->line('Thank you for registering, ' . $this->user->nickname . '!')
             ->action('Click to verify your email: ', $this->verificationUrl($notifiable))
