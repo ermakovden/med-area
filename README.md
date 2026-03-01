@@ -10,7 +10,7 @@
 - S3-compatible storage integration (Yandex Cloud Storage)
 
 ### Technology Stack
-- **Backend:** PHP 8.3+, Laravel 12
+- **Backend:** PHP 8.5+, Laravel 12
 - **Database:** PostgreSQL
 - **Cache/Queue:** Redis
 - **Frontend Build:** Vite 7 + Tailwind CSS 4
@@ -22,9 +22,10 @@
 
 ### Prerequisites
 - Docker & Docker Compose
-- PHP 8.3+ (for local development without Docker)
+- PHP 8.5+ (for local development without Docker)
 - Composer
 - Node.js 20+
+- Make (optional, for convenient commands)
 
 ### Docker Setup
 
@@ -51,6 +52,22 @@
 5. **Access the application:**
    - Web: `http://localhost:80` (or configured `APP_WEB_PORT`)
 
+### Using Makefile (Recommended)
+
+| Command | Description |
+|---------|-------------|
+| `make test` | Run all tests |
+| `make test-unit` | Run unit tests only |
+| `make test-feature` | Run feature tests only |
+| `make test-arch` | Run architecture tests only |
+| `make test-file FILE=tests/Feature/MyTest.php` | Run specific test file |
+| `make cs-fix` | Fix code style with PHP CS Fixer |
+| `make phpstan` | Run PHPStan static analysis |
+| `make check` | Run all checks (tests + cs-fix + phpstan) |
+| `make dev` | Start development environment |
+| `make build` | Build Docker containers |
+| `make clean` | Clean Docker containers and volumes |
+
 ### Key Composer Scripts
 
 | Command | Description |
@@ -71,9 +88,9 @@
 
 ### Coding Standards
 - **Style Guide:** PER-CS (PHP-FIG Extended Coding Style)
-- **PHP Version:** PHP 8.3+ features allowed
-- **Tooling:** PHP CS Fixer (`@PER-CS`, `@PHP82Migration` rules)
-- **Enforcement:** Run `composer cs-fixer:fix` before commits
+- **PHP Version:** PHP 8.5+ features allowed
+- **Tooling:** PHP CS Fixer (`@PER-CS`, `@PHP85Migration` rules)
+- **Enforcement:** Run `make cs-fix` or `composer cs-fixer:fix` before commits
 
 ### Static Analysis
 - **Tool:** PHPStan with Larastan
@@ -88,7 +105,13 @@
   - `Unit` - Unit tests for isolated components
   - `Feature` - Feature tests for HTTP endpoints
 - **Configuration:** Tests run with SQLite in-memory database
-- **Run all tests:** `composer test`
+- **Run all tests:** `make test` or `composer test`
+- **Before committing:** `make check` (runs tests + cs-fix + phpstan)
+
+### Continuous Integration
+- **GitHub Actions:** Automated tests, PHPStan, and CS-Fixer on every push/PR
+- **Workflow:** `.github/workflows/tests.yml`
+- **PHP Version:** 8.5
 
 ### Architecture Rules (inferred from tests)
 - Domain layer should not depend on Application or Infrastructure
