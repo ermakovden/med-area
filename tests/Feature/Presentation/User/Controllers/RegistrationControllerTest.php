@@ -16,7 +16,7 @@ class RegistrationControllerTest extends TestCase
     public function test_register_success(): void
     {
         // Data for Request
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->email_verified_at = null;
         $userData->password_confirmation = $userData->password;
 
@@ -31,7 +31,7 @@ class RegistrationControllerTest extends TestCase
     public function test_register_dublicates(): void
     {
         // Data for Request
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->password_confirmation = $userData->password;
 
         // Send API Requests
@@ -46,7 +46,7 @@ class RegistrationControllerTest extends TestCase
     public function test_register_bad_password(): void
     {
         // Data for Request
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
 
         // Create bad password
         $password = '12345';
@@ -64,7 +64,7 @@ class RegistrationControllerTest extends TestCase
     public function test_register_password_unconfirmation(): void
     {
         // Data for Request
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->password_confirmation = '12345';
 
         // Send API Request
@@ -78,7 +78,7 @@ class RegistrationControllerTest extends TestCase
     public function test_verify_success(): void
     {
         // User Data
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->email_verified_at = null;
 
         /** @var User $userModel */
@@ -101,7 +101,7 @@ class RegistrationControllerTest extends TestCase
     public function test_verify_unreal_link(): void
     {
         // User Data
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->email_verified_at = null;
 
         /** @var User $userModel */
@@ -123,7 +123,7 @@ class RegistrationControllerTest extends TestCase
     public function test_verify_unauth(): void
     {
         // User Data
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->email_verified_at = null;
 
         /** @var User $userModel */
@@ -146,10 +146,10 @@ class RegistrationControllerTest extends TestCase
     public function test_verify_someone_else_link(): void
     {
         // User Data
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->email_verified_at = null;
 
-        $userData2 = UserDTO::from((new UserFactory())->definition());
+        $userData2 = UserDTO::from(new UserFactory()->definition());
         $userData2->email_verified_at = null;
 
         /** @var User $userModel */
@@ -177,7 +177,7 @@ class RegistrationControllerTest extends TestCase
     public function test_send_email_verification_success(): void
     {
         // User Data
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->email_verified_at = null;
 
         /** @var User $userModel */
@@ -199,7 +199,7 @@ class RegistrationControllerTest extends TestCase
     public function test_send_email_verification_unauth(): void
     {
         // User Data
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->email_verified_at = null;
 
         /** @var User $userModel */
@@ -221,7 +221,7 @@ class RegistrationControllerTest extends TestCase
     public function test_send_email_verification_already_verified(): void
     {
         // User Data
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
 
         /** @var User $userModel */
         $userModel = User::create($userData->toArray());
