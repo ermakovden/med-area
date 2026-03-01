@@ -14,7 +14,7 @@ class AuthControllerTest extends TestCase
     public function test_login_success(): void
     {
         // Data for testing
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->password = $this->userPassword;
 
         // User for testing
@@ -35,7 +35,7 @@ class AuthControllerTest extends TestCase
     public function test_login_validation(): void
     {
         // Data for testing
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
 
         // User for testing
         User::create($userData->toArray());
@@ -52,7 +52,7 @@ class AuthControllerTest extends TestCase
     public function test_login_bad_nickname(): void
     {
         // Data for testing
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->password = $this->userPassword;
 
         // User for testing
@@ -76,7 +76,7 @@ class AuthControllerTest extends TestCase
     public function test_login_bad_password(): void
     {
         // Data for testing
-        $userData = UserDTO::from((new UserFactory())->definition());
+        $userData = UserDTO::from(new UserFactory()->definition());
         $userData->password = $this->userPassword;
 
         // User for testing

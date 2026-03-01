@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('operation_id')->nullable();
             $table->json('response')->nullable();
             $table->string('status');
+            $table->string('failed_reason')->nullable();
             $table->timestamps();
         });
     }

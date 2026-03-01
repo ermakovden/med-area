@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Domain\Analys\Models;
 
 use Domain\Analys\Enums\Analys as AnalysEnum;
+use Domain\Analys\Enums\Unit;
 use Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property AnalysEnum $analys_id
  * @property Analys $analys_name
  * @property float $data
- * @property string $unit
+ * @property Unit $unit
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
@@ -68,6 +69,7 @@ class UserAnalys extends Model
             'analys_id' => AnalysEnum::class,
             'analys_name' => 'string',
             'data' => 'float',
+            'unit' => Unit::class,
         ];
     }
 

@@ -7,9 +7,6 @@ namespace Application\S3\Commands;
 use Application\S3\DTO\Filters\FilterFileDTO;
 use Application\S3\Services\Contracts\S3ServiceContract;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Storage;
-use Shared\Enums\Storage as EnumsStorage;
 
 class ForceDeleteFilesCommand extends Command
 {
@@ -27,13 +24,10 @@ class ForceDeleteFilesCommand extends Command
      */
     protected $description = 'Force delete files after days in .env';
 
-    protected S3ServiceContract $s3Service;
-
-    public function __construct(?Filesystem $disk = null)
-    {
-        $this->s3Service = app(S3ServiceContract::class);
-
-        $this->s3Service->disk = $disk ?? Storage::disk(EnumsStorage::S3);
+    public function __construct(
+        private readonly S3ServiceContract $s3Service,
+    ) {
+        parent::__construct();
     }
 
     /**

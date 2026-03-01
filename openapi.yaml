@@ -479,6 +479,14 @@ components:
           type: string
           format: date-time
       type: object
+    RecogniseRequestResourceCollection:
+      title: RecogniseRequestResourceCollection
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecogniseRequestResource'
+      type: object
     UserAnalysResource:
       title: UserAnalysResource
       properties:
@@ -587,6 +595,7 @@ components:
                   user_id: { description: 'User Id for analys', type: string }
                   analys_id: { description: 'Analys ID', type: string, enum: [1, 2, 3, 4] }
                   data: { description: 'Value of analys', type: number, format: float }
+                  unit: { description: 'Unit of measurement', type: string }
                 type: object
             type: object
     StartRecogniseRequest:
@@ -607,7 +616,7 @@ components:
                 type: array
                 items:
                   type: string
-                  enum: [ru, eu]
+                  enum: [ru, en]
               model:
                 description: 'Model of recogniser'
                 type: string

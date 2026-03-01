@@ -28,6 +28,8 @@ class RecogniseRequestDTO extends BaseDTO
 
     public RecogniseStatus|Optional $status;
 
+    public string|Optional|null $failed_reason;
+
     #[WithCast(DateTimeInterfaceCast::class)]
     public Carbon|Optional $created_at;
 
