@@ -44,7 +44,7 @@ cs-fix:
 
 # Run static analysis
 phpstan:
-	docker-compose exec php composer phpstan
+	docker-compose exec php php -d error_reporting=E_ALL\&~E_DEPRECATED vendor/bin/phpstan analyse --memory-limit=2G --configuration=phpstan.neon
 
 # Run all checks before commit
 check: test cs-fix phpstan
