@@ -25,13 +25,17 @@ class YCloudS3Service implements S3ServiceContract
     public private(set) Filesystem $disk;
 
     protected readonly FileRepositoryContract $fileRepository;
+    
+    protected readonly EnumsStorage $diskName;
 
     public function __construct(
         FileRepositoryContract $fileRepository,
         ?Filesystem $disk = null,
+        ?EnumsStorage $diskName = null,
     ) {
         $this->fileRepository = $fileRepository;
         $this->disk = $disk ?? Storage::disk(EnumsStorage::S3); // use s3 disk for ycloud service (see: filesystems.php -> disks -> s3)
+        $this->diskName = $diskName ?? EnumsStorage::S3;
     }
 
     public function upload(FileDTO $file): File
@@ -138,7 +142,7 @@ class YCloudS3Service implements S3ServiceContract
             $this->fileRepository->forceDelete($filters);
 
             foreach ($filesForDeleting as $file) {
-                DeleteFileJob::dispatch($file->key, $this->disk);
+                DeleteFileJob::dispatch($file->key, $this->diskName);
             }
         } catch (\Throwable $e) {
             \Log::error([

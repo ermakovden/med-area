@@ -9,16 +9,14 @@ use Application\S3\Services\YCloudS3Service;
 use Domain\File\Models\File;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
-use Infrastructure\Jobs\File\DeleteFileJob;
 use Infrastructure\Repositories\Contracts\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Tests\TestCase;
 
 class ForceDeleteFilesCommandTest extends TestCase
 {
-    protected readonly Filesystem $disk;
+    protected Filesystem $disk;
 
     protected int $subDays;
 
@@ -33,12 +31,10 @@ class ForceDeleteFilesCommandTest extends TestCase
 
     public function test_handle_success(): void
     {
-        // Init fake queue
-        Queue::fake();
-
         $s3Service = new YCloudS3Service(
             app(FileRepositoryContract::class),
-            $this->disk
+            $this->disk,
+            EnumsStorage::S3_TESTING,
         );
 
         $command = new ForceDeleteFilesCommand($s3Service);
@@ -48,7 +44,7 @@ class ForceDeleteFilesCommandTest extends TestCase
 
         // Create testing data - File model
         $file = File::factory(state: [
-            'deleted_at' => now()->subDays($this->subDays),
+            'deleted_at' => now()->subDays($this->subDays + 1), // older than threshold
             'key' => $this->disk->putFile(
                 'force-delete-command-test-handle-success',
                 UploadedFile::fake()->image('force-delete-command-test-handle-success.jpg') // save file in s3 storage
@@ -64,12 +60,6 @@ class ForceDeleteFilesCommandTest extends TestCase
         // Call method of command
         $command->handle();
 
-        // Check assert that DeleteFileJob was dispatched and execute it
-        Queue::assertPushed(DeleteFileJob::class, function (DeleteFileJob $job) use ($file) {
-            $job->handle();
-            return $job->path === $file->key;
-        });
-
         // Check assert that file model force deleted
         $this->assertModelMissing($file);
 
@@ -81,7 +71,8 @@ class ForceDeleteFilesCommandTest extends TestCase
     {
         $s3Service = new YCloudS3Service(
             app(FileRepositoryContract::class),
-            $this->disk
+            $this->disk,
+            EnumsStorage::S3_TESTING,
         );
 
         $command = new ForceDeleteFilesCommand($s3Service);

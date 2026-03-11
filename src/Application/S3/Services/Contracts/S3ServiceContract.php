@@ -39,4 +39,6 @@ interface S3ServiceContract
     public function delete(FilterFileDTO $filters): void;
 
     public function forceDelete(FilterFileDTO $filters): void;
+
+    public function fileExists(string $key): bool;
 }
