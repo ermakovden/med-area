@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class YCloudS3Service implements S3ServiceContract
 {
-    public Filesystem $disk;
+    public private(set) Filesystem $disk;
 
     protected readonly FileRepositoryContract $fileRepository;
 
@@ -148,6 +148,18 @@ class YCloudS3Service implements S3ServiceContract
             ]);
             throw new ServerErrorException();
         }
+    }
+
+    public function fileExists(string $key): bool
+    {
+        return $this->disk->exists($key);
+    }
+
+    public function setDisk(Filesystem $newDisk): self
+    {
+        $this->disk = $newDisk;
+
+        return $this;
     }
 
     /**
