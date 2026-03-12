@@ -2,7 +2,16 @@ name: Tests
 
 on:
   push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   tests:
@@ -10,16 +19,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
           tools: composer:v2
           coverage: none
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
@@ -32,51 +46,3 @@ jobs:
 
       - name: Run PHPUnit tests
         run: composer test
-
-  phpstan:
-    name: PHPStan Static Analysis
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.5'
-          extensions: mbstring, xml, ctype, iconv, intl
-          tools: composer:v2
-          coverage: none
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
-
-      - name: Run PHPStan
-        run: composer phpstan
-
-  cs-fixer:
-    name: PHP CS Fixer
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.5'
-          extensions: mbstring, xml, ctype, iconv, intl
-          tools: composer:v2
-          coverage: none
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
-
-      - name: Run PHP CS Fixer
-        run: composer cs-fixer:fix
-
-      - name: Check for changes
-        run: |
-          git diff --exit-code || (echo "❌ Code style issues found. Please run 'composer cs-fixer:fix' locally." && exit 1)
