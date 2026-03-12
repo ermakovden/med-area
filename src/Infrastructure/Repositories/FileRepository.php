@@ -106,7 +106,12 @@ class FileRepository extends BaseRepository implements FileRepositoryContract
         $filters->min_deleted_at = $filters->emptyValue('min_deleted_at') ? null : $filters->min_deleted_at;
         $filters->max_deleted_at = $filters->emptyValue('max_deleted_at') ? null : $filters->max_deleted_at;
 
-        $query = $this->filterDateRange($query, 'deleted_at', $filters->min_deleted_at, $filters->max_deleted_at);
+        /** @var \Carbon\Carbon|null $minDeletedAt */
+        $minDeletedAt = $filters->min_deleted_at;
+        /** @var \Carbon\Carbon|null $maxDeletedAt */
+        $maxDeletedAt = $filters->max_deleted_at;
+
+        $query = $this->filterDateRange($query, 'deleted_at', $minDeletedAt, $maxDeletedAt);
 
         // Attribute: user_id
         if ($filters->isNotEmptyValue('user_ids')) {

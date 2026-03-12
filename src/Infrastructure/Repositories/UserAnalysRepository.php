@@ -80,6 +80,7 @@ class UserAnalysRepository extends BaseRepository implements UserAnalysRepositor
      */
     public function baseFilters(Builder $query, FilterBaseDTO $filters): Builder
     {
+        /** @var FilterUserAnalysDTO $filters */
         logger()->debug('[UserAnalysRepository.baseFilters] applying filters', $filters->toArray());
 
         $query = parent::baseFilters($query, $filters);

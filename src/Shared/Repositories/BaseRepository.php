@@ -71,13 +71,9 @@ abstract class BaseRepository implements BaseRepositoryContract
     {
         if ($minDate !== null && $maxDate !== null) {
             return $query->whereBetween($attribute, [$minDate, $maxDate]);
-        }
-
-        if ($minDate !== null && $maxDate === null) {
+        } elseif ($minDate !== null) {
             return $query->where($attribute, '>', $minDate);
-        }
-
-        if ($minDate === null && $maxDate !== null) {
+        } elseif ($maxDate !== null) {
             return $query->where($attribute, '<', $maxDate);
         }
 
