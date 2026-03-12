@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Presentation\Analys\Resources;
 
-use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
+use Domain\AI\Recognise\DTO\RecogniseRequestDTO;
 use Domain\AI\Recognise\Enums\RecogniseStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -28,7 +28,7 @@ use OpenApi\Attributes as OA;
     ],
 )]
 /**
- * @mixin \Application\AI\Recogniser\DTO\RecogniseRequestDTO
+ * @mixin \Domain\AI\Recognise\DTO\RecogniseRequestDTO
  */
 class RecogniseRequestResource extends JsonResource
 {

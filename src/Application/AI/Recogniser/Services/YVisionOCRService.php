@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Application\AI\Recogniser\Services;
 
-use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
+use Domain\AI\Recognise\DTO\RecogniseRequestDTO;
 use Application\AI\Recogniser\DTO\RecogniseURLParamsDTO;
 use Application\AI\Recogniser\DTO\Requests\RecogniseAsyncRequestDTO;
 use Application\AI\Recogniser\DTO\Responses\RecogniseAsyncResponse;

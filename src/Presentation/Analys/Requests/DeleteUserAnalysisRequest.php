@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Presentation\Analys\Requests;
 
-use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
+use Domain\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Domain\Analys\Enums\Analys;
 use Illuminate\Validation\Rule;
 use OpenApi\Attributes as OA;

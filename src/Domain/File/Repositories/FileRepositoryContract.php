@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Domain\File\Repositories;
 
-use Application\S3\DTO\Filters\FilterFileDTO;
-use Application\S3\DTO\FileDTO;
+use Domain\File\DTO\Filters\FilterFileDTO;
+use Domain\File\DTO\FileDTO;
 use Domain\File\Models\File;
 use Illuminate\Database\Eloquent\Collection;
 use Shared\Repositories\Contracts\BaseRepositoryContract;

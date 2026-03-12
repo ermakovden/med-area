@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Infrastructure\Repositories;
 
-use Application\User\DTO\UserDTO;
+use Domain\User\DTO\UserDTO;
 use Domain\User\Models\User;
 use Domain\User\Repositories\UserRepositoryContract;
 use Shared\Repositories\BaseRepository;

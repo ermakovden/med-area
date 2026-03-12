@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Presentation\File\Requests;
 
-use Application\S3\DTO\Filters\FilterFileDTO;
+use Domain\File\DTO\Filters\FilterFileDTO;
 use OpenApi\Attributes as OA;
 use Shared\Requests\BaseRequest;
 use Shared\Rules\UserIdMatchesAuth;

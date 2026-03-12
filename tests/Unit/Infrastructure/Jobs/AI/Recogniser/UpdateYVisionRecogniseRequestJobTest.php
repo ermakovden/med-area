@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Infrastructure\Jobs\AI\Recogniser;
 
-use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
+use Domain\AI\Recognise\DTO\RecogniseRequestDTO;
 use Application\AI\Recogniser\DTO\Responses\RecogniseAsyncResponse;
 use Application\AI\Recogniser\Services\Contracts\RecogniserServiceContract;
 use Application\AI\Recogniser\Services\RecogniseResponseParser;

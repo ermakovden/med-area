@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Presentation\File\Requests;
 
-use Application\S3\DTO\FileDTO;
+use Domain\File\DTO\FileDTO;
 use Application\S3\DTO\Requests\CreateFilesRequestDTO;
 use Illuminate\Http\UploadedFile;
 use OpenApi\Attributes as OA;

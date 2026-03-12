@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Application\User\Services;
 
-use Application\User\DTO\UserDTO;
+use Domain\User\DTO\UserDTO;
 use Application\User\Services\Contracts\RegistrationServiceContract;
 use Domain\User\Events\UserRegistered;
 use Domain\User\Models\User;

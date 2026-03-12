@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Presentation\File\Controllers;
 
-use Application\S3\DTO\Filters\FilterFileDTO;
+use Domain\File\DTO\Filters\FilterFileDTO;
 use Domain\File\Factories\FileFactory;
 use Domain\File\Models\File as FileModel;
 use Illuminate\Contracts\Filesystem\Filesystem;

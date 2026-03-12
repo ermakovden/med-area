@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Application\AI\Recogniser\Services\Contracts;
 
-use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
+use Domain\AI\Recognise\DTO\RecogniseRequestDTO;
 
 interface RecogniseRequestServiceContract
 {

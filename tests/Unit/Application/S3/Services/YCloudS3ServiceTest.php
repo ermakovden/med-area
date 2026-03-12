@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Application\S3\Services;
 
-use Application\S3\DTO\FileDTO;
-use Application\S3\DTO\Filters\FilterFileDTO;
+use Domain\File\DTO\FileDTO;
+use Domain\File\DTO\Filters\FilterFileDTO;
 use Application\S3\Services\YCloudS3Service;
 use Domain\File\Factories\FileFactory;
 use Domain\File\Models\File;

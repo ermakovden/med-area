@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Application\Analys\DTO\Requests;
 
-use Application\Analys\DTO\UserAnalysDTO;
+use Domain\Analys\DTO\UserAnalysDTO;
 use Shared\DTO\BaseDTO;
 use Spatie\LaravelData\Optional;
 

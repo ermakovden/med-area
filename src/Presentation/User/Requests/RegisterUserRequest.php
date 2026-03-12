@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Presentation\User\Requests;
 
-use Application\User\DTO\UserDTO;
+use Domain\User\DTO\UserDTO;
 use OpenApi\Attributes as OA;
 use Illuminate\Validation\Rules\Password;
 use Shared\Requests\BaseRequest;
