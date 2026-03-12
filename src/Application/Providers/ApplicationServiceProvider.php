@@ -17,6 +17,7 @@ use Application\S3\Services\Contracts\S3ServiceContract;
 use Application\S3\Services\YCloudS3Service;
 use Application\User\Services\AuthService;
 use Application\User\Services\Contracts\AuthServiceContract;
+use Tymon\JWTAuth\JWTGuard;
 use Application\User\Services\Contracts\RegistrationServiceContract;
 use Application\User\Services\Contracts\UserServiceContract;
 use Application\User\Services\RegistrationService;
@@ -41,7 +42,6 @@ class ApplicationServiceProvider extends ServiceProvider
 
         // User
         RegistrationServiceContract::class => RegistrationService::class,
-        AuthServiceContract::class => AuthService::class,
         UserServiceContract::class => UserService::class,
 
         // Analys
@@ -54,6 +54,10 @@ class ApplicationServiceProvider extends ServiceProvider
         foreach ($this->bindings as $interface => $class) {
             $this->app->bind($interface, $class);
         }
+
+        $this->app->bind(AuthServiceContract::class, fn () => new AuthService(
+            /** @var JWTGuard */ auth()->guard('api'),
+        ));
 
         $this->app->singleton(RecogniseResponseParser::class);
     }

@@ -10,9 +10,14 @@ use Application\User\Services\Contracts\AuthServiceContract;
 use Domain\User\Enums\TokenType;
 use Shared\Exceptions\ServerErrorException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Tymon\JWTAuth\JWTGuard;
 
 class AuthService implements AuthServiceContract
 {
+    public function __construct(
+        protected JWTGuard $guard,
+    ) {}
+
     /**
      * Attemt to login user by credentials
      *
@@ -23,7 +28,7 @@ class AuthService implements AuthServiceContract
      */
     public function login(UserDTO $credentials): TokenResponse
     {
-        if (! $accessToken = auth()->attempt($credentials->toArray())) {
+        if (! $accessToken = $this->guard->attempt($credentials->toArray())) {
             throw new BadRequestHttpException('Nickname or password incorrect.');
         }
         /** @var string $accessToken */
@@ -42,7 +47,7 @@ class AuthService implements AuthServiceContract
      */
     public function refreshToken(bool $forceForever = false, bool $resetClaims = false): TokenResponse
     {
-        if (! $accessToken = auth()->refresh($forceForever, $resetClaims)) {
+        if (! $accessToken = $this->guard->refresh($forceForever, $resetClaims)) {
             throw new ServerErrorException();
         }
 
@@ -56,7 +61,7 @@ class AuthService implements AuthServiceContract
      */
     public function logout(): void
     {
-        auth()->logout();
+        $this->guard->logout();
     }
 
 
@@ -71,7 +76,7 @@ class AuthService implements AuthServiceContract
         return TokenResponse::from([
             'access_token' => $accessToken,
             'token_type' => TokenType::BEARER,
-            'expires_in' => auth()->factory()->getTTL() * 60,
+            'expires_in' => $this->guard->factory()->getTTL() * 60,
         ]);
     }
 }
