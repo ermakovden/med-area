@@ -123,7 +123,7 @@ class YCloudS3Service implements S3ServiceContract
     public function delete(FilterFileDTO $filters): void
     {
         try {
-            $this->fileRepository->delete($filters);
+            $this->fileRepository->deleteMany($filters);
         } catch (\Throwable $e) {
             \Log::error([
                 'class' => YCloudS3Service::class,
@@ -139,7 +139,7 @@ class YCloudS3Service implements S3ServiceContract
         try {
             $filesForDeleting = $this->fileRepository->getMany($filters);
 
-            $this->fileRepository->forceDelete($filters);
+            $this->fileRepository->forceDeleteMany($filters);
 
             foreach ($filesForDeleting as $file) {
                 DeleteFileJob::dispatch($file->key, $this->diskName);

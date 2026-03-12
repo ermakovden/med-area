@@ -39,7 +39,18 @@ class UserAnalysRepository extends BaseRepository implements UserAnalysRepositor
             $dto->analys_name = $analysId->name;
         }
 
-        return $this->model::query()->create($dto->toArray());
+        try {
+            $model = $this->model::query()->create($dto->toArray());
+            logger()->info('[UserAnalysRepository.create] record created', ['id' => $model->getKey()]);
+
+            return $model;
+        } catch (\Throwable $e) {
+            logger()->error('[UserAnalysRepository.create] DB operation failed', [
+                'error'   => $e->getMessage(),
+                'context' => $dto->toArray(),
+            ]);
+            throw new ServerErrorException($e->getMessage());
+        }
     }
 
     /**
@@ -50,9 +61,15 @@ class UserAnalysRepository extends BaseRepository implements UserAnalysRepositor
      */
     public function getMany(FilterUserAnalysDTO $filters): Collection
     {
+        logger()->debug('[UserAnalysRepository.getMany] starting query', ['filters' => $filters->toArray()]);
+
         $query = $this->model::query();
 
-        return $this->baseFilters($query, $filters)->get();
+        $result = $this->baseFilters($query, $filters)->get();
+
+        logger()->debug('[UserAnalysRepository.getMany] returning records', ['count' => $result->count()]);
+
+        return $result;
     }
 
     /**
@@ -74,7 +91,15 @@ class UserAnalysRepository extends BaseRepository implements UserAnalysRepositor
             throw new ServerErrorException('Empty filters user_ids, analys_ids');
         }
 
-        $this->baseFilters($query, $filters)->delete();
+        try {
+            $this->baseFilters($query, $filters)->delete();
+        } catch (\Throwable $e) {
+            logger()->error('[UserAnalysRepository.deleteMany] DB operation failed', [
+                'error'   => $e->getMessage(),
+                'context' => $filters->toArray(),
+            ]);
+            throw new ServerErrorException($e->getMessage());
+        }
 
         return;
     }
@@ -88,8 +113,9 @@ class UserAnalysRepository extends BaseRepository implements UserAnalysRepositor
      */
     public function baseFilters(Builder $query, FilterBaseDTO $filters): Builder
     {
-        /** @phpstan-ignore argument.type */
-        parent::baseFilters($query, $filters);
+        logger()->debug('[UserAnalysRepository.baseFilters] applying filters', $filters->toArray());
+
+        $query = parent::baseFilters($query, $filters);
 
         // Attribute: user_id
         if ($filters->isNotEmptyValue('user_ids')) {
@@ -100,6 +126,8 @@ class UserAnalysRepository extends BaseRepository implements UserAnalysRepositor
         if ($filters->isNotEmptyValue('analys_ids')) {
             $query->whereAnalysId($filters->analys_ids);
         }
+
+        logger()->debug('[UserAnalysRepository.baseFilters] filters applied', ['query' => $query->toRawSql()]);
 
         return $query;
     }

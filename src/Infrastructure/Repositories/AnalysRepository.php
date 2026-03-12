@@ -23,6 +23,12 @@ class AnalysRepository extends BaseRepository implements AnalysRepositoryContrac
      */
     public function getMany(): Collection
     {
-        return $this->model::query()->get();
+        logger()->debug('[AnalysRepository.getMany] fetching all records');
+
+        $result = $this->model::query()->get();
+
+        logger()->debug('[AnalysRepository.getMany] returning records', ['count' => $result->count()]);
+
+        return $result;
     }
 }

@@ -29,7 +29,7 @@ interface FileRepositoryContract extends BaseRepositoryContract
      * @param FilterFileDTO $filters
      * @return void
      */
-    public function delete(FilterFileDTO $filters): void;
+    public function deleteMany(FilterFileDTO $filters): void;
 
     /**
      * Force delete from DB
@@ -37,5 +37,5 @@ interface FileRepositoryContract extends BaseRepositoryContract
      * @param FilterFileDTO $filters
      * @return void
      */
-    public function forceDelete(FilterFileDTO $filters): void;
+    public function forceDeleteMany(FilterFileDTO $filters): void;
 }
