@@ -42,12 +42,10 @@ class RecogniserControllerTest extends TestCase
         ]);
 
         // Send API Request
-        $response = $this->post(route('api.analysis.recogniser.create'), array_merge(
-            [
-                'file_id' => $fileModel->id,
-            ],
-            $request->toArray(),
-        ));
+        $response = $this->post(route('api.analysis.recogniser.create'), [
+            'file_id' => $fileModel->id,
+            ...$request->toArray(),
+        ]);
 
         // Check asserts
         $response->assertOk();
