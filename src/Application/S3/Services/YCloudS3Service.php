@@ -12,7 +12,7 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 use Infrastructure\Jobs\File\DeleteFileJob;
-use Infrastructure\Repositories\Contracts\FileRepositoryContract;
+use Domain\File\Repositories\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Shared\Exceptions\ServerErrorException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

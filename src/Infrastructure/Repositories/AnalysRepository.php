@@ -6,7 +6,7 @@ namespace Infrastructure\Repositories;
 
 use Domain\Analys\Models\Analys;
 use Illuminate\Database\Eloquent\Collection;
-use Infrastructure\Repositories\Contracts\AnalysRepositoryContract;
+use Domain\Analys\Repositories\AnalysRepositoryContract;
 use Shared\Repositories\BaseRepository;
 
 class AnalysRepository extends BaseRepository implements AnalysRepositoryContract

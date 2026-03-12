@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Repositories\Contracts;
+namespace Domain\Analys\Repositories;
 
 use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Domain\Analys\Models\UserAnalys;

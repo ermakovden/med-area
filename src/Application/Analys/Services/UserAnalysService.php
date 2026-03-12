@@ -11,7 +11,7 @@ use Application\Analys\Services\Contracts\UserAnalysServiceContract;
 use Domain\Analys\Models\UserAnalys;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
-use Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract;
+use Domain\Analys\Repositories\UserAnalysRepositoryContract;
 use Shared\Exceptions\ServerErrorException;
 
 class UserAnalysService implements UserAnalysServiceContract

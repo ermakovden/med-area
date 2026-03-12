@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Repositories\Contracts;
+namespace Domain\AI\Recognise\Repositories;
 
 use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
 use Shared\Repositories\Contracts\BaseRepositoryContract;

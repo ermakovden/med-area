@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Repositories\Contracts;
+namespace Domain\User\Repositories;
 
-use Domain\User\Models\User;
 use Application\User\DTO\UserDTO;
+use Domain\User\Models\User;
 use Shared\Repositories\Contracts\BaseRepositoryContract;
 
 /**

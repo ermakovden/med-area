@@ -6,7 +6,7 @@ namespace Infrastructure\Repositories;
 
 use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
 use Domain\AI\Recognise\Models\RecogniseRequest;
-use Infrastructure\Repositories\Contracts\RecogniseRequestRepositoryContract;
+use Domain\AI\Recognise\Repositories\RecogniseRequestRepositoryContract;
 use Shared\Exceptions\ServerErrorException;
 use Shared\Repositories\BaseRepository;
 

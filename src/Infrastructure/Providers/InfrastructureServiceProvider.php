@@ -6,11 +6,11 @@ namespace Infrastructure\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Infrastructure\Repositories\AnalysRepository;
-use Infrastructure\Repositories\Contracts\AnalysRepositoryContract;
-use Infrastructure\Repositories\Contracts\FileRepositoryContract;
-use Infrastructure\Repositories\Contracts\RecogniseRequestRepositoryContract;
-use Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract;
-use Infrastructure\Repositories\Contracts\UserRepositoryContract;
+use Domain\Analys\Repositories\AnalysRepositoryContract;
+use Domain\File\Repositories\FileRepositoryContract;
+use Domain\AI\Recognise\Repositories\RecogniseRequestRepositoryContract;
+use Domain\Analys\Repositories\UserAnalysRepositoryContract;
+use Domain\User\Repositories\UserRepositoryContract;
 use Infrastructure\Repositories\FileRepository;
 use Infrastructure\Repositories\RecogniseRequestRepository;
 use Infrastructure\Repositories\UserAnalysRepository;

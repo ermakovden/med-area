@@ -11,7 +11,7 @@ use Domain\Analys\Models\UserAnalys;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract;
+use Domain\Analys\Repositories\UserAnalysRepositoryContract;
 use Shared\DTO\BaseDTO;
 use Shared\DTO\FilterBaseDTO;
 use Shared\Exceptions\ServerErrorException;

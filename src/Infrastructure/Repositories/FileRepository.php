@@ -8,7 +8,7 @@ use Application\S3\DTO\Filters\FilterFileDTO;
 use Domain\File\Models\File;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Infrastructure\Repositories\Contracts\FileRepositoryContract;
+use Domain\File\Repositories\FileRepositoryContract;
 use Shared\DTO\FilterBaseDTO;
 use Shared\Exceptions\ServerErrorException;
 use Shared\Repositories\BaseRepository;

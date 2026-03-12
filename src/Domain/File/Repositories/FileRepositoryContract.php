@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Repositories\Contracts;
+namespace Domain\File\Repositories;
 
 use Application\S3\DTO\Filters\FilterFileDTO;
+use Application\S3\DTO\FileDTO;
 use Domain\File\Models\File;
 use Illuminate\Database\Eloquent\Collection;
 use Shared\Repositories\Contracts\BaseRepositoryContract;
-use Application\S3\DTO\FileDTO;
 
 /**
  * @method File create(FileDTO $file)
