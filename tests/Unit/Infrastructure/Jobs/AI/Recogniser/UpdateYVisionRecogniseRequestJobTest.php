@@ -14,7 +14,7 @@ use Domain\Analys\Enums\Analys;
 use Domain\Analys\Enums\Unit;
 use Illuminate\Support\Facades\Log;
 use Infrastructure\Jobs\AI\Recogniser\UpdateYVisionRecogniseRequestJob;
-use Infrastructure\Repositories\Contracts\RecogniseRequestRepositoryContract;
+use Domain\AI\Recognise\Repositories\RecogniseRequestRepositoryContract;
 use Mockery;
 use Mockery\MockInterface;
 use Tests\Unit\TestCase;

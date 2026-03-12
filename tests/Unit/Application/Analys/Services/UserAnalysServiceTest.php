@@ -11,7 +11,7 @@ use Application\Analys\Services\UserAnalysService;
 use Domain\Analys\Enums\Analys;
 use Domain\Analys\Factories\UserAnalysFactory;
 use Domain\Analys\Models\UserAnalys;
-use Infrastructure\Repositories\Contracts\UserAnalysRepositoryContract;
+use Domain\Analys\Repositories\UserAnalysRepositoryContract;
 use Shared\Exceptions\ServerErrorException;
 use Tests\TestCase;
 

@@ -10,7 +10,7 @@ use Domain\File\Models\File;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Infrastructure\Repositories\Contracts\FileRepositoryContract;
+use Domain\File\Repositories\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Tests\TestCase;
 

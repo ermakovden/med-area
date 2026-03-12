@@ -6,7 +6,7 @@ namespace Tests\Unit\Application\User\Services;
 
 use Application\User\DTO\UserDTO;
 use Application\User\Services\UserService;
-use Infrastructure\Repositories\Contracts\UserRepositoryContract;
+use Domain\User\Repositories\UserRepositoryContract;
 use Mockery\MockInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -22,7 +22,7 @@ class UserServiceTest extends TestCase
     protected UserService $service;
 
     /**
-     * Mock: Infrastructure\Repositories\Contracts\UserRepositoryContract
+     * Mock: Domain\User\Repositories\UserRepositoryContract
      *
      * @var MockInterface
      */

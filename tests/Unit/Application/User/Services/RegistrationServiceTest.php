@@ -10,7 +10,7 @@ use Domain\User\Factories\UserFactory;
 use Domain\User\Models\User;
 use Illuminate\Support\Facades\Notification;
 use Infrastructure\Notifications\User\EmailVerificationNotification;
-use Infrastructure\Repositories\Contracts\UserRepositoryContract;
+use Domain\User\Repositories\UserRepositoryContract;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
@@ -24,7 +24,7 @@ class RegistrationServiceTest extends TestCase
     protected RegistrationService $service;
 
     /**
-     * Mock: Infrastructure\Repositories\Contracts\UserRepositoryContract
+     * Mock: Domain\User\Repositories\UserRepositoryContract
      *
      * @var MockInterface
      */
