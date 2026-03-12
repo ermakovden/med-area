@@ -6,9 +6,11 @@ namespace Tests\Architecture;
 
 class ApplicationArchitectureTest extends BaseArchitectureTest
 {
-    public function test_application_depend_infrastructure(): void
+    public function test_application_does_not_depend_infrastructure(): void
     {
-        $this->assertDependOn($this->application, $this->infrastructure);
+        // Application services depend on Domain contracts (not Infrastructure implementations).
+        // Repository contracts live in Domain\*/Repositories\ after the repository layer refactor.
+        $this->assertDoesNotDependOn($this->application, $this->infrastructure);
     }
 
     public function test_application_does_not_depend_presentation(): void
