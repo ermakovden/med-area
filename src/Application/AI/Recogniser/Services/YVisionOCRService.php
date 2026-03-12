@@ -12,6 +12,7 @@ use Application\AI\Recogniser\Services\Contracts\RecogniseRequestServiceContract
 use Application\AI\Recogniser\Services\Contracts\RecogniserServiceContract;
 use Domain\AI\Recognise\Enums\RecogniseStatus;
 use Illuminate\Support\Facades\Http;
+use Infrastructure\Jobs\AI\Recogniser\UpdateYVisionRecogniseRequestJob;
 use Shared\Enums\AuthTokenType;
 use Shared\Exceptions\ServerErrorException;
 use Shared\Services\BaseExternalService;
@@ -62,9 +63,15 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
                 $recogniseRequestDTO->operation_id = $responseDTO->id;
                 $recogniseRequestDTO->status = RecogniseStatus::PROCESSED;
 
-                /** @var int $recogniseRequestId */
-                $recogniseRequestId = $recogniseRequestDTO->id;
-                $this->recogniseRequestService->updateById($recogniseRequestId, $recogniseRequestDTO);
+                $recogniseRequestId = $recogniseRequestDTO->toArray()['id'] ?? null;
+                if (\is_int($recogniseRequestId)) {
+                    $this->recogniseRequestService->updateById($recogniseRequestId, $recogniseRequestDTO);
+                }
+
+                // Queue for periodic recognition status checking
+                // First attempt after 35 seconds
+                UpdateYVisionRecogniseRequestJob::dispatch($recogniseRequestDTO)
+                    ->delay(now()->plus(seconds: 35));
             }
 
             return $recogniseRequestDTO;
@@ -73,6 +80,36 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
             \Log::error('Error when try start recognise async', [
                 'class' => YVisionOCRService::class,
                 'method' => 'recogniseAsync',
+                'message' => $e->getMessage(),
+            ]);
+            throw new ServerErrorException();
+        }
+    }
+
+    public function getRecognition(RecogniseRequestDTO $recogniseRequest): RecogniseAsyncResponse
+    {
+        $this->setURLResourceParam('getRecognition');
+
+        try {
+            $response = Http::withHeaders($this->getBaseHeaders())
+                ->withUrlParameters($this->urlParams->toArray())
+                ->get(
+                    $this->getURITemplate(),
+                    [
+                        'operationId' => $recogniseRequest->operation_id,
+                    ],
+                );
+
+            if ($response->failed()) {
+                $response->throw();
+            }
+
+            return RecogniseAsyncResponse::from($response->json('result'));
+
+        } catch (\Throwable $e) {
+            \Log::error('Error when try get recognition', [
+                'class' => YVisionOCRService::class,
+                'method' => 'getRecognition',
                 'message' => $e->getMessage(),
             ]);
             throw new ServerErrorException();
