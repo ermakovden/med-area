@@ -23,4 +23,11 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 *.cache
-QWEN.md
+.qwen
+.claude
+skills-lock.json
+.ai-factory.json
+.mcp.json
+.ai-factory
+.agents
+AGENTS.md
