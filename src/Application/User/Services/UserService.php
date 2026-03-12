@@ -7,7 +7,7 @@ namespace Application\User\Services;
 use Application\User\DTO\UserDTO;
 use Application\User\Services\Contracts\UserServiceContract;
 use Domain\User\Models\User;
-use Infrastructure\Repositories\Contracts\UserRepositoryContract;
+use Domain\User\Repositories\UserRepositoryContract;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

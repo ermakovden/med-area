@@ -6,7 +6,7 @@ namespace Application\AI\Recogniser\Services;
 
 use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
 use Application\AI\Recogniser\Services\Contracts\RecogniseRequestServiceContract;
-use Infrastructure\Repositories\Contracts\RecogniseRequestRepositoryContract;
+use Domain\AI\Recognise\Repositories\RecogniseRequestRepositoryContract;
 
 class RecogniseRequestService implements RecogniseRequestServiceContract
 {

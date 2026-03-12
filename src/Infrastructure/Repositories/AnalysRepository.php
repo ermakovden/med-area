@@ -6,7 +6,7 @@ namespace Infrastructure\Repositories;
 
 use Domain\Analys\Models\Analys;
 use Illuminate\Database\Eloquent\Collection;
-use Infrastructure\Repositories\Contracts\AnalysRepositoryContract;
+use Domain\Analys\Repositories\AnalysRepositoryContract;
 use Shared\Repositories\BaseRepository;
 
 class AnalysRepository extends BaseRepository implements AnalysRepositoryContract
@@ -23,6 +23,12 @@ class AnalysRepository extends BaseRepository implements AnalysRepositoryContrac
      */
     public function getMany(): Collection
     {
-        return $this->model::query()->get();
+        logger()->debug('[AnalysRepository.getMany] fetching all records');
+
+        $result = $this->model::query()->get();
+
+        logger()->debug('[AnalysRepository.getMany] returning records', ['count' => $result->count()]);
+
+        return $result;
     }
 }

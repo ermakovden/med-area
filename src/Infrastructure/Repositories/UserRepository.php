@@ -6,7 +6,7 @@ namespace Infrastructure\Repositories;
 
 use Application\User\DTO\UserDTO;
 use Domain\User\Models\User;
-use Infrastructure\Repositories\Contracts\UserRepositoryContract;
+use Domain\User\Repositories\UserRepositoryContract;
 use Shared\Repositories\BaseRepository;
 
 class UserRepository extends BaseRepository implements UserRepositoryContract
@@ -24,9 +24,15 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
      */
     public function getById(string|int $id): ?UserDTO
     {
+        logger()->debug('[UserRepository.getById] starting query', ['id' => $id]);
+
         if (! $user = $this->model::find($id)) {
+            logger()->debug('[UserRepository.getById] record not found', ['id' => $id]);
+
             return null;
         }
+
+        logger()->debug('[UserRepository.getById] record found', ['id' => $id]);
 
         return UserDTO::from($user);
     }

@@ -12,7 +12,7 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 use Infrastructure\Jobs\File\DeleteFileJob;
-use Infrastructure\Repositories\Contracts\FileRepositoryContract;
+use Domain\File\Repositories\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Shared\Exceptions\ServerErrorException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -123,7 +123,7 @@ class YCloudS3Service implements S3ServiceContract
     public function delete(FilterFileDTO $filters): void
     {
         try {
-            $this->fileRepository->delete($filters);
+            $this->fileRepository->deleteMany($filters);
         } catch (\Throwable $e) {
             \Log::error([
                 'class' => YCloudS3Service::class,
@@ -139,7 +139,7 @@ class YCloudS3Service implements S3ServiceContract
         try {
             $filesForDeleting = $this->fileRepository->getMany($filters);
 
-            $this->fileRepository->forceDelete($filters);
+            $this->fileRepository->forceDeleteMany($filters);
 
             foreach ($filesForDeleting as $file) {
                 DeleteFileJob::dispatch($file->key, $this->diskName);

@@ -7,7 +7,7 @@ namespace Tests\Unit\Application\Analys\Services;
 use Application\Analys\Services\AnalysService;
 use Domain\Analys\Enums\Analys as AnalysEnum;
 use Domain\Analys\Models\Analys;
-use Infrastructure\Repositories\Contracts\AnalysRepositoryContract;
+use Domain\Analys\Repositories\AnalysRepositoryContract;
 use Tests\TestCase;
 
 class AnalysServiceTest extends TestCase

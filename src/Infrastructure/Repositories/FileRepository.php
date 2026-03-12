@@ -8,8 +8,9 @@ use Application\S3\DTO\Filters\FilterFileDTO;
 use Domain\File\Models\File;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Infrastructure\Repositories\Contracts\FileRepositoryContract;
+use Domain\File\Repositories\FileRepositoryContract;
 use Shared\DTO\FilterBaseDTO;
+use Shared\Exceptions\ServerErrorException;
 use Shared\Repositories\BaseRepository;
 
 class FileRepository extends BaseRepository implements FileRepositoryContract
@@ -27,13 +28,19 @@ class FileRepository extends BaseRepository implements FileRepositoryContract
      */
     public function getMany(FilterFileDTO $filters): Collection
     {
+        logger()->debug('[FileRepository.getMany] starting query', ['filters' => $filters->toArray()]);
+
         $query = $filters->emptyValue('min_deleted_at') && $filters->emptyValue('max_deleted_at')
             ? $this->model::query()
             : $this->model::withTrashed();
 
         $query = $this->baseFilters($query, $filters);
 
-        return $query->get();
+        $result = $query->get();
+
+        logger()->debug('[FileRepository.getMany] returning records', ['count' => $result->count()]);
+
+        return $result;
     }
 
     /**
@@ -42,11 +49,21 @@ class FileRepository extends BaseRepository implements FileRepositoryContract
      * @param FilterFileDTO $filters
      * @return void
      */
-    public function delete(FilterFileDTO $filters): void
+    public function deleteMany(FilterFileDTO $filters): void
     {
+        logger()->info('[FileRepository.deleteMany] deleting files', ['filters' => $filters->toArray()]);
+
         $query = $this->model::query();
 
-        $this->baseFilters($query, $filters)->delete();
+        try {
+            $this->baseFilters($query, $filters)->delete();
+        } catch (\Throwable $e) {
+            logger()->error('[FileRepository.deleteMany] DB operation failed', [
+                'error'   => $e->getMessage(),
+                'context' => $filters->toArray(),
+            ]);
+            throw new ServerErrorException($e->getMessage());
+        }
     }
 
     /**
@@ -55,11 +72,21 @@ class FileRepository extends BaseRepository implements FileRepositoryContract
      * @param FilterFileDTO $filters
      * @return void
      */
-    public function forceDelete(FilterFileDTO $filters): void
+    public function forceDeleteMany(FilterFileDTO $filters): void
     {
+        logger()->info('[FileRepository.forceDeleteMany] force-deleting files', ['filters' => $filters->toArray()]);
+
         $query = $this->model::onlyTrashed();
 
-        $this->baseFilters($query, $filters)->forceDelete();
+        try {
+            $this->baseFilters($query, $filters)->forceDelete();
+        } catch (\Throwable $e) {
+            logger()->error('[FileRepository.forceDeleteMany] DB operation failed', [
+                'error'   => $e->getMessage(),
+                'context' => $filters->toArray(),
+            ]);
+            throw new ServerErrorException($e->getMessage());
+        }
     }
 
     /**
@@ -71,16 +98,20 @@ class FileRepository extends BaseRepository implements FileRepositoryContract
      */
     public function baseFilters(Builder $query, FilterBaseDTO $filters): Builder
     {
-        /** @phpstan-ignore argument.type */
-        parent::baseFilters($query, $filters);
+        logger()->debug('[FileRepository.baseFilters] applying filters', $filters->toArray());
+
+        $query = parent::baseFilters($query, $filters);
 
         // Attribute: deleted_at
         $filters->min_deleted_at = $filters->emptyValue('min_deleted_at') ? null : $filters->min_deleted_at;
         $filters->max_deleted_at = $filters->emptyValue('max_deleted_at') ? null : $filters->max_deleted_at;
 
-        /** @phpstan-ignore-next-line */
-        $query = $this->filterDateRange($query, 'deleted_at', $filters->min_deleted_at, $filters->max_deleted_at);
-        /** @var Builder<File> $query */
+        /** @var \Carbon\Carbon|null $minDeletedAt */
+        $minDeletedAt = $filters->min_deleted_at;
+        /** @var \Carbon\Carbon|null $maxDeletedAt */
+        $maxDeletedAt = $filters->max_deleted_at;
+
+        $query = $this->filterDateRange($query, 'deleted_at', $minDeletedAt, $maxDeletedAt);
 
         // Attribute: user_id
         if ($filters->isNotEmptyValue('user_ids')) {
@@ -101,6 +132,8 @@ class FileRepository extends BaseRepository implements FileRepositoryContract
                 ->where('size', '>', $filters->min_size)
                 ->where('size', '<', $filters->max_size);
         }
+
+        logger()->debug('[FileRepository.baseFilters] filters applied', ['query' => $query->toRawSql()]);
 
         return $query;
     }

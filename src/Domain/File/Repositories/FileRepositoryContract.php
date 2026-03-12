@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Repositories\Contracts;
+namespace Domain\File\Repositories;
 
 use Application\S3\DTO\Filters\FilterFileDTO;
+use Application\S3\DTO\FileDTO;
 use Domain\File\Models\File;
 use Illuminate\Database\Eloquent\Collection;
 use Shared\Repositories\Contracts\BaseRepositoryContract;
-use Application\S3\DTO\FileDTO;
 
 /**
  * @method File create(FileDTO $file)
@@ -29,7 +29,7 @@ interface FileRepositoryContract extends BaseRepositoryContract
      * @param FilterFileDTO $filters
      * @return void
      */
-    public function delete(FilterFileDTO $filters): void;
+    public function deleteMany(FilterFileDTO $filters): void;
 
     /**
      * Force delete from DB
@@ -37,5 +37,5 @@ interface FileRepositoryContract extends BaseRepositoryContract
      * @param FilterFileDTO $filters
      * @return void
      */
-    public function forceDelete(FilterFileDTO $filters): void;
+    public function forceDeleteMany(FilterFileDTO $filters): void;
 }

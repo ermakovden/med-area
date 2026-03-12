@@ -7,7 +7,7 @@ namespace Application\Analys\Services;
 use Application\Analys\Services\Contracts\AnalysServiceContract;
 use Domain\Analys\Models\Analys;
 use Illuminate\Database\Eloquent\Collection;
-use Infrastructure\Repositories\Contracts\AnalysRepositoryContract;
+use Domain\Analys\Repositories\AnalysRepositoryContract;
 use Shared\Exceptions\ServerErrorException;
 
 class AnalysService implements AnalysServiceContract

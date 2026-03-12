@@ -11,7 +11,7 @@ use Domain\File\Factories\FileFactory;
 use Domain\File\Models\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Infrastructure\Repositories\Contracts\FileRepositoryContract;
+use Domain\File\Repositories\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Shared\Exceptions\ServerErrorException;
 use Tests\TestCase;

@@ -10,7 +10,7 @@ use Domain\User\Events\UserRegistered;
 use Domain\User\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Infrastructure\Notifications\User\EmailVerificationNotification;
-use Infrastructure\Repositories\Contracts\UserRepositoryContract;
+use Domain\User\Repositories\UserRepositoryContract;
 
 class RegistrationService implements RegistrationServiceContract
 {

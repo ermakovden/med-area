@@ -6,7 +6,7 @@ namespace Infrastructure\Repositories;
 
 use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
 use Domain\AI\Recognise\Models\RecogniseRequest;
-use Infrastructure\Repositories\Contracts\RecogniseRequestRepositoryContract;
+use Domain\AI\Recognise\Repositories\RecogniseRequestRepositoryContract;
 use Shared\Exceptions\ServerErrorException;
 use Shared\Repositories\BaseRepository;
 
@@ -24,15 +24,15 @@ class RecogniseRequestRepository extends BaseRepository implements RecogniseRequ
 
             $model->updateOrFail($data->toArray());
 
-            return RecogniseRequestDTO::from([
-                $this->model::query()->findOrFail($id),
-            ]);
+            logger()->debug('[RecogniseRequestRepository.updateById] updated record', ['id' => $id]);
+
+            return RecogniseRequestDTO::from([$model->refresh()]);
         } catch (\Throwable $e) {
-            \Log::error($e->getMessage(), [
-                'class' => RecogniseRequestRepository::class,
-                'method' => 'updateById',
+            logger()->error('[RecogniseRequestRepository.updateById] DB operation failed', [
+                'error'   => $e->getMessage(),
+                'context' => ['id' => $id],
             ]);
-            throw new ServerErrorException();
+            throw new ServerErrorException($e->getMessage());
         }
     }
 }

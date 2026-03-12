@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Repositories\Contracts;
+namespace Domain\Analys\Repositories;
 
 use Domain\Analys\Models\Analys;
 use Illuminate\Database\Eloquent\Collection;
