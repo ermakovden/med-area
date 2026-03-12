@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Infrastructure\Repositories;
 
 use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
-use Application\Analys\DTO\UserAnalysDTO;
-use Domain\Analys\Enums\Analys;
 use Domain\Analys\Models\UserAnalys;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -24,21 +22,8 @@ class UserAnalysRepository extends BaseRepository implements UserAnalysRepositor
      */
     protected string $model = UserAnalys::class;
 
-    /**
-     * Create UserAnalys Model
-     *
-     * @param UserAnalysDTO $dto
-     * @return UserAnalys
-     */
     public function create(BaseDTO $dto): Model
     {
-        if ($dto->isNotEmptyValue('analys_id') && $dto->emptyValue('analys_name')) {
-            /** @var Analys $analysId */
-            $analysId = $dto->analys_id;
-
-            $dto->analys_name = $analysId->name;
-        }
-
         try {
             $model = $this->model::query()->create($dto->toArray());
             logger()->info('[UserAnalysRepository.create] record created', ['id' => $model->getKey()]);
@@ -53,12 +38,6 @@ class UserAnalysRepository extends BaseRepository implements UserAnalysRepositor
         }
     }
 
-    /**
-     * Get many model UserAnalys use filters
-     *
-     * @param FilterUserAnalysDTO $filters
-     * @return Collection<array-key, UserAnalys>
-     */
     public function getMany(FilterUserAnalysDTO $filters): Collection
     {
         logger()->debug('[UserAnalysRepository.getMany] starting query', ['filters' => $filters->toArray()]);
@@ -72,14 +51,6 @@ class UserAnalysRepository extends BaseRepository implements UserAnalysRepositor
         return $result;
     }
 
-    /**
-     * Delete UserAnalys Models use filters
-     *
-     * @param FilterUserAnalysDTO $filters
-     * @return void
-     *
-     * @throws ServerErrorException
-     */
     public function deleteMany(FilterUserAnalysDTO $filters): void
     {
         $query = $this->model::query();
@@ -100,15 +71,11 @@ class UserAnalysRepository extends BaseRepository implements UserAnalysRepositor
             ]);
             throw new ServerErrorException($e->getMessage());
         }
-
-        return;
     }
 
     /**
-     * Base filters for sql requests
-     *
      * @param Builder<UserAnalys> $query
-     * @param FilterUserAnalysDTO $filters
+     * @param FilterBaseDTO $filters
      * @return Builder<UserAnalys>
      */
     public function baseFilters(Builder $query, FilterBaseDTO $filters): Builder

@@ -8,10 +8,11 @@ use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Application\Analys\DTO\Requests\CreateUserAnalysisRequestDTO;
 use Application\Analys\DTO\UserAnalysDTO;
 use Application\Analys\Services\Contracts\UserAnalysServiceContract;
+use Domain\Analys\Enums\Analys;
 use Domain\Analys\Models\UserAnalys;
+use Domain\Analys\Repositories\UserAnalysRepositoryContract;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
-use Domain\Analys\Repositories\UserAnalysRepositoryContract;
 use Shared\Exceptions\ServerErrorException;
 
 class UserAnalysService implements UserAnalysServiceContract
@@ -36,6 +37,16 @@ class UserAnalysService implements UserAnalysServiceContract
             $createdRecords = [];
 
             foreach ($dto->analysis as $userAnalys) {
+                if ($userAnalys->isNotEmptyValue('analys_id') && $userAnalys->emptyValue('analys_name')) {
+                    /** @var Analys $analysId */
+                    $analysId = $userAnalys->analys_id;
+                    logger()->debug('[UserAnalysService] computing analys_name from enum', [
+                        'analys_id'   => $analysId->value,
+                        'analys_name' => $analysId->name,
+                    ]);
+                    $userAnalys->analys_name = $analysId->name;
+                }
+
                 $createdRecords[] = UserAnalysDTO::from(
                     $this->userAnalysRepository->create($userAnalys)
                 );

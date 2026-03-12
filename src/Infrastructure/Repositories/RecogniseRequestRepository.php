@@ -24,11 +24,9 @@ class RecogniseRequestRepository extends BaseRepository implements RecogniseRequ
 
             $model->updateOrFail($data->toArray());
 
-            logger()->info('[RecogniseRequestRepository.updateById] record updated', ['id' => $id]);
+            logger()->debug('[RecogniseRequestRepository.updateById] updated record', ['id' => $id]);
 
-            return RecogniseRequestDTO::from([
-                $this->model::query()->findOrFail($id),
-            ]);
+            return RecogniseRequestDTO::from([$model->refresh()]);
         } catch (\Throwable $e) {
             logger()->error('[RecogniseRequestRepository.updateById] DB operation failed', [
                 'error'   => $e->getMessage(),
