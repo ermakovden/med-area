@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Application\AI\Recogniser\DTO;
+namespace Domain\AI\Recognise\DTO;
 
 use Carbon\Carbon;
 use Domain\AI\Recognise\Enums\RecogniseStatus;

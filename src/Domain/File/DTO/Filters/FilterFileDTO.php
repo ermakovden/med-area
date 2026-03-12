@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Application\S3\DTO\Filters;
+namespace Domain\File\DTO\Filters;
 
 use Carbon\Carbon;
 use Shared\DTO\FilterBaseDTO;
