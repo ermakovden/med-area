@@ -7,6 +7,7 @@
     <testsuites>
         <testsuite name="Architecture">
             <directory>tests/Architecture</directory>
+            <exclude>tests/Architecture/BaseArchitectureTest.php</exclude>
         </testsuite>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>

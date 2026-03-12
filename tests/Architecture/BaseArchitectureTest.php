@@ -8,7 +8,7 @@ use PHPUnit\Architecture\ArchitectureAsserts;
 use PHPUnit\Architecture\Elements\Layer\Layer;
 use Tests\TestCase;
 
-class BaseArchitectureTest extends TestCase
+abstract class BaseArchitectureTest extends TestCase
 {
     use ArchitectureAsserts;
 
