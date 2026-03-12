@@ -34,33 +34,33 @@ help:
 
 # Run all tests
 test:
-	docker compose exec php composer test
+	docker-compose exec php composer test
 
 # Run unit tests only
 test-unit:
-	docker compose exec php php artisan test tests/Unit
+	docker-compose exec php php artisan test tests/Unit
 
 # Run feature tests only
 test-feature:
-	docker compose exec php php artisan test tests/Feature
+	docker-compose exec php php artisan test tests/Feature
 
 # Run architecture tests only
 test-arch:
-	docker compose exec php php artisan test tests/Architecture
+	docker-compose exec php php artisan test tests/Architecture
 
 # Run specific test file
 # Usage: make test-file FILE=tests/Feature/MyTest.php
 test-file:
-	docker compose exec php php artisan test $(FILE)
+	docker-compose exec php php artisan test $(FILE)
 
 # Fix code style
 cs-fix:
-	docker compose exec php git config --global --add safe.directory /var/www/app
-	docker compose exec php bash -c "php -d error_reporting=E_ALL\&~E_DEPRECATED $$(which composer) cs-fixer:fix"
+	docker-compose exec php git config --global --add safe.directory /var/www/app
+	docker-compose exec php bash -c 'php -d error_reporting=E_ALL\&~E_DEPRECATED $$(which composer) cs-fixer:fix'
 
 # Run static analysis
 phpstan:
-	docker compose exec php php -d error_reporting=E_ALL\&~E_DEPRECATED vendor/bin/phpstan analyse --memory-limit=2G --configuration=phpstan.neon
+	docker-compose exec php php -d error_reporting=E_ALL\&~E_DEPRECATED vendor/bin/phpstan analyse --memory-limit=2G --configuration=phpstan.neon
 
 # Run all checks before commit
 check: test cs-fix phpstan
@@ -69,11 +69,11 @@ check: test cs-fix phpstan
 
 # Generate OpenAPI documentation
 doc:
-	docker compose exec php composer doc
+	docker-compose exec php composer doc
 
 # Start development environment
 dev:
-	docker compose up -d
+	docker-compose up -d
 	@echo ""
 	@echo "✅ Development environment started!"
 	@echo "   Web: http://localhost"
@@ -81,26 +81,26 @@ dev:
 
 # Build Docker containers
 build:
-	docker compose build
+	docker-compose build
 
 # Stop and clean Docker containers and volumes
 clean:
-	docker compose down -v
+	docker-compose down -v
 	@echo ""
 	@echo "✅ Docker containers and volumes cleaned!"
 
 # Tail PHP container logs
 logs:
-	docker compose logs -f php
+	docker-compose logs -f php
 
 # Open shell in PHP container
 shell:
-	docker compose exec php bash
+	docker-compose exec php bash
 
 # Run database migrations
 migrate:
-	docker compose exec php php artisan migrate
+	docker-compose exec php php artisan migrate
 
 # Drop all tables and re-run migrations (destructive!)
 migrate-fresh:
-	docker compose exec php php artisan migrate:fresh --seed
+	docker-compose exec php php artisan migrate:fresh --seed

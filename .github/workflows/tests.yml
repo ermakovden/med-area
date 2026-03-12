@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -28,7 +28,7 @@ jobs:
           tools: composer:v2
           coverage: none
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v4.2.3
         with:
           path: ~/.composer/cache
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -45,4 +45,11 @@ jobs:
         run: php artisan key:generate
 
       - name: Run PHPUnit tests
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          AWS_BUCKET_TESTING: ${{ secrets.AWS_BUCKET_TESTING }}
+          RECOGNISER_YC_KEY_ID: ${{ secrets.RECOGNISER_YC_KEY_ID }}
+          RECOGNISER_YC_SECRET_ACCESS_KEY: ${{ secrets.RECOGNISER_YC_SECRET_ACCESS_KEY }}
         run: composer test

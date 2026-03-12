@@ -22,19 +22,26 @@ class DeleteFileJob implements ShouldQueue
     use SerializesModels;
 
     public string $path;
-    protected Filesystem $disk;
+    protected EnumsStorage $diskName;
 
-    public function __construct(string $path, ?Filesystem $disk = null)
+    public function __construct(string $path, ?EnumsStorage $diskName = null)
     {
         $this->path = $path;
-        $this->disk = $disk ?? Storage::disk(EnumsStorage::S3);
+        $this->diskName = $diskName ?? EnumsStorage::S3;
+    }
+
+    protected function getDisk(): Filesystem
+    {
+        return Storage::disk($this->diskName->value);
     }
 
     public function handle(): void
     {
         try {
-            if ($this->disk->exists($this->path)) {
-                $this->disk->delete($this->path);
+            $disk = $this->getDisk();
+
+            if ($disk->exists($this->path)) {
+                $disk->delete($this->path);
             }
         } catch (\Throwable $e) {
             \Log::error('Failed to delete file: ' . $this->path . '. ' . $e->getMessage());

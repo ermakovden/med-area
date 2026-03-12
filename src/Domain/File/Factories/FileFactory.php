@@ -25,8 +25,8 @@ class FileFactory extends Factory
         return [
             'user_id' => fake()->uuid(),
             'storage' => Storage::S3_TESTING,
-            'endpoint' => config('filesystems.disks.s3-testing.endpoint'),
-            'bucket' => config('filesystems.disks.s3-testing.bucket'),
+            'endpoint' => config('filesystems.disks.s3-testing.endpoint', 'https://storage.yandexcloud.net'),
+            'bucket' => config('filesystems.disks.s3-testing.bucket', 'test-bucket'),
             'key' => microtime() . random_int(1, 99999),
             'size' => fake()->randomDigit(),
         ];

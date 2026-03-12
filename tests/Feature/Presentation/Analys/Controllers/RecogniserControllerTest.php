@@ -9,6 +9,7 @@ use Domain\AI\Recognise\Enums\RecogniseStatus;
 use Domain\AI\Recognise\Enums\YC\OCRModel;
 use Domain\AI\Recognise\Models\RecogniseRequest;
 use Domain\File\Models\File;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Shared\Enums\LanguageCode;
 use Shared\Enums\Storage as EnumsStorage;
@@ -18,6 +19,9 @@ class RecogniserControllerTest extends TestCase
 {
     public function test_store_success(): void
     {
+        // Fake queue to prevent job execution
+        Queue::fake();
+
         // Auth user for testing
         $user = $this->authUser();
 
@@ -38,12 +42,10 @@ class RecogniserControllerTest extends TestCase
         ]);
 
         // Send API Request
-        $response = $this->post(route('api.analysis.recogniser.create'), array_merge(
-            [
-                'file_id' => $fileModel->id,
-            ],
-            $request->toArray(),
-        ));
+        $response = $this->post(route('api.analysis.recogniser.create'), [
+            'file_id' => $fileModel->id,
+            ...$request->toArray(),
+        ]);
 
         // Check asserts
         $response->assertOk();

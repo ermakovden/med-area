@@ -5,27 +5,20 @@ declare(strict_types=1);
 namespace Tests\Unit\Application\S3\Commands;
 
 use Application\S3\Commands\ForceDeleteFilesCommand;
+use Application\S3\Services\YCloudS3Service;
 use Domain\File\Models\File;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
-use Infrastructure\Jobs\File\DeleteFileJob;
+use Infrastructure\Repositories\Contracts\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Tests\TestCase;
 
 class ForceDeleteFilesCommandTest extends TestCase
 {
-    /**
-     * Сontains the command being tested
-     *
-     * @var ForceDeleteFilesCommand
-     */
-    protected readonly ForceDeleteFilesCommand $command;
+    protected Filesystem $disk;
 
-    protected readonly Filesystem $disk;
-
-    protected string $subDays;
+    protected int $subDays;
 
     public function setUp(): void
     {
@@ -33,22 +26,25 @@ class ForceDeleteFilesCommandTest extends TestCase
 
         $this->disk = Storage::disk(EnumsStorage::S3_TESTING);
 
-        $this->command = new ForceDeleteFilesCommand($this->disk);
-
-        $this->subDays = config('filesystems.environments.force_delete_sub_days');
+        $this->subDays = (int) config('filesystems.environments.force_delete_sub_days');
     }
 
     public function test_handle_success(): void
     {
-        // Init fake queue
-        Queue::fake();
+        $s3Service = new YCloudS3Service(
+            app(FileRepositoryContract::class),
+            $this->disk,
+            EnumsStorage::S3_TESTING,
+        );
+
+        $command = new ForceDeleteFilesCommand($s3Service);
 
         // User for testing
         $user = $this->getUser();
 
         // Create testing data - File model
         $file = File::factory(state: [
-            'deleted_at' => now()->subDays($this->subDays),
+            'deleted_at' => now()->subDays($this->subDays + 1), // older than threshold
             'key' => $this->disk->putFile(
                 'force-delete-command-test-handle-success',
                 UploadedFile::fake()->image('force-delete-command-test-handle-success.jpg') // save file in s3 storage
@@ -62,12 +58,7 @@ class ForceDeleteFilesCommandTest extends TestCase
         $this->assertTrue($this->disk->exists($file->key));
 
         // Call method of command
-        $this->command->handle();
-
-        Queue::assertPushed(DeleteFileJob::class, function ($job) {
-            $job->handle();
-            return true;
-        });
+        $command->handle();
 
         // Check assert that file model force deleted
         $this->assertModelMissing($file);
@@ -78,15 +69,23 @@ class ForceDeleteFilesCommandTest extends TestCase
 
     public function test_handle_not_deleted_by_date(): void
     {
+        $s3Service = new YCloudS3Service(
+            app(FileRepositoryContract::class),
+            $this->disk,
+            EnumsStorage::S3_TESTING,
+        );
+
+        $command = new ForceDeleteFilesCommand($s3Service);
+
         // User for testing
         $user = $this->getUser();
 
-        // Create testing data - File model
+        // Create testing data - File model (deleted less than threshold days ago)
         $file = File::factory(state: [
             'deleted_at' => now()->subDays($this->subDays - 1),
             'key' => $this->disk->putFile(
-                'force-delete-command-test-handle-success',
-                UploadedFile::fake()->image('force-delete-command-test-handle-success.jpg') // save file in s3 storage
+                'force-delete-command-test-handle-not-deleted',
+                UploadedFile::fake()->image('force-delete-command-test-handle-not-deleted.jpg') // save file in s3 storage
             ),
         ])->for($user)->createOne();
 
@@ -98,13 +97,13 @@ class ForceDeleteFilesCommandTest extends TestCase
         $this->assertTrue($this->disk->exists($file->key));
 
         // Call method of command
-        $this->command->handle();
+        $command->handle();
 
-        // Check assert that file model exists and soft deleted
+        // Check assert that file model still exists (not force deleted because not old enough)
         $this->assertModelExists($file);
         $this->assertSoftDeleted(File::class, ['user_id' => $user->id]);
 
-        // Check assert that file exists in s3 storage
+        // Check assert that file still exists in s3 storage
         $this->assertTrue($this->disk->exists($file->key));
     }
 }

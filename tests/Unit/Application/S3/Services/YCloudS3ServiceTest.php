@@ -51,7 +51,7 @@ class YCloudS3ServiceTest extends TestCase
         $this->assertInstanceOf(File::class, $result);
 
         // Assert that File saved into yc s3
-        $this->assertTrue($this->service->disk->exists($result->key));
+        $this->assertTrue($this->service->fileExists($result->key));
 
         // Assert that database has File data
         $this->assertDatabaseHas(File::class, $dto->except('content')->toArray());

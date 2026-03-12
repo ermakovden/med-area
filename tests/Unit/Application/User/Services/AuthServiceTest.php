@@ -23,7 +23,7 @@ class AuthServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->service = new AuthService();
+        $this->service = new AuthService(auth()->guard('api'));
     }
 
     public function test_login_success(): void
