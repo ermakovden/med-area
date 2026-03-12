@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Infrastructure\Repositories;
 
-use Application\S3\DTO\Filters\FilterFileDTO;
+use Domain\File\DTO\Filters\FilterFileDTO;
 use Domain\File\Models\File;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;

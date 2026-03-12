@@ -19,7 +19,7 @@ use OpenApi\Attributes as OA;
     ],
 )]
 /**
- * @mixin \Application\User\DTO\UserDTO
+ * @mixin \Domain\User\DTO\UserDTO
  */
 class UserResource extends JsonResource
 {

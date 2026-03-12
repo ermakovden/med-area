@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Infrastructure\Repositories;
 
-use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
+use Domain\AI\Recognise\DTO\RecogniseRequestDTO;
 use Domain\AI\Recognise\Models\RecogniseRequest;
 use Domain\AI\Recognise\Repositories\RecogniseRequestRepositoryContract;
 use Shared\Exceptions\ServerErrorException;

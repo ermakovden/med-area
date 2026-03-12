@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Application\S3\DTO\Requests;
 
-use Application\S3\DTO\FileDTO;
+use Domain\File\DTO\FileDTO;
 use Shared\DTO\BaseDTO;
 use Spatie\LaravelData\Optional;
 

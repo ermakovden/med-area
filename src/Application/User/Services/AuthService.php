@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Application\User\Services;
 
 use Application\User\DTO\TokenResponse;
-use Application\User\DTO\UserDTO;
+use Domain\User\DTO\UserDTO;
 use Application\User\Services\Contracts\AuthServiceContract;
 use Domain\User\Enums\TokenType;
 use Shared\Exceptions\ServerErrorException;

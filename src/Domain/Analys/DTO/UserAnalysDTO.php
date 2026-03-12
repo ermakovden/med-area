@@ -2,30 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Application\User\DTO;
+namespace Domain\Analys\DTO;
 
 use Carbon\Carbon;
+use Domain\Analys\Enums\Analys;
+use Domain\Analys\Enums\Unit;
 use Shared\DTO\BaseDTO;
 use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Casts\DateTimeInterfaceCast;
 use Spatie\LaravelData\Optional;
 
-class UserDTO extends BaseDTO
+class UserAnalysDTO extends BaseDTO
 {
     public string|Optional $id;
 
-    public string|Optional $nickname;
+    public string|Optional $user_id;
 
-    public string|Optional $email;
+    public Analys|Optional $analys_id;
 
-    public string|Optional $password;
+    public string|Optional $analys_name;
 
-    public string|Optional $password_confirmation;
+    public float|Optional $data;
 
-    public string|Optional|null $remember_token;
-
-    #[WithCast(DateTimeInterfaceCast::class)]
-    public Carbon|Optional|null $email_verified_at;
+    public Unit|Optional $unit;
 
     #[WithCast(DateTimeInterfaceCast::class)]
     public Carbon|Optional|null $created_at;

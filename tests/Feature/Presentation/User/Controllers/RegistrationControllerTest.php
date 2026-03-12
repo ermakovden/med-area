@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Presentation\User\Controllers;
 
-use Application\User\DTO\UserDTO;
+use Domain\User\DTO\UserDTO;
 use Domain\User\Factories\UserFactory;
 use Domain\User\Models\User;
 use Illuminate\Support\Facades\Notification;

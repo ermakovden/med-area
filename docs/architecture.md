@@ -8,28 +8,38 @@ MedArea follows **Domain-Driven Design (DDD)** with Clean Architecture dependenc
 
 ```
 src/
-├── Domain/          # Eloquent models, enums, factories — no business logic
-├── Application/     # Services, DTOs — orchestrates Domain
-├── Infrastructure/  # Repositories, jobs, notifications — implements contracts
+├── Domain/          # Eloquent models, enums, factories, DTOs, repository contracts
+├── Application/     # Services, use-case DTOs — orchestrates Domain
+├── Infrastructure/  # Repository implementations, jobs, notifications
 ├── Presentation/    # Controllers, FormRequests, API Resources, routes
 └── Shared/          # Cross-cutting utilities used by all layers
 ```
 
 Each domain entity (User, Analys, File, AI/Recognise) has its own subdirectory within each layer.
 
+### DTO Placement
+
+DTOs are split by who consumes them:
+
+| Location | Contains | Examples |
+|----------|----------|---------|
+| `Domain/*/DTO/` | DTOs used in repository contract signatures | `UserDTO`, `FileDTO`, `UserAnalysDTO`, `FilterFileDTO` |
+| `Application/*/DTO/` | DTOs used only within Application use cases | `TokenResponse`, `CreateFilesRequestDTO`, `RecogniseAsyncResponse` |
+| `Shared/DTO/` | Base classes | `BaseDTO`, `FilterBaseDTO` |
+
 ## Dependency Rules
 
 ```
 Presentation → Application → Domain
-Infrastructure → Application contracts (implements interfaces)
+Infrastructure → Domain (implements Domain repository contracts)
 Shared → (any layer)
 ```
 
 | Allowed | Forbidden |
 |---------|-----------|
 | `Presentation` calls `Application` service contracts | `Domain` importing `Application` or `Infrastructure` |
-| `Application` uses `Domain` models + `Infrastructure` contracts | `Application` importing `Infrastructure` concrete classes |
-| `Infrastructure` implements `Application/Infrastructure` interfaces | Controllers containing business logic |
+| `Application` uses `Domain` models, DTOs, and repository contracts | `Application` importing `Infrastructure` concrete classes |
+| `Infrastructure` implements `Domain/*/Repositories/` contracts | Controllers containing business logic |
 | Any layer uses `Shared` | Bypassing repository contracts with raw Eloquent |
 
 ## Namespace Roots (PSR-4)
@@ -46,9 +56,9 @@ Shared → (any layer)
 
 ## Key Conventions
 
-- **Contracts first** — every service and repository has an interface in a `Contracts/` subdirectory
-- **Bind in `ApplicationServiceProvider`** — all interface-to-implementation bindings go here
-- **DTOs at boundaries** — use `spatie/laravel-data` objects, never raw arrays between layers
+- **Contracts first** — every service has an interface in `Application/*/Services/Contracts/`; repository contracts live in `Domain/*/Repositories/`
+- **Bind in providers** — service bindings in `ApplicationServiceProvider`, repository bindings in `InfrastructureServiceProvider`
+- **DTOs at boundaries** — use `spatie/laravel-data` objects, never raw arrays between layers; domain-boundary DTOs go in `Domain/*/DTO/`
 - **Async by default** — OCR/AI operations go through `Infrastructure/Jobs/`, never synchronous in a request
 - **Fat services, thin controllers** — controllers validate (FormRequest) → call service → return Resource
 

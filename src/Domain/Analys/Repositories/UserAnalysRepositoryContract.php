@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Domain\Analys\Repositories;
 
-use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
-use Application\Analys\DTO\UserAnalysDTO;
+use Domain\Analys\DTO\Filters\FilterUserAnalysDTO;
+use Domain\Analys\DTO\UserAnalysDTO;
 use Domain\Analys\Models\UserAnalys;
 use Illuminate\Database\Eloquent\Collection;
 use Shared\Exceptions\ServerErrorException;

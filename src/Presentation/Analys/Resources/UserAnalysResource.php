@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Presentation\Analys\Resources;
 
-use Application\Analys\DTO\AnalysDTO;
-use Application\Analys\DTO\UserAnalysDTO;
+use Domain\Analys\DTO\AnalysDTO;
+use Domain\Analys\DTO\UserAnalysDTO;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
@@ -22,7 +22,7 @@ use OpenApi\Attributes as OA;
     ],
 )]
 /**
- * @mixin \Application\Analys\DTO\UserAnalysDTO
+ * @mixin \Domain\Analys\DTO\UserAnalysDTO
  */
 class UserAnalysResource extends JsonResource
 {

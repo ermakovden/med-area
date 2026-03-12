@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Presentation\User\Controllers;
 
-use Application\User\DTO\UserDTO;
+use Domain\User\DTO\UserDTO;
 use Presentation\User\Resources\UserResource;
 use Tests\TestCase;
 

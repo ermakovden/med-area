@@ -17,7 +17,7 @@ use OpenApi\Attributes as OA;
     ],
 )]
 /**
- * @mixin \Application\S3\DTO\FileDTO
+ * @mixin \Domain\File\DTO\FileDTO
  */
 class FileResource extends JsonResource
 {

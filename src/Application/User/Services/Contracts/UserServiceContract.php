@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Application\User\Services\Contracts;
 
-use Application\User\DTO\UserDTO;
+use Domain\User\DTO\UserDTO;
 
 interface UserServiceContract
 {

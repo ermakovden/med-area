@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Application\S3\Services;
 
-use Application\S3\DTO\FileDTO;
-use Application\S3\DTO\Filters\FilterFileDTO;
+use Domain\File\DTO\FileDTO;
+use Domain\File\DTO\Filters\FilterFileDTO;
 use Application\S3\Services\Contracts\S3ServiceContract;
 use Domain\File\Models\File;
 use Illuminate\Contracts\Filesystem\Filesystem;

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Application\Analys\Services;
 
-use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
+use Domain\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Application\Analys\DTO\Requests\CreateUserAnalysisRequestDTO;
-use Application\Analys\DTO\UserAnalysDTO;
+use Domain\Analys\DTO\UserAnalysDTO;
 use Application\Analys\Services\UserAnalysService;
 use Domain\Analys\Enums\Analys;
 use Domain\Analys\Factories\UserAnalysFactory;

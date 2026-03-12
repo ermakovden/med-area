@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Application\User\Services;
 
-use Application\User\DTO\UserDTO;
+use Domain\User\DTO\UserDTO;
 use Application\User\Services\AuthService;
 use Domain\User\Enums\TokenType;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;

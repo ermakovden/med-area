@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Infrastructure\Repositories;
 
-use Application\Analys\DTO\Filters\FilterUserAnalysDTO;
+use Domain\Analys\DTO\Filters\FilterUserAnalysDTO;
 use Domain\Analys\Models\UserAnalys;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;

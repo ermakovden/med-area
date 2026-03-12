@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Application\Analys\DTO\Filters;
+namespace Domain\Analys\DTO\Filters;
 
 use Shared\DTO\FilterBaseDTO;
 use Spatie\LaravelData\Optional;

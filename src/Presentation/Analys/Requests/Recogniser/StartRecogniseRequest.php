@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Presentation\Analys\Requests\Recogniser;
 
-use Application\AI\Recogniser\DTO\RecogniseRequestDTO;
+use Domain\AI\Recognise\DTO\RecogniseRequestDTO;
 use Application\AI\Recogniser\DTO\Requests\RecogniseAsyncRequestDTO;
-use Application\S3\DTO\FileDTO;
+use Domain\File\DTO\FileDTO;
 use Domain\AI\Recognise\Enums\RecogniseStatus;
 use Domain\AI\Recognise\Enums\YC\OCRModel;
 use Domain\File\Models\File;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Application\S3\DTO;
+namespace Domain\File\DTO;
 
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
