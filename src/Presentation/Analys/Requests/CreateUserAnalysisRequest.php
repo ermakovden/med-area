@@ -23,6 +23,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
                 new OA\Property(property: 'user_id', description: 'User Id for analys', type: 'string'),
                 new OA\Property(property: 'analys_id', description: 'Analys ID', type: 'string', enum: Analys::class),
                 new OA\Property(property: 'data', description: 'Value of analys', type: 'float'),
+                new OA\Property(property: 'unit', description: 'Unit of measurement', type: 'string'),
             ]),
         ]
     )
@@ -65,6 +66,7 @@ class CreateUserAnalysisRequest extends BaseRequest
             'analysis.*.user_id' => ['required', 'string', new UserIdMatchesAuth(), new UserIdMatchesUrlUserId()],
             'analysis.*.analys_id' => ['required', 'int', Rule::enum(Analys::class)],
             'analysis.*.data' => ['required', 'numeric'],
+            'analysis.*.unit' => ['required', 'string'],
         ];
     }
 }

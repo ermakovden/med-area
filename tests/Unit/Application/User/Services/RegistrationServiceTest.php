@@ -42,7 +42,7 @@ class RegistrationServiceTest extends TestCase
     public function test_register_success(): void
     {
         // Data for testing
-        $userDTO = UserDTO::from((new UserFactory())->definition());
+        $userDTO = UserDTO::from(new UserFactory()->definition());
         $userDTO->email_verified_at = null;
 
         // Mocks
@@ -66,7 +66,7 @@ class RegistrationServiceTest extends TestCase
     public function test_send_email_verification_notification_success(): void
     {
         // Data for testing
-        $userDTO = UserDTO::from((new UserFactory())->definition());
+        $userDTO = UserDTO::from(new UserFactory()->definition());
         $userDTO->email_verified_at = null;
 
         $createdUser = User::create($userDTO->toArray());
@@ -84,7 +84,7 @@ class RegistrationServiceTest extends TestCase
     public function test_send_email_verification_notification_already_verified(): void
     {
         // Data for testing
-        $userDTO = UserDTO::from((new UserFactory())->definition());
+        $userDTO = UserDTO::from(new UserFactory()->definition());
 
         /** @var User $createdUser */
         $createdUser = User::create($userDTO->toArray());

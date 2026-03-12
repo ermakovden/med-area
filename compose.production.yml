@@ -1,0 +1,136 @@
+# Production hardening overlay
+# Usage: docker compose -f docker-compose.yaml -f compose.production.yml up -d
+#
+# This file OVERRIDES docker-compose.yaml for production:
+# - Uses pre-built images from registry (set IMAGE_REGISTRY in .env)
+# - Enables security hardening (read_only, non-root, cap_drop, no-new-privileges)
+# - Removes debug ports
+# - Adds resource limits and log rotation
+# - Restricts network exposure (only nginx exposed externally)
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "20m"
+    max-file: "5"
+
+x-security: &default-security
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  read_only: true
+
+services:
+  nginx:
+    build:
+      target: dev  # override if you have a prod nginx stage
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:${APP_PATH}:ro
+      - ./docker/nginx/config/nginx.conf:/etc/nginx/nginx.conf:ro
+    <<: *default-security
+    cap_add:
+      - NET_BIND_SERVICE
+    tmpfs:
+      - /tmp:noexec,nosuid,size=50m
+      - /var/cache/nginx:noexec,nosuid,size=100m
+      - /var/run:noexec,nosuid,size=10m
+    restart: unless-stopped
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+          pids: 50
+
+  php:
+    build:
+      target: prod
+    volumes: []  # no source code mounts in production
+    extra_hosts: []
+    <<: *default-security
+    user: "app-user"
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    restart: unless-stopped
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 512M
+          pids: 100
+
+  db:
+    ports: []  # no external port exposure in production
+    <<: *default-security
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+      - /run/postgresql:noexec,nosuid,size=10m
+    restart: unless-stopped
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+          pids: 100
+
+  redis:
+    ports: []  # no external port exposure in production
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru --save ""
+    <<: *default-security
+    tmpfs:
+      - /tmp:noexec,nosuid,size=50m
+    restart: unless-stopped
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 192M
+          pids: 50
+
+  scheduler:
+    build:
+      target: scheduler
+    volumes: []  # no source mounts in production
+    <<: *default-security
+    user: "app-user"
+    tmpfs:
+      - /tmp:noexec,nosuid,size=50m
+    restart: unless-stopped
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+          pids: 50
+
+  worker:
+    build:
+      target: worker
+    volumes: []  # no source mounts in production
+    <<: *default-security
+    user: "app-user"
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    restart: unless-stopped
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 384M
+          pids: 100
