@@ -40,7 +40,8 @@ test-file:
 
 # Fix code style
 cs-fix:
-	docker-compose exec php composer cs-fixer:fix
+	docker-compose exec php git config --global --add safe.directory /var/www/app
+	docker-compose exec php bash -c "php -d error_reporting=E_ALL\&~E_DEPRECATED \$$(which composer) cs-fixer:fix"
 
 # Run static analysis
 phpstan:
