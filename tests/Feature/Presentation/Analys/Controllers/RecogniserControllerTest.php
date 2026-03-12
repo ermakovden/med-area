@@ -9,6 +9,7 @@ use Domain\AI\Recognise\Enums\RecogniseStatus;
 use Domain\AI\Recognise\Enums\YC\OCRModel;
 use Domain\AI\Recognise\Models\RecogniseRequest;
 use Domain\File\Models\File;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Shared\Enums\LanguageCode;
 use Shared\Enums\Storage as EnumsStorage;
@@ -18,6 +19,9 @@ class RecogniserControllerTest extends TestCase
 {
     public function test_store_success(): void
     {
+        // Fake queue to prevent job execution
+        Queue::fake();
+
         // Auth user for testing
         $user = $this->authUser();
 
