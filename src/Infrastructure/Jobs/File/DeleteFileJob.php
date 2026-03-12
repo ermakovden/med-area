@@ -39,7 +39,7 @@ class DeleteFileJob implements ShouldQueue
     {
         try {
             $disk = $this->getDisk();
-            
+
             if ($disk->exists($this->path)) {
                 $disk->delete($this->path);
             }

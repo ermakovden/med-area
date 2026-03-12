@@ -25,7 +25,7 @@ class YCloudS3Service implements S3ServiceContract
     public private(set) Filesystem $disk;
 
     protected readonly FileRepositoryContract $fileRepository;
-    
+
     protected readonly EnumsStorage $diskName;
 
     public function __construct(
