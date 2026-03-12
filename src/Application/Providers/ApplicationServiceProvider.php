@@ -55,9 +55,12 @@ class ApplicationServiceProvider extends ServiceProvider
             $this->app->bind($interface, $class);
         }
 
-        $this->app->bind(AuthServiceContract::class, fn () => new AuthService(
-            /** @var JWTGuard */ auth()->guard('api'),
-        ));
+        $this->app->bind(AuthServiceContract::class, function () {
+            /** @var JWTGuard $guard */
+            $guard = auth()->guard('api');
+
+            return new AuthService($guard);
+        });
 
         $this->app->singleton(RecogniseResponseParser::class);
     }
