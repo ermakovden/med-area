@@ -29,6 +29,8 @@ class RegistrationService implements RegistrationServiceContract
      */
     public function register(UserDTO $userDTO): UserDTO
     {
+        logger()->debug('[RegistrationService.register] starting registration', ['email' => $userDTO->email]);
+
         // Create new User model
         $userDTO = UserDTO::from($this->userRepository->create($userDTO));
 
@@ -38,7 +40,7 @@ class RegistrationService implements RegistrationServiceContract
 
             event(new UserRegistered($userModel));
         } catch (ModelNotFoundException $e) {
-            \Log::critical($e->getMessage() . '. Cant trigger event UserRegistered and cant send email verification notification.');
+            logger()->critical($e->getMessage() . '. Cant trigger event UserRegistered and cant send email verification notification.');
             throw $e;
         }
 

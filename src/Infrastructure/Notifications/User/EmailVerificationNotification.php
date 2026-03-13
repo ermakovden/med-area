@@ -9,13 +9,14 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\URL;
 
 class EmailVerificationNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(protected User $user) {}
+    public function __construct(
+        protected User $user,
+    ) {}
 
     /**
      * @param User $notifiable
@@ -32,6 +33,11 @@ class EmailVerificationNotification extends Notification implements ShouldQueue
      */
     public function toMail(User $notifiable): MailMessage
     {
+        logger()->debug('[EmailVerificationNotification.toMail] preparing email', [
+            'user_id' => $notifiable->getKey(),
+            'email' => $notifiable->getEmailForVerification(),
+        ]);
+
         return new MailMessage()
             ->subject('Welcome to MedArea!')
             ->line('Thank you for registering, ' . $this->user->nickname . '!')
@@ -47,7 +53,11 @@ class EmailVerificationNotification extends Notification implements ShouldQueue
      */
     public function verificationUrl(User $notifiable): string
     {
-        return URL::temporarySignedRoute(
+        logger()->debug('[EmailVerificationNotification.verificationUrl] generating verification URL', [
+            'user_id' => $notifiable->getKey(),
+        ]);
+
+        return resolve(\Illuminate\Routing\UrlGenerator::class)->temporarySignedRoute(
             'verification.verify',
             now()->addMinutes(config('auth.verification.expire', 60)),
             [

@@ -25,10 +25,12 @@ class AnalysService implements AnalysServiceContract
      */
     public function getAnalysis(): Collection
     {
+        logger()->debug('[AnalysService.getAnalysis] fetching all analysis');
+
         try {
             return $this->analysRepository->getMany();
         } catch (\Throwable $e) {
-            \Log::critical('Failed to get analysis from DB.', [
+            logger()->critical('Failed to get analysis from DB.', [
                 'class' => AnalysService::class,
                 'method' => 'getAnalysis',
                 'message' => $e->getMessage(),

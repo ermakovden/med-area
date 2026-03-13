@@ -11,7 +11,7 @@ use Application\AI\Recogniser\DTO\Responses\RecogniseAsyncResponse;
 use Application\AI\Recogniser\Services\Contracts\RecogniseRequestServiceContract;
 use Application\AI\Recogniser\Services\Contracts\RecogniserServiceContract;
 use Domain\AI\Recognise\Enums\RecogniseStatus;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Factory;
 use Infrastructure\Jobs\AI\Recogniser\UpdateYVisionRecogniseRequestJob;
 use Shared\Enums\AuthTokenType;
 use Shared\Exceptions\ServerErrorException;
@@ -28,6 +28,7 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
 
     public function __construct(
         protected readonly RecogniseRequestServiceContract $recogniseRequestService,
+        protected readonly Factory $http,
     ) {
         parent::__construct();
 
@@ -43,10 +44,14 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
 
     public function recogniseAsync(RecogniseAsyncRequestDTO $request, RecogniseRequestDTO $recogniseRequestDTO): RecogniseRequestDTO
     {
+        logger()->debug('[YVisionOCRService.recogniseAsync] starting async recognition', [
+            'operation_id' => $recogniseRequestDTO->operation_id ?? null,
+        ]);
+
         $this->setURLResourceParam('recognizeTextAsync');
 
         try {
-            $response = Http::withHeaders($this->getBaseHeaders())
+            $response = $this->http->withHeaders($this->getBaseHeaders())
                 ->withUrlParameters($this->urlParams->toArray())
                 ->post(
                     $this->getURITemplate(),
@@ -77,7 +82,7 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
             return $recogniseRequestDTO;
 
         } catch (\Throwable $e) {
-            \Log::error('Error when try start recognise async', [
+            logger()->error('Error when try start recognise async', [
                 'class' => YVisionOCRService::class,
                 'method' => 'recogniseAsync',
                 'message' => $e->getMessage(),
@@ -88,10 +93,14 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
 
     public function getRecognition(RecogniseRequestDTO $recogniseRequest): RecogniseAsyncResponse
     {
+        logger()->debug('[YVisionOCRService.getRecognition] getting recognition result', [
+            'operation_id' => $recogniseRequest->operation_id,
+        ]);
+
         $this->setURLResourceParam('getRecognition');
 
         try {
-            $response = Http::withHeaders($this->getBaseHeaders())
+            $response = $this->http->withHeaders($this->getBaseHeaders())
                 ->withUrlParameters($this->urlParams->toArray())
                 ->get(
                     $this->getURITemplate(),
@@ -107,7 +116,7 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
             return RecogniseAsyncResponse::from($response->json('result'));
 
         } catch (\Throwable $e) {
-            \Log::error('Error when try get recognition', [
+            logger()->error('Error when try get recognition', [
                 'class' => YVisionOCRService::class,
                 'method' => 'getRecognition',
                 'message' => $e->getMessage(),
