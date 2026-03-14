@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Infrastructure\Providers;
 
+use Domain\AI\Recognise\Events\RecogniseRequestCompleted;
+use Domain\File\Events\FileMarkedForDeletion;
 use Domain\User\Events\UserRegistered;
 use Illuminate\Support\ServiceProvider;
-use Infrastructure\Notifications\User\EmailVerificationNotification;
+use Infrastructure\Listeners\AI\DispatchUpdateRecogniseRequestJobListener;
+use Infrastructure\Listeners\File\DispatchDeleteFileJobListener;
+use Infrastructure\Listeners\User\SendEmailVerificationListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -16,7 +20,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<class-string>>
      */
     protected $listen = [
-        UserRegistered::class => [EmailVerificationNotification::class],
+        UserRegistered::class => [SendEmailVerificationListener::class],
+        FileMarkedForDeletion::class => [DispatchDeleteFileJobListener::class],
+        RecogniseRequestCompleted::class => [DispatchUpdateRecogniseRequestJobListener::class],
     ];
 
     public function register(): void {}

@@ -9,7 +9,6 @@ use Application\User\Services\Contracts\RegistrationServiceContract;
 use Domain\User\Events\UserRegistered;
 use Domain\User\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Infrastructure\Notifications\User\EmailVerificationNotification;
 use Domain\User\Repositories\UserRepositoryContract;
 
 class RegistrationService implements RegistrationServiceContract
@@ -63,7 +62,7 @@ class RegistrationService implements RegistrationServiceContract
         logger()->debug('[RegistrationService.sendEmailVerificationNotification] starting', ['user_id' => $user->id]);
 
         if (! $user->hasVerifiedEmail()) {
-            $user->notify(new EmailVerificationNotification($user));
+            event(new UserRegistered($user));
         }
     }
 }
