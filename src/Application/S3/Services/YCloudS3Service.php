@@ -114,16 +114,21 @@ class YCloudS3Service implements S3ServiceContract
      * Get file content from s3 storage
      *
      * @param string $key
-     * @param EnumsStorage $disk = EnumsStorage::S3
+     * @param ?EnumsStorage $diskName = null (uses default disk if null)
      *
      * @return string
      * @throws NotFoundHttpException
      */
-    public function getFileFromStorage(string $key, EnumsStorage $disk = EnumsStorage::S3): string
+    public function getFileFromStorage(string $key, ?EnumsStorage $diskName = null): string
     {
-        $disk = Storage::disk($disk);
+        logger()->debug('[YCloudS3Service.getFileFromStorage] retrieving file from storage', [
+            'key' => $key,
+            'disk' => $diskName !== null ? $diskName->value : $this->diskName->value,
+        ]);
 
-        if (! $content = $disk->get($key)) {
+        $storage = $diskName !== null ? Storage::disk($diskName) : $this->disk;
+
+        if (! $content = $storage->get($key)) {
             throw new NotFoundHttpException();
         }
 

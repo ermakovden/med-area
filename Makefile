@@ -1,4 +1,4 @@
-SHELL := bash
+	SHELL := bash
 .ONESHELL:
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
@@ -144,23 +144,23 @@ optimize: ## Cache config, routes, and views for production performance
 
 .PHONY: test
 test: ## Run all tests
-	$(COMPOSE) exec $(PHP_SERVICE) composer test
+	$(COMPOSE) exec -T $(PHP_SERVICE) composer test
 
 .PHONY: test-unit
 test-unit: ## Run unit tests
-	$(COMPOSE) exec $(PHP_SERVICE) $(ARTISAN) test tests/Unit
+	$(COMPOSE) exec -T $(PHP_SERVICE) $(ARTISAN) test tests/Unit
 
 .PHONY: test-feature
 test-feature: ## Run feature tests
-	$(COMPOSE) exec $(PHP_SERVICE) $(ARTISAN) test tests/Feature
+	$(COMPOSE) exec -T $(PHP_SERVICE) $(ARTISAN) test tests/Feature
 
 .PHONY: test-arch
 test-arch: ## Run architecture tests
-	$(COMPOSE) exec $(PHP_SERVICE) $(ARTISAN) test tests/Architecture
+	$(COMPOSE) exec -T $(PHP_SERVICE) $(ARTISAN) test tests/Architecture
 
 .PHONY: test-file
 test-file: ## Run specific test file — usage: make test-file FILE=tests/Feature/MyTest.php
-	$(COMPOSE) exec $(PHP_SERVICE) $(ARTISAN) test $(FILE)
+	$(COMPOSE) exec -T $(PHP_SERVICE) $(ARTISAN) test $(FILE)
 
 .PHONY: test-coverage
 test-coverage: ## Run tests with code coverage report (HTML output to coverage/)

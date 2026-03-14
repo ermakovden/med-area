@@ -11,7 +11,7 @@ use Application\AI\Recogniser\DTO\Responses\RecogniseAsyncResponse;
 use Application\AI\Recogniser\Services\Contracts\RecogniseRequestServiceContract;
 use Application\AI\Recogniser\Services\Contracts\RecogniserServiceContract;
 use Domain\AI\Recognise\Enums\RecogniseStatus;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Factory;
 use Infrastructure\Jobs\AI\Recogniser\UpdateYVisionRecogniseRequestJob;
 use Shared\Enums\AuthTokenType;
 use Shared\Exceptions\ServerErrorException;
@@ -28,6 +28,7 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
 
     public function __construct(
         protected readonly RecogniseRequestServiceContract $recogniseRequestService,
+        protected readonly Factory $http,
     ) {
         parent::__construct();
 
@@ -50,7 +51,7 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
         $this->setURLResourceParam('recognizeTextAsync');
 
         try {
-            $response = Http::withHeaders($this->getBaseHeaders())
+            $response = $this->http->withHeaders($this->getBaseHeaders())
                 ->withUrlParameters($this->urlParams->toArray())
                 ->post(
                     $this->getURITemplate(),
@@ -97,7 +98,7 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
         $this->setURLResourceParam('getRecognition');
 
         try {
-            $response = Http::withHeaders($this->getBaseHeaders())
+            $response = $this->http->withHeaders($this->getBaseHeaders())
                 ->withUrlParameters($this->urlParams->toArray())
                 ->get(
                     $this->getURITemplate(),
