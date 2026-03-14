@@ -14,11 +14,7 @@ use Infrastructure\Listeners\User\SendEmailVerificationListener;
 
 class EventServiceProvider extends ServiceProvider
 {
-    /**
-     * List event listeners
-     *
-     * @var array<class-string, array<class-string>>
-     */
+    /** @var array<string, array<int, string>> */
     protected $listen = [
         UserRegistered::class => [SendEmailVerificationListener::class],
         FileMarkedForDeletion::class => [DispatchDeleteFileJobListener::class],
