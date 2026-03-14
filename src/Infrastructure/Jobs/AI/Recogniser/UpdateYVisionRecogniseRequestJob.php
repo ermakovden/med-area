@@ -38,40 +38,36 @@ class UpdateYVisionRecogniseRequestJob implements ShouldQueue
 
     protected readonly RecogniseRequestDTO $recogniseRequest;
 
-    protected readonly RecogniseRequestRepositoryContract $recogniseRequestRepository;
-
-    protected readonly RecogniserServiceContract $recogniserService;
-
-    protected readonly RecogniseResponseParser $recogniseResponseParser;
-
     /**
      * Create a new job instance.
      */
     public function __construct(
         RecogniseRequestDTO $recogniseRequest,
-        ?RecogniseRequestRepositoryContract $recogniseRequestRepository = null,
-        ?RecogniserServiceContract $recogniserService = null,
-        ?RecogniseResponseParser $recogniseResponseParser = null,
     ) {
         $this->recogniseRequest = $recogniseRequest;
-        $this->recogniseRequestRepository = $recogniseRequestRepository ?? app(RecogniseRequestRepositoryContract::class);
-        $this->recogniserService = $recogniserService ?? app(RecogniserServiceContract::class);
-        $this->recogniseResponseParser = $recogniseResponseParser ?? app(RecogniseResponseParser::class);
     }
 
     /**
      * Execute the job.
      */
-    public function handle(): void
-    {
-        $response = $this->recogniserService->getRecognition($this->recogniseRequest);
+    public function handle(
+        RecogniseRequestRepositoryContract $recogniseRequestRepository,
+        RecogniserServiceContract $recogniserService,
+        RecogniseResponseParser $recogniseResponseParser,
+    ): void {
+        logger()->debug('[UpdateYVisionRecogniseRequestJob.handle] starting job', [
+            'operation_id' => $this->recogniseRequest->operation_id,
+            'attempt' => $this->attempts(),
+        ]);
+
+        $response = $recogniserService->getRecognition($this->recogniseRequest);
 
         if ($response->done) {
-            $this->handleSuccess($response);
+            $this->handleSuccess($response, $recogniseRequestRepository, $recogniseResponseParser);
             return;
         }
 
-        \Log::info('Recognition is not done yet, will retry', [
+        logger()->info('Recognition is not done yet, will retry', [
             'operation_id' => $this->recogniseRequest->operation_id,
             'attempt' => $this->attempts(),
         ]);
@@ -81,9 +77,12 @@ class UpdateYVisionRecogniseRequestJob implements ShouldQueue
      * Handle successful recognition.
      * Parse OCR response and save structured analysis data.
      */
-    protected function handleSuccess(RecogniseAsyncResponse $response): void
-    {
-        $recognisedData = $this->recogniseResponseParser->parse($response);
+    protected function handleSuccess(
+        RecogniseAsyncResponse $response,
+        RecogniseRequestRepositoryContract $recogniseRequestRepository,
+        RecogniseResponseParser $recogniseResponseParser,
+    ): void {
+        $recognisedData = $recogniseResponseParser->parse($response);
 
         $parsedResponse = [
             'result' => array_map(
@@ -99,10 +98,10 @@ class UpdateYVisionRecogniseRequestJob implements ShouldQueue
 
         $id = $this->recogniseRequest->toArray()['id'] ?? null;
         if (\is_int($id)) {
-            $this->recogniseRequestRepository->updateById($id, $data);
+            $recogniseRequestRepository->updateById($id, $data);
         }
 
-        \Log::info('Recognition completed successfully', [
+        logger()->info('Recognition completed successfully', [
             'operation_id' => $this->recogniseRequest->operation_id,
             'recognised_items' => count($recognisedData),
             'response' => $parsedResponse,
@@ -123,10 +122,10 @@ class UpdateYVisionRecogniseRequestJob implements ShouldQueue
 
         $id = $this->recogniseRequest->toArray()['id'] ?? null;
         if (\is_int($id)) {
-            $this->recogniseRequestRepository->updateById($id, $data);
+            app(RecogniseRequestRepositoryContract::class)->updateById($id, $data);
         }
 
-        \Log::error('Failed to get recognition data from Yandex Vision OCR', [
+        logger()->error('Failed to get recognition data from Yandex Vision OCR', [
             'class' => UpdateYVisionRecogniseRequestJob::class,
             'method' => 'handle',
             'operation_id' => $this->recogniseRequest->operation_id,

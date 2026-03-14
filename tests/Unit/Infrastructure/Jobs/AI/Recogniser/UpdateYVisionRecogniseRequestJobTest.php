@@ -21,9 +21,9 @@ use Tests\Unit\TestCase;
 
 class UpdateYVisionRecogniseRequestJobTest extends TestCase
 {
-    private MockInterface $repositoryMock;
+    private RecogniseRequestRepositoryContract|MockInterface $repositoryMock;
 
-    private MockInterface $recogniserServiceMock;
+    private RecogniserServiceContract|MockInterface $recogniserServiceMock;
 
     private RecogniseResponseParser $parser;
 
@@ -38,6 +38,8 @@ class UpdateYVisionRecogniseRequestJobTest extends TestCase
         $this->app->instance(RecogniseRequestRepositoryContract::class, $this->repositoryMock);
         $this->app->instance(RecogniserServiceContract::class, $this->recogniserServiceMock);
         $this->app->instance(RecogniseResponseParser::class, $this->parser);
+
+        Log::shouldReceive('debug')->andReturnNull();
     }
 
     public function tearDown(): void
@@ -96,7 +98,7 @@ class UpdateYVisionRecogniseRequestJobTest extends TestCase
             }));
 
         $job = new UpdateYVisionRecogniseRequestJob($recogniseRequestDTO);
-        $job->handle();
+        $job->handle($this->repositoryMock, $this->recogniserServiceMock, $this->parser);
 
         $this->assertInstanceOf(RecogniseRequestDTO::class, $updateCallArguments);
         $this->assertSame(RecogniseStatus::SUCCESS, $updateCallArguments->status);
@@ -145,7 +147,7 @@ class UpdateYVisionRecogniseRequestJobTest extends TestCase
             ->andReturnNull();
 
         $job = new UpdateYVisionRecogniseRequestJob($recogniseRequestDTO);
-        $job->handle();
+        $job->handle($this->repositoryMock, $this->recogniserServiceMock, $this->parser);
 
         $this->expectNotToPerformAssertions();
     }
@@ -191,7 +193,7 @@ class UpdateYVisionRecogniseRequestJobTest extends TestCase
             ->andReturnNull();
 
         $job = new UpdateYVisionRecogniseRequestJob($recogniseRequestDTO);
-        $job->handle();
+        $job->handle($this->repositoryMock, $this->recogniserServiceMock, $this->parser);
 
         $this->expectNotToPerformAssertions();
     }
@@ -355,7 +357,7 @@ class UpdateYVisionRecogniseRequestJobTest extends TestCase
             }));
 
         $job = new UpdateYVisionRecogniseRequestJob($recogniseRequestDTO);
-        $job->handle();
+        $job->handle($this->repositoryMock, $this->recogniserServiceMock, $this->parser);
 
         $this->assertInstanceOf(RecogniseRequestDTO::class, $updateCallArguments);
         $this->assertSame(RecogniseStatus::SUCCESS, $updateCallArguments->status);
@@ -407,7 +409,7 @@ class UpdateYVisionRecogniseRequestJobTest extends TestCase
             }));
 
         $job = new UpdateYVisionRecogniseRequestJob($recogniseRequestDTO);
-        $job->handle();
+        $job->handle($this->repositoryMock, $this->recogniserServiceMock, $this->parser);
 
         $this->assertInstanceOf(RecogniseRequestDTO::class, $updateCallArguments);
         $this->assertSame(RecogniseStatus::SUCCESS, $updateCallArguments->status);
@@ -471,7 +473,7 @@ class UpdateYVisionRecogniseRequestJobTest extends TestCase
             }));
 
         $job = new UpdateYVisionRecogniseRequestJob($recogniseRequestDTO);
-        $job->handle();
+        $job->handle($this->repositoryMock, $this->recogniserServiceMock, $this->parser);
 
         $this->assertInstanceOf(RecogniseRequestDTO::class, $updateCallArguments);
         $this->assertSame(RecogniseStatus::SUCCESS, $updateCallArguments->status);
@@ -562,7 +564,7 @@ class UpdateYVisionRecogniseRequestJobTest extends TestCase
             ->andReturnNull();
 
         $job = new UpdateYVisionRecogniseRequestJob($recogniseRequestDTO);
-        $job->handle();
+        $job->handle($this->repositoryMock, $this->recogniserServiceMock, $this->parser);
 
         $this->expectNotToPerformAssertions();
     }

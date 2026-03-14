@@ -37,6 +37,8 @@ class DeleteFileJob implements ShouldQueue
 
     public function handle(): void
     {
+        logger()->debug('[DeleteFileJob.handle] attempting to delete file', ['path' => $this->path]);
+
         try {
             $disk = $this->getDisk();
 
@@ -44,7 +46,7 @@ class DeleteFileJob implements ShouldQueue
                 $disk->delete($this->path);
             }
         } catch (\Throwable $e) {
-            \Log::error('Failed to delete file: ' . $this->path . '. ' . $e->getMessage());
+            logger()->error('Failed to delete file: ' . $this->path . '. ' . $e->getMessage());
             throw new ServerErrorException();
         }
     }

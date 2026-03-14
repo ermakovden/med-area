@@ -74,6 +74,10 @@ class YCloudS3ServiceTest extends TestCase
 
     public function test_get_files_success(): void
     {
+        // Create a file record to ensure results exist
+        $user = $this->getUser();
+        File::factory(2)->for($user)->create();
+
         // Filters for testing
         $filters = FilterFileDTO::from([]);
 

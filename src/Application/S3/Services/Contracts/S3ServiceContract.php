@@ -8,7 +8,7 @@ use Domain\File\DTO\FileDTO;
 use Domain\File\DTO\Filters\FilterFileDTO;
 use Domain\File\Models\File;
 use Illuminate\Database\Eloquent\Collection;
-use Shared\Enums\Storage;
+use Shared\Enums\Storage as EnumsStorage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 interface S3ServiceContract
@@ -29,12 +29,12 @@ interface S3ServiceContract
      * Get file content from s3 storage
      *
      * @param string $key
-     * @param Storage $disk = Storage::S3
+     * @param EnumsStorage|null $diskName (uses default disk if null)
      *
      * @return string
      * @throws NotFoundHttpException
      */
-    public function getFileFromStorage(string $key, Storage $disk = Storage::S3): string;
+    public function getFileFromStorage(string $key, ?EnumsStorage $diskName = null): string;
 
     public function delete(FilterFileDTO $filters): void;
 
