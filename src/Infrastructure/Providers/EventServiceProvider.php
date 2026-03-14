@@ -7,7 +7,7 @@ namespace Infrastructure\Providers;
 use Domain\AI\Recognise\Events\RecogniseRequestCompleted;
 use Domain\File\Events\FileMarkedForDeletion;
 use Domain\User\Events\UserRegistered;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Infrastructure\Listeners\AI\DispatchUpdateRecogniseRequestJobListener;
 use Infrastructure\Listeners\File\DispatchDeleteFileJobListener;
 use Infrastructure\Listeners\User\SendEmailVerificationListener;
@@ -24,8 +24,4 @@ class EventServiceProvider extends ServiceProvider
         FileMarkedForDeletion::class => [DispatchDeleteFileJobListener::class],
         RecogniseRequestCompleted::class => [DispatchUpdateRecogniseRequestJobListener::class],
     ];
-
-    public function register(): void {}
-
-    public function boot(): void {}
 }
