@@ -11,7 +11,7 @@ use Domain\File\Models\File;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
-use Infrastructure\Jobs\File\DeleteFileJob;
+use Domain\File\Events\FileMarkedForDeletion;
 use Domain\File\Repositories\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Shared\Exceptions\ServerErrorException;
@@ -160,7 +160,7 @@ class YCloudS3Service implements S3ServiceContract
             $this->fileRepository->forceDeleteMany($filters);
 
             foreach ($filesForDeleting as $file) {
-                DeleteFileJob::dispatch($file->key, $this->diskName);
+                event(new FileMarkedForDeletion($file->key, $this->diskName));
             }
         } catch (\Throwable $e) {
             logger()->error('[YCloudS3Service.forceDelete] force-delete failed', [
