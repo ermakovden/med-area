@@ -54,7 +54,7 @@ class UserService implements UserServiceContract
             throw new NotFoundHttpException();
         }
 
-        logger()->debug('[UserService.getById] returning user', ['user_id' => $user->getKey()]);
+        logger()->debug('[UserService.getById] returning user', ['user_id' => $user->id]);
 
         return UserDTO::from($user);
     }
