@@ -25,18 +25,20 @@ class AnalysService implements AnalysServiceContract
      */
     public function getAnalysis(): Collection
     {
-        logger()->debug('[AnalysService.getAnalysis] fetching all analysis');
+        logger()->debug('[AnalysService.getAnalysis] starting');
 
         try {
-            return $this->analysRepository->getMany();
+            $result = $this->analysRepository->getMany();
         } catch (\Throwable $e) {
-            logger()->critical('Failed to get analysis from DB.', [
-                'class' => AnalysService::class,
-                'method' => 'getAnalysis',
-                'message' => $e->getMessage(),
+            logger()->error('[AnalysService.getAnalysis] failed to get analysis from DB', [
+                'error' => $e->getMessage(),
             ]);
 
             throw new ServerErrorException();
         }
+
+        logger()->debug('[AnalysService.getAnalysis] returning records', ['count' => $result->count()]);
+
+        return $result;
     }
 }

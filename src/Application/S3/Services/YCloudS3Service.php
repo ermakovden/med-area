@@ -15,6 +15,7 @@ use Infrastructure\Jobs\File\DeleteFileJob;
 use Domain\File\Repositories\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Shared\Exceptions\ServerErrorException;
+use Illuminate\Http\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -40,26 +41,25 @@ class YCloudS3Service implements S3ServiceContract
 
     public function upload(FileDTO $file): File
     {
-        logger()->debug('[YCloudS3Service.upload] uploading file', [
-            'key' => $file->key,
-        ]);
+        logger()->debug('[YCloudS3Service.upload] starting', ['file_key' => $file->key]);
 
         try {
             if ($file->emptyValue('content')) {
                 throw new ServerErrorException('File content not found.');
             }
 
+            assert($file->content instanceof UploadedFile);
+
             $path = $this->getFilePath($file);
 
-            /** @phpstan-ignore-next-line */
-            if (! $result = $this->disk->putFile($path, $file->content)) {
+            $result = $this->disk->putFile($path, $file->content);
+            if (! $result) {
                 throw new ServerErrorException('Cant upload file to ycloud s3. Path: ' . $path);
             }
         } catch (\Exception $e) {
-            logger()->critical('YCloudS3Service upload error', [
-                'class' => YCloudS3Service::class,
-                'method' => 'upload',
-                'message' => $e->getMessage(),
+            logger()->critical('[YCloudS3Service.upload] upload to S3 failed', [
+                'error'   => $e->getMessage(),
+                'context' => ['file_key' => $file->key],
             ]);
             throw new ServerErrorException();
         }
@@ -71,15 +71,14 @@ class YCloudS3Service implements S3ServiceContract
 
     public function createFile(FileDTO $file): File
     {
-        logger()->debug('[YCloudS3Service.createFile] creating file record', ['key' => $file->key]);
+        logger()->debug('[YCloudS3Service.createFile] starting', ['file_key' => $file->key]);
 
         try {
             return $this->fileRepository->create($file);
         } catch (\Throwable $e) {
-            logger()->critical('Failed to save to DB File data.', [
-                'class' => YCloudS3Service::class,
-                'method' => 'createFile',
-                'message' => $e->getMessage(),
+            logger()->critical('[YCloudS3Service.createFile] failed to save file to DB', [
+                'error'   => $e->getMessage(),
+                'context' => ['file_key' => $file->key],
             ]);
 
             throw new ServerErrorException();
@@ -94,18 +93,21 @@ class YCloudS3Service implements S3ServiceContract
      */
     public function getFiles(FilterFileDTO $filters): Collection
     {
-        logger()->debug('[YCloudS3Service.getFiles] fetching files');
+        logger()->debug('[YCloudS3Service.getFiles] starting', ['filters' => $filters->toArray()]);
 
         try {
-            return $this->fileRepository->getMany($filters);
+            $result = $this->fileRepository->getMany($filters);
         } catch (\Throwable $e) {
-            logger()->error('YCloudS3Service getFiles error', [
-                'class' => YCloudS3Service::class,
-                'method' => 'getFiles',
-                'message' => $e->getMessage(),
+            logger()->error('[YCloudS3Service.getFiles] failed to get files', [
+                'error'   => $e->getMessage(),
+                'context' => $filters->toArray(),
             ]);
             throw new ServerErrorException();
         }
+
+        logger()->debug('[YCloudS3Service.getFiles] returning records', ['count' => $result->count()]);
+
+        return $result;
     }
 
     /**
@@ -135,15 +137,14 @@ class YCloudS3Service implements S3ServiceContract
 
     public function delete(FilterFileDTO $filters): void
     {
-        logger()->debug('[YCloudS3Service.delete] deleting files');
+        logger()->info('[YCloudS3Service.delete] deleting files', ['filters' => $filters->toArray()]);
 
         try {
             $this->fileRepository->deleteMany($filters);
         } catch (\Throwable $e) {
-            logger()->error('YCloudS3Service delete error', [
-                'class' => YCloudS3Service::class,
-                'method' => 'delete',
-                'message' => $e->getMessage(),
+            logger()->error('[YCloudS3Service.delete] delete failed', [
+                'error'   => $e->getMessage(),
+                'context' => $filters->toArray(),
             ]);
             throw new ServerErrorException();
         }
@@ -151,7 +152,7 @@ class YCloudS3Service implements S3ServiceContract
 
     public function forceDelete(FilterFileDTO $filters): void
     {
-        logger()->debug('[YCloudS3Service.forceDelete] force deleting files');
+        logger()->info('[YCloudS3Service.forceDelete] force-deleting files', ['filters' => $filters->toArray()]);
 
         try {
             $filesForDeleting = $this->fileRepository->getMany($filters);
@@ -162,10 +163,9 @@ class YCloudS3Service implements S3ServiceContract
                 DeleteFileJob::dispatch($file->key, $this->diskName);
             }
         } catch (\Throwable $e) {
-            logger()->error('YCloudS3Service forceDelete error', [
-                'class' => YCloudS3Service::class,
-                'method' => 'forceDelete',
-                'message' => $e->getMessage(),
+            logger()->error('[YCloudS3Service.forceDelete] force-delete failed', [
+                'error'   => $e->getMessage(),
+                'context' => $filters->toArray(),
             ]);
             throw new ServerErrorException();
         }
@@ -201,7 +201,8 @@ class YCloudS3Service implements S3ServiceContract
 
         $userId ??= auth()->user()?->id;
 
-        /** @phpstan-ignore-next-line */
+        assert($file->content instanceof UploadedFile);
+
         return 'users/' . $userId . '/' . $file->key . '.' . $file->content->extension();
     }
 }
