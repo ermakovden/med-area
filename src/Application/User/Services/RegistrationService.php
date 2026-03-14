@@ -40,7 +40,7 @@ class RegistrationService implements RegistrationServiceContract
 
             event(new UserRegistered($userModel));
         } catch (ModelNotFoundException $e) {
-            logger()->error('[RegistrationService.register] user not found after creation, cannot trigger UserRegistered event', [
+            logger()->critical('[RegistrationService.register] user not found after creation, cannot trigger UserRegistered event', [
                 'error'   => $e->getMessage(),
                 'context' => ['user_id' => $userDTO->id],
             ]);

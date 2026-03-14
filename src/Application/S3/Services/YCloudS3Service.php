@@ -57,7 +57,7 @@ class YCloudS3Service implements S3ServiceContract
                 throw new ServerErrorException('Cant upload file to ycloud s3. Path: ' . $path);
             }
         } catch (\Exception $e) {
-            logger()->error('[YCloudS3Service.upload] upload to S3 failed', [
+            logger()->critical('[YCloudS3Service.upload] upload to S3 failed', [
                 'error'   => $e->getMessage(),
                 'context' => ['file_key' => $file->key],
             ]);
@@ -76,7 +76,7 @@ class YCloudS3Service implements S3ServiceContract
         try {
             return $this->fileRepository->create($file);
         } catch (\Throwable $e) {
-            logger()->error('[YCloudS3Service.createFile] failed to save file to DB', [
+            logger()->critical('[YCloudS3Service.createFile] failed to save file to DB', [
                 'error'   => $e->getMessage(),
                 'context' => ['file_key' => $file->key],
             ]);
