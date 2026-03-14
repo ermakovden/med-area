@@ -65,5 +65,8 @@ class ApplicationServiceProvider extends ServiceProvider
         $this->app->singleton(RecogniseResponseParser::class);
     }
 
-    public function boot(): void {}
+    public function boot(): void
+    {
+        logger()->debug('JSON logging channel configured', ['channel' => config('logging.default')]);
+    }
 }
