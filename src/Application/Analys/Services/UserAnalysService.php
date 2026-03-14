@@ -31,6 +31,8 @@ class UserAnalysService implements UserAnalysServiceContract
      */
     public function createUserAnalysis(CreateUserAnalysisRequestDTO $dto): array
     {
+        logger()->debug('[UserAnalysService.createUserAnalysis] starting', ['analysis_count' => count($dto->analysis)]);
+
         DB::beginTransaction();
 
         try {
@@ -59,10 +61,8 @@ class UserAnalysService implements UserAnalysServiceContract
         } catch (\Throwable $e) {
             DB::rollback();
 
-            \Log::critical('Failed to save to DB user analys.', [
-                'class' => UserAnalysService::class,
-                'method' => 'createUserAnalysis',
-                'message' => $e->getMessage(),
+            logger()->error('[UserAnalysService.createUserAnalysis] failed to save user analys to DB', [
+                'error' => $e->getMessage(),
             ]);
 
             throw new ServerErrorException();
@@ -79,17 +79,22 @@ class UserAnalysService implements UserAnalysServiceContract
      */
     public function getUserAnalysis(FilterUserAnalysDTO $filters): Collection
     {
+        logger()->debug('[UserAnalysService.getUserAnalysis] starting', ['filters' => $filters->toArray()]);
+
         try {
-            return $this->userAnalysRepository->getMany($filters);
+            $result = $this->userAnalysRepository->getMany($filters);
         } catch (\Throwable $e) {
-            \Log::critical('Failed to get user analysis from Db.', [
-                'class' => UserAnalysService::class,
-                'method' => 'getUserAnalysis',
-                'message' => $e->getMessage(),
+            logger()->error('[UserAnalysService.getUserAnalysis] failed to get user analysis from DB', [
+                'error'   => $e->getMessage(),
+                'context' => $filters->toArray(),
             ]);
 
             throw new ServerErrorException();
         }
+
+        logger()->debug('[UserAnalysService.getUserAnalysis] returning records', ['count' => $result->count()]);
+
+        return $result;
     }
 
     /**
@@ -102,13 +107,14 @@ class UserAnalysService implements UserAnalysServiceContract
      */
     public function deleteUserAnalysis(FilterUserAnalysDTO $filters): void
     {
+        logger()->info('[UserAnalysService.deleteUserAnalysis] deleting user analysis', ['filters' => $filters->toArray()]);
+
         try {
             $this->userAnalysRepository->deleteMany($filters);
         } catch (\Throwable $e) {
-            \Log::critical('Failed to delete user analysis from DB.', [
-                'class' => UserAnalysService::class,
-                'method' => 'deleteUserAnalysis',
-                'message' => $e->getMessage(),
+            logger()->error('[UserAnalysService.deleteUserAnalysis] failed to delete user analysis from DB', [
+                'error'   => $e->getMessage(),
+                'context' => $filters->toArray(),
             ]);
 
             throw new ServerErrorException();
