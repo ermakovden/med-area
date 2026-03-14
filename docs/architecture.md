@@ -8,9 +8,9 @@ MedArea follows **Domain-Driven Design (DDD)** with Clean Architecture dependenc
 
 ```
 src/
-├── Domain/          # Eloquent models, enums, factories, DTOs, repository contracts
-├── Application/     # Services, use-case DTOs — orchestrates Domain
-├── Infrastructure/  # Repository implementations, jobs, notifications
+├── Domain/          # Eloquent models, enums, factories, DTOs, repository contracts, domain events
+├── Application/     # Services, use-case DTOs — orchestrates Domain, fires Domain Events
+├── Infrastructure/  # Repository implementations, jobs, listeners, notifications
 ├── Presentation/    # Controllers, FormRequests, API Resources, routes
 └── Shared/          # Cross-cutting utilities used by all layers
 ```
@@ -38,7 +38,7 @@ Shared → (any layer)
 | Allowed | Forbidden |
 |---------|-----------|
 | `Presentation` calls `Application` service contracts | `Domain` importing `Application` or `Infrastructure` |
-| `Application` uses `Domain` models, DTOs, and repository contracts | `Application` importing `Infrastructure` concrete classes |
+| `Application` uses `Domain` models, DTOs, repository contracts, and fires Domain Events | `Application` importing `Infrastructure` concrete classes |
 | `Infrastructure` implements `Domain/*/Repositories/` contracts | Controllers containing business logic |
 | Any layer uses `Shared` | Bypassing repository contracts with raw Eloquent |
 
@@ -59,7 +59,7 @@ Shared → (any layer)
 - **Contracts first** — every service has an interface in `Application/*/Services/Contracts/`; repository contracts live in `Domain/*/Repositories/`
 - **Bind in providers** — service bindings in `ApplicationServiceProvider`, repository bindings in `InfrastructureServiceProvider`
 - **DTOs at boundaries** — use `spatie/laravel-data` objects, never raw arrays between layers; domain-boundary DTOs go in `Domain/*/DTO/`
-- **Async by default** — OCR/AI operations go through `Infrastructure/Jobs/`, never synchronous in a request
+- **Async via Domain Events** — Application fires `Domain/*/Events/`; `Infrastructure/Listeners/` handle them by dispatching `Infrastructure/Jobs/`. Application never imports Infrastructure directly
 - **Fat services, thin controllers** — controllers validate (FormRequest) → call service → return Resource
 
 ## Bounded Domains
