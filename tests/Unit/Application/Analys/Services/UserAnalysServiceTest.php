@@ -109,6 +109,15 @@ class UserAnalysServiceTest extends TestCase
 
     public function test_get_user_analysis_filter_by_analys_ids(): void
     {
+        // Create records with matching analys IDs
+        $user = $this->getUser();
+        $factory = new UserAnalysFactory();
+
+        $dto1 = UserAnalysDTO::from(array_merge($factory->definition(), ['user_id' => $user->id, 'analys_id' => Analys::B12->value, 'analys_name' => Analys::B12->name]));
+        $dto2 = UserAnalysDTO::from(array_merge($factory->definition(), ['user_id' => $user->id, 'analys_id' => Analys::B6->value, 'analys_name' => Analys::B6->name]));
+        UserAnalys::query()->create($dto1->toArray());
+        UserAnalys::query()->create($dto2->toArray());
+
         // Filters
         $filters = FilterUserAnalysDTO::from(['analys_ids' => [Analys::B12, Analys::B6]]);
 
