@@ -15,6 +15,7 @@ use Infrastructure\Jobs\File\DeleteFileJob;
 use Domain\File\Repositories\FileRepositoryContract;
 use Shared\Enums\Storage as EnumsStorage;
 use Shared\Exceptions\ServerErrorException;
+use Illuminate\Http\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -45,17 +46,18 @@ class YCloudS3Service implements S3ServiceContract
                 throw new ServerErrorException('File content not found.');
             }
 
+            assert($file->content instanceof UploadedFile);
+
             $path = $this->getFilePath($file);
 
-            /** @phpstan-ignore-next-line */
-            if (! $result = $this->disk->putFile($path, $file->content)) {
+            $result = $this->disk->putFile($path, $file->content);
+            if (! $result) {
                 throw new ServerErrorException('Cant upload file to ycloud s3. Path: ' . $path);
             }
         } catch (\Exception $e) {
-            \Log::critical([
+            \Log::critical($e->getMessage(), [
                 'class' => YCloudS3Service::class,
                 'method' => 'upload',
-                'message' => $e->getMessage(),
             ]);
             throw new ServerErrorException();
         }
@@ -91,10 +93,9 @@ class YCloudS3Service implements S3ServiceContract
         try {
             return $this->fileRepository->getMany($filters);
         } catch (\Throwable $e) {
-            \Log::error([
+            \Log::error($e->getMessage(), [
                 'class' => YCloudS3Service::class,
                 'method' => 'upload',
-                'message' => $e->getMessage(),
             ]);
             throw new ServerErrorException();
         }
@@ -125,10 +126,9 @@ class YCloudS3Service implements S3ServiceContract
         try {
             $this->fileRepository->deleteMany($filters);
         } catch (\Throwable $e) {
-            \Log::error([
+            \Log::error($e->getMessage(), [
                 'class' => YCloudS3Service::class,
                 'method' => 'delete',
-                'message' => $e->getMessage(),
             ]);
             throw new ServerErrorException();
         }
@@ -145,10 +145,9 @@ class YCloudS3Service implements S3ServiceContract
                 DeleteFileJob::dispatch($file->key, $this->diskName);
             }
         } catch (\Throwable $e) {
-            \Log::error([
+            \Log::error($e->getMessage(), [
                 'class' => YCloudS3Service::class,
-                'method' => 'delete',
-                'message' => $e->getMessage(),
+                'method' => 'forceDelete',
             ]);
             throw new ServerErrorException();
         }
@@ -184,7 +183,8 @@ class YCloudS3Service implements S3ServiceContract
 
         $userId ??= auth()->user()?->id;
 
-        /** @phpstan-ignore-next-line */
+        assert($file->content instanceof UploadedFile);
+
         return 'users/' . $userId . '/' . $file->key . '.' . $file->content->extension();
     }
 }

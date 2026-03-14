@@ -51,8 +51,7 @@ class FileController extends BaseController
 
         $models = [];
 
-        if ($dto->isNotEmptyValue('files')) {
-            /** @phpstan-ignore-next-line */
+        if (is_array($dto->files)) {
             foreach ($dto->files as $file) {
                 $file->storage = EnumsStorage::S3;
                 $models[] = $this->s3Service->upload($file);

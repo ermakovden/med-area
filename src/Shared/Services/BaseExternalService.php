@@ -71,8 +71,7 @@ abstract class BaseExternalService implements BaseExternalServiceContract
     {
         $response = [];
 
-        /** @phpstan-ignore foreach.nonIterable */
-        foreach ($this->headers as $key => $value) {
+        foreach ($this->headers->toArray() as $key => $value) {
             if ($value !== null) {
                 $response[ucfirst($key)] = $value;
             }
