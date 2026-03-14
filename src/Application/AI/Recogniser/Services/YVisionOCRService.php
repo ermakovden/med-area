@@ -12,7 +12,7 @@ use Application\AI\Recogniser\Services\Contracts\RecogniseRequestServiceContract
 use Application\AI\Recogniser\Services\Contracts\RecogniserServiceContract;
 use Domain\AI\Recognise\Enums\RecogniseStatus;
 use Illuminate\Http\Client\Factory;
-use Infrastructure\Jobs\AI\Recogniser\UpdateYVisionRecogniseRequestJob;
+use Domain\AI\Recognise\Events\RecogniseRequestCompleted;
 use Shared\Enums\AuthTokenType;
 use Shared\Exceptions\ServerErrorException;
 use Shared\Services\BaseExternalService;
@@ -74,10 +74,8 @@ class YVisionOCRService extends BaseExternalService implements RecogniserService
 
                 logger()->debug('[YVisionOCRService.recogniseAsync] dispatching update job', ['operation_id' => $responseDTO->id]);
 
-                // Queue for periodic recognition status checking
-                // First attempt after 35 seconds
-                UpdateYVisionRecogniseRequestJob::dispatch($recogniseRequestDTO)
-                    ->delay(now()->plus(seconds: 35));
+                // Queue for periodic recognition status checking via Domain Event
+                event(new RecogniseRequestCompleted($recogniseRequestDTO));
             }
 
             return $recogniseRequestDTO;
