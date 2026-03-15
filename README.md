@@ -32,6 +32,7 @@ API available at `http://localhost:80` (or configured `APP_WEB_PORT`).
 | [Architecture](docs/architecture.md) | DDD layer structure and dependency rules |
 | [Development](docs/development.md) | Coding standards, testing, static analysis, CI |
 | [Configuration](docs/configuration.md) | Environment variables, database, packages |
+| [ELK Setup](docs/elk-setup.md) | Centralized logging with Elasticsearch, Kibana, Logstash, Filebeat |
 
 ## License
 
