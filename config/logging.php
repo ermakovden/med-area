@@ -73,6 +73,18 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'json' => [
+            'driver' => 'monolog',
+            'handler' => \Monolog\Handler\RotatingFileHandler::class,
+            'handler_with' => [
+                'filename' => storage_path('logs/laravel.log'),
+                'maxFiles' => env('LOG_DAILY_DAYS', 14),
+                'level' => env('LOG_LEVEL', 'debug'),
+            ],
+            'formatter' => \Monolog\Formatter\JsonFormatter::class,
+            'replace_placeholders' => true,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),

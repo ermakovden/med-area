@@ -64,6 +64,4 @@ class ApplicationServiceProvider extends ServiceProvider
 
         $this->app->singleton(RecogniseResponseParser::class);
     }
-
-    public function boot(): void {}
 }

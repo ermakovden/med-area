@@ -44,7 +44,7 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
-      - name: Run PHPUnit tests
+      - name: Run PHPUnit tests (Elasticsearch tests excluded — no ELK in CI)
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

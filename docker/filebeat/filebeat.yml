@@ -1,0 +1,21 @@
+filebeat.inputs:
+  - type: filestream
+    enabled: true
+    id: laravel-logs
+    paths:
+      - /var/log/laravel/*.log
+    parsers:
+      - multiline:
+          type: pattern
+          pattern: '^\{'
+          negate: true
+          match: after
+      - ndjson:
+          keys_under_root: true
+          add_error_key: true
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+logging.level: info
+logging.to_files: false

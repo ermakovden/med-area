@@ -70,7 +70,11 @@
         ],
         "test": [
             "@php artisan config:clear --ansi",
-            "@php artisan test"
+            "@php artisan test --exclude-group elastic"
+        ],
+        "test:elastic": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test --group elastic"
         ],
         "cs-fixer:fix": [
             "@php vendor/bin/php-cs-fixer fix"

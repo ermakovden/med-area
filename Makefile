@@ -162,6 +162,10 @@ test-arch: ## Run architecture tests
 test-file: ## Run specific test file — usage: make test-file FILE=tests/Feature/MyTest.php
 	$(COMPOSE) exec -T $(PHP_SERVICE) $(ARTISAN) test $(FILE)
 
+.PHONY: test-elastic
+test-elastic: ## Run Elasticsearch integration tests (requires running ELK stack)
+	$(COMPOSE) exec -T $(PHP_SERVICE) composer test:elastic
+
 .PHONY: test-coverage
 test-coverage: ## Run tests with code coverage report (HTML output to coverage/)
 	$(COMPOSE) exec $(PHP_SERVICE) $(PHP) -d error_reporting=E_ALL\&~E_DEPRECATED vendor/bin/phpunit --coverage-html coverage/
@@ -209,6 +213,12 @@ prod-up: ## Start production environment
 .PHONY: prod-down
 prod-down: ## Stop production environment
 	$(COMPOSE) $(COMPOSE_PROD) down
+
+##@ Observability
+
+.PHONY: kibana-import
+kibana-import: ## Import all Kibana dashboards from docker/kibana/dashboards/
+	$(COMPOSE) exec kibana bash /docker/kibana/setup.sh
 
 ##@ Cleanup
 
