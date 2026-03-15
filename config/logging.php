@@ -75,11 +75,14 @@ return [
         ],
 
         'json' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/laravel.log'),
-            'level' => env('LOG_LEVEL', 'debug'),
-            'days' => env('LOG_DAILY_DAYS', 14),
-            'tap' => [JsonMonologFormatter::class],
+            'driver' => 'monolog',
+            'handler' => \Monolog\Handler\RotatingFileHandler::class,
+            'handler_with' => [
+                'filename' => storage_path('logs/laravel.log'),
+                'maxFiles' => env('LOG_DAILY_DAYS', 14),
+                'level' => env('LOG_LEVEL', 'debug'),
+            ],
+            'formatter' => \Monolog\Formatter\JsonFormatter::class,
             'replace_placeholders' => true,
         ],
 
