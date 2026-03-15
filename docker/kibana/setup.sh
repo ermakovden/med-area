@@ -22,12 +22,21 @@ for i in $(seq 1 $MAX_RETRIES); do
 done
 
 echo "Importing dashboards..."
-for file in "${DASHBOARDS_DIR}"/*.ndjson; do
-    echo "  → $(basename "$file")"
-    curl -s -X POST "${KIBANA_URL}/api/saved_objects/_import?overwrite=true" \
-        -H "kbn-xsrf: true" \
-        -F "file=@${file}"
-    echo ""
+# Each dashboard lives in its own subdirectory.
+# Files are imported in a fixed order to satisfy Kibana's reference resolution:
+#   1. index-pattern  — must exist before any visualization references it
+#   2. viz-*          — visualizations that reference the index-pattern
+#   3. dashboard      — references the visualizations above
+for dir in "${DASHBOARDS_DIR}"/*/; do
+    echo "  → $(basename "$dir")"
+    for file in index-pattern.ndjson viz-*.ndjson dashboard.ndjson; do
+        filepath="${dir}${file}"
+        [ -f "$filepath" ] || continue
+        curl -s -X POST "${KIBANA_URL}/api/saved_objects/_import?overwrite=true" \
+            -H "kbn-xsrf: true" \
+            -F "file=@${filepath}"
+        echo ""
+    done
 done
 
 echo "Kibana setup complete."

@@ -33,6 +33,7 @@ API available at `http://localhost:80` (or configured `APP_WEB_PORT`).
 | [Development](docs/development.md) | Coding standards, testing, static analysis, CI |
 | [Configuration](docs/configuration.md) | Environment variables, database, packages |
 | [ELK Setup](docs/elk-setup.md) | Centralized logging with Elasticsearch, Kibana, Logstash, Filebeat |
+| [Kibana Dashboards](docs/kibana-dashboards.md) | Dashboard structure, import order, and how to add new dashboards |
 
 ## License
 
