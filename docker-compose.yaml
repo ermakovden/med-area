@@ -167,11 +167,15 @@ services:
       - "5601:5601"
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    volumes:
+      - ./docker/kibana:/docker/kibana:ro
     networks:
       - medarea-network
     depends_on:
       elasticsearch:
         condition: service_healthy
+    mem_limit: 1g
+    entrypoint: ["/bin/bash", "-c", "bash /docker/kibana/setup.sh & /usr/local/bin/kibana-docker"]
 
 volumes:
   db-data:

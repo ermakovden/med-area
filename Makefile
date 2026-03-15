@@ -214,6 +214,12 @@ prod-up: ## Start production environment
 prod-down: ## Stop production environment
 	$(COMPOSE) $(COMPOSE_PROD) down
 
+##@ Observability
+
+.PHONY: kibana-import
+kibana-import: ## Import all Kibana dashboards from docker/kibana/dashboards/
+	$(COMPOSE) exec kibana-setup bash /docker/kibana/setup.sh
+
 ##@ Cleanup
 
 .PHONY: clean
