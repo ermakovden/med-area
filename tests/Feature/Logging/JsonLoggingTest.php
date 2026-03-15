@@ -4,34 +4,54 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Logging;
 
-use Carbon\Carbon;
+use Illuminate\Log\Logger;
+use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\TestHandler;
-use Monolog\Logger;
-use Shared\Logging\JsonMonologFormatter;
+use Monolog\Logger as MonologLogger;
 use Tests\TestCase;
 
 class JsonLoggingTest extends TestCase
 {
     private TestHandler $handler;
 
-    private Logger $logger;
+    private Logger $channel;
+
+    private MonologLogger $monolog;
 
     public function setUp(): void
     {
         parent::setUp();
 
+        // JsonFormatter must be set on the TestHandler so that AbstractProcessingHandler
+        // writes JSON into $record->formatted — which is what the assertions read below.
         $this->handler = new TestHandler();
+        $this->handler->setFormatter(new JsonFormatter());
 
-        $this->logger = new Logger('test');
-        $this->logger->pushHandler($this->handler);
+        $this->assertArrayHasKey(
+            'json',
+            config('logging.channels'),
+            'The "json" log channel is not configured. Add it to config/logging.php.'
+        );
 
-        $formatter = new JsonMonologFormatter();
-        $formatter($this->logger);
+        /** @var Logger $channel */
+        $this->channel = app(\Illuminate\Log\LogManager::class)->channel('json');
+
+        /** @var MonologLogger $monolog */
+        $this->monolog = $this->channel->getLogger();
+        $this->monolog->pushHandler($this->handler);
+    }
+
+    public function tearDown(): void
+    {
+        // Pop the probe handler to avoid leaking it into other tests via the singleton LogManager.
+        $this->monolog->popHandler();
+
+        parent::tearDown();
     }
 
     public function test_json_formatter_produces_valid_json(): void
     {
-        $this->logger->info('test message', ['key' => 'value']);
+        $this->channel->info('test message', ['key' => 'value']);
 
         $this->assertTrue($this->handler->hasInfoRecords());
 
@@ -43,7 +63,7 @@ class JsonLoggingTest extends TestCase
 
     public function test_json_formatter_contains_required_fields(): void
     {
-        $this->logger->info('test message', ['key' => 'value']);
+        $this->channel->info('test message', ['key' => 'value']);
 
         $formatted = $this->handler->getRecords()[0]->formatted;
         $decoded = json_decode($formatted, true);
@@ -56,7 +76,7 @@ class JsonLoggingTest extends TestCase
 
     public function test_json_formatter_sets_correct_level_and_message(): void
     {
-        $this->logger->info('hello from json logger', ['user_id' => 42]);
+        $this->channel->info('hello from json logger', ['user_id' => 42]);
 
         $formatted = $this->handler->getRecords()[0]->formatted;
         $decoded = json_decode($formatted, true);
@@ -68,14 +88,14 @@ class JsonLoggingTest extends TestCase
 
     public function test_json_formatter_datetime_is_valid_iso8601(): void
     {
-        $this->logger->debug('timestamp check');
+        $this->channel->debug('timestamp check');
 
         $formatted = $this->handler->getRecords()[0]->formatted;
         $decoded = json_decode($formatted, true);
 
         $this->assertNotEmpty($decoded['datetime']);
-        $this->assertNotNull(
-            Carbon::parse($decoded['datetime']),
+        $this->assertNotFalse(
+            \DateTime::createFromFormat(\DateTime::ATOM, $decoded['datetime']),
             'datetime field is not valid ISO 8601'
         );
     }
