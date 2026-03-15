@@ -218,7 +218,7 @@ prod-down: ## Stop production environment
 
 .PHONY: kibana-import
 kibana-import: ## Import all Kibana dashboards from docker/kibana/dashboards/
-	$(COMPOSE) exec kibana-setup bash /docker/kibana/setup.sh
+	$(COMPOSE) exec kibana bash /docker/kibana/setup.sh
 
 ##@ Cleanup
 
