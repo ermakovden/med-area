@@ -1,4 +1,4 @@
-[← Development](development.md) · [Back to README](../README.md)
+[← Development](development.md) · [Back to README](../README.md) · [ELK Setup →](elk-setup.md)
 
 # Configuration
 

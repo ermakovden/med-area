@@ -1,4 +1,4 @@
-[Back to README](../README.md) · [Getting Started →](getting-started.md)
+[← Configuration](configuration.md) · [Back to README](../README.md) · [Kibana Dashboards →](kibana-dashboards.md)
 
 # ELK Stack Setup
 
@@ -126,3 +126,9 @@ Check that Elasticsearch is healthy first: `curl http://localhost:9200/_cluster/
 - Confirm index pattern is `medarea-logs-*` with time field `@timestamp`
 - In Kibana → Discover, set time range to "Last 1 hour"
 - Check that `LOG_STACK=json` is set in `.env` (plain text logs are not parsed by Filebeat)
+
+## See Also
+
+- [Kibana Dashboards](kibana-dashboards.md) — Dashboard structure, import order, and how to add new dashboards
+- [Configuration](configuration.md) — Environment variables including `LOG_CHANNEL` and `LOG_STACK`
+- [Getting Started](getting-started.md) — Docker setup and Makefile commands

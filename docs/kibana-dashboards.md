@@ -1,4 +1,4 @@
-[Back to README](../README.md) · [ELK Setup](elk-setup.md)
+[← ELK Setup](elk-setup.md) · [Back to README](../README.md)
 
 # Kibana Dashboards
 
@@ -46,3 +46,8 @@ Kibana requires objects to be imported in dependency order.
 `index-pattern.ndjson` (id: `16e9c6a4-aeab-4baf-b7ed-83bb01b4f675`) is duplicated
 across subdirectories intentionally — `overwrite=true` makes this idempotent,
 and it keeps each dashboard self-contained and independently importable.
+
+## See Also
+
+- [ELK Setup](elk-setup.md) — Starting the stack, enabling JSON logging, troubleshooting
+- [Configuration](configuration.md) — `LOG_CHANNEL` and `LOG_STACK` environment variables
