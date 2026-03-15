@@ -56,20 +56,12 @@ The dashboard is imported automatically via `docker/kibana/setup.sh` on first st
 To re-import manually:
 
 ```bash
-# 1. Wait for Kibana to be ready
-curl http://localhost:5601/api/status
-
-# 2. Create index pattern
-curl -X POST http://localhost:5601/api/saved_objects/index-pattern/medarea-logs \
-  -H "kbn-xsrf: true" \
-  -H "Content-Type: application/json" \
-  -d '{"attributes": {"title": "medarea-logs-*", "timeFieldName": "@timestamp"}}'
-
-# 3. Import dashboard
-curl -X POST "http://localhost:5601/api/saved_objects/_import?overwrite=true" \
-  -H "kbn-xsrf: true" \
-  -F "file=@docker/kibana/dashboards/ocr-monitoring.ndjson"
+make kibana-import
 ```
+
+This runs `docker/kibana/setup.sh` which imports all dashboards in dependency order
+(index-pattern → visualizations → dashboard) for every subdirectory under `docker/kibana/dashboards/`.
+See [Kibana Dashboards](kibana-dashboards.md) for the full directory structure.
 
 ---
 
