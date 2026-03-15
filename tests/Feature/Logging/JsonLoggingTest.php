@@ -22,8 +22,6 @@ class JsonLoggingTest extends TestCase
     {
         parent::setUp();
 
-        // JsonFormatter must be set on the TestHandler so that AbstractProcessingHandler
-        // writes JSON into $record->formatted — which is what the assertions read below.
         $this->handler = new TestHandler();
         $this->handler->setFormatter(new JsonFormatter());
 
@@ -95,7 +93,7 @@ class JsonLoggingTest extends TestCase
 
         $this->assertNotEmpty($decoded['datetime']);
         $this->assertNotFalse(
-            \DateTime::createFromFormat(\DateTime::ATOM, $decoded['datetime']),
+            \DateTime::createFromFormat('Y-m-d\TH:i:s.uP', $decoded['datetime']),
             'datetime field is not valid ISO 8601'
         );
     }
